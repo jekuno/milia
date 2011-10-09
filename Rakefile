@@ -17,10 +17,10 @@ Jeweler::Tasks.new do |gem|
   gem.name = "milia"
   gem.homepage = "http://github.com/dsaronin/milia"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Multi-tenanting for hosted Rails 3.1+/Postgres applications}
+  gem.description = %Q{enables row-based multi-tenanting that is transparent to application; enforced at lowest DB connection level}
   gem.email = "dsaronin@gmail.com"
-  gem.authors = ["Daudi Amani"]
+  gem.authors = ["David Anderson"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
@@ -42,7 +42,7 @@ end
 
 task :default => :test
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
