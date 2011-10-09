@@ -1,0 +1,155 @@
+DEFAULT_SCOPE RAILS 3.1 (from https://gist.github.com/958338)
+================================================================================
+default_scope can take a block, lambda, or any other object which responds 
+to call for lazy evaluation:
+
+  default_scope { ... }
+  default_scope lambda { ... }
+  default_scope method(:foo)
+
+This feature was originally implemented by Tim Morgan, but was then removed in 
+favour of defining a default_scope class method, 
+but has now been added back in by Jon Leighton. 
+The relevant lighthouse ticket is #1812.
+
+Default scopes are now evaluated at the latest possible moment, 
+to avoid problems where scopes would be created which would implicitly contain 
+the default scope, which would then be impossible to get rid of via 
+  Model.unscoped.
+No
+te that this means that if you are inspecting the internal structure of an 
+ActiveRecord::Relation, it will not contain the default scope, though the 
+resulting query will do. You can get a relation containing the default scope by 
+calling ActiveRecord#with_default_scope, though this is not part of the public API.
+
+Calling default_scope multiple times in a class 
+(including when a superclass calls default_scope) is deprecated. 
+The current behavior is that this will merge the default scopes together:
+
+  class Post < ActiveRecord::Base # Rails 3.1
+    default_scope where(:published => true)
+    default_scope where(:hidden => false)
+    # The default scope is now: where(:published => true, :hidden => false)
+  end
+
+In Rails 3.2, the behavior will be changed to overwrite previous scopes:
+
+  class Post < ActiveRecord::Base # Rails 3.2
+    default_scope where(:published => true)
+    default_scope where(:hidden => false)
+    # The default scope is now: where(:hidden => false)
+  end
+If you wish to merge default scopes in special ways, it is recommended to define 
+your default scope as a class method and use the standard techniques for  
+sharing code (inheritance, mixins, etc.):
+
+  class Post < ActiveRecord::Base
+    def self.default_scope
+      where(:published => true).where(:hidden => false)
+    end
+  end
+  
+http://samuel.kadolph.com/2010/12/simple-rails-multi-tenancy/
+=================================================================== 
+class Tenant < ActiveRecord::Base
+  class << self
+    def current
+      Thread.current[:current_tenant]
+    end
+
+    def current=(tenant)
+      Thread.current[:current_tenant] = tenant
+    end
+  end
+end
+
+app/models/tenant_scoped_model.rb
+class TenantScopedModel < ActiveRecord::Base
+  self.abstract_class = true
+
+  class << self
+    protected
+      def current_scoped_methods
+        last = scoped_methods.last
+        last.respond_to?(:call) ? relation.scoping { last.call } : last
+      end      
+  end
+
+  belongs_to :tenant
+
+  default_scope lambda { where('tenant_id = ?', Tenant.current) }
+
+  before_save { self.tenant = Tenant.current }
+end
+
+class ApplicationController < ActionController::Base
+  before_filter do
+    @tenant = Tenant.current = Tenant.find_by_host!(request.host)
+  end
+end
+
+Caveats
+
+Calling unscoped bypasses the default_scope; this is both good and bad because you can get all partitioned data from a model regardless of the current tenant.
+You will get errors in the console when working with a scoped model unless you set Tenant.current.
+before_save { self.tenant = Tenant.current } is necessary because rails does not automatically set the attributes from our default_scope because it is a lambda.
+
+
+http://www.justinball.com/2011/09/27/customizing-views-for-a-multi-tenant-application-using-ruby-on-rails-custom-resolvers/
+===============================================================================
+ but setting a global on the current thread felt like a big hack. (Here's a good article on Thread.current ) Lucky for me Jose was willing to spend a little time working with me and the resulting code works without globals. Instead of passing a global around we removed the Singleton code from the resolver and create an instance of the resolver per each account:
+
+ 
+class ApplicationController < ActionController::Base
+  before_filter :set_resolver
+ 
+  def current_account
+    @current_account ||= Account.find_by_domain(request.host) || Account.find_by_code(request.subdomains.first) || Account.first
+  end
+ 
+  @@account_resolver = {}
+ 
+  def account_resolver_for(account)
+    @@account_resolver[account.id] ||= CustomView::Resolver.new(account)
+  end
+ 
+  def set_resolver
+    return unless current_account
+    resolver = account_resolver_for(current_account)
+    resolver.update_account(current_account)
+    prepend_view_path resolver
+  end
+ 
+end
+ class Resolver < ActionView::Resolver
+ 
+    def initialize(account)
+      @account = account
+    end
+ 
+    # Check if the custom_view_cache_count is still the same, if not clear the cache
+    def update_account(updated_account)
+      self.clear_cache unless @account.custom_view_cache_count == updated_account.custom_view_cache_count
+      @account = updated_account
+    end
+  end
+  
+POSTGRES RULES
+===============================================================================
+36.2. Views and the Rule System
+Views in PostgreSQL are implemented using the rule system. 
+In fact, there is essentially no difference between:
+
+  CREATE VIEW myview AS SELECT * FROM mytab;
+
+compared against the two commands:
+
+  CREATE TABLE myview (same column list as mytab);
+  CREATE RULE "_RETURN" AS ON SELECT TO myview DO INSTEAD
+      SELECT * FROM mytab;
+
+because this is exactly what the CREATE VIEW command does internally. 
+This has some side effects. One of them is that the information about a view 
+in the PostgreSQL system catalogs is exactly the same as it is for a table. 
+So for the parser, there is absolutely no difference between a table and a view. 
+They are the same thing: relations.
