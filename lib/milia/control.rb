@@ -3,6 +3,7 @@ module Milia
 
 # #############################################################################
     class InvalidTenantAccess < SecurityError; end
+    class MaxTenantExceeded < ArgumentError; end
 # #############################################################################
     
     def self.included(base)
