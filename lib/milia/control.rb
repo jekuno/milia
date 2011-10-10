@@ -30,9 +30,9 @@ module Milia
         @_my_tenants ||= current_user.my_tenants  # gets all possible tenants for user
         
         if tenant_id.nil?  # no arg; find automatically from user
-          tenant_id = @_my_tenants.first.my_tenant_id
+          tenant_id = @_my_tenants.first.id
         else   # passed an arg; validate tenant_id before setup
-          raise InvalidTenantAccess unless @_my_tenants.any?{|tu| tu.my_tenant_id == tenant_id}
+          raise InvalidTenantAccess unless @_my_tenants.any?{|tu| tu.id == tenant_id}
         end
       else   # user not signed in yet...
         tenant_id = 0  if tenant_id.nil?   # an impossible tenant_id
