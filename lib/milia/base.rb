@@ -18,7 +18,7 @@ module Milia
         default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
         before_save do |obj|   # force tenant_id to be correct for current_user
           obj.tenant_id = Thread.current[:tenant_id]
-          true  ok to proceed
+          true  #  ok to proceed
         end
       end
 
@@ -31,7 +31,7 @@ module Milia
         default_scope where( "#{table_name}.tenant_id IS NULL" )
         before_save do |obj|   # force tenant_id to be correct for current_user
           obj.tenant_id = nil
-          true  ok to proceed
+          true  #  ok to proceed
         end
       end
       
