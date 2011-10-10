@@ -5,7 +5,15 @@ module Milia
     end
 
     module ClassMethods
-      # Add a job to the queue
+
+      def acts_as_tenant()
+        default_scope lambda { where( 'tenant_id = ?', Thread.current[:tenant_id] ) }
+      end
+
+      def acts_as_universal()
+        default_scope where( 'tenant_id IS NULL' )
+      end
+
     end  # module ClassMethods
     
   end  # module Base
