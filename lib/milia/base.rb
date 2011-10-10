@@ -8,7 +8,7 @@ module Milia
 
       def acts_as_tenant()
         attr_protected :tenant_id
-        default_scope lambda { where( 'tenant_id = ?', Thread.current[:tenant_id] ) }
+        default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
         before_save do |obj|   # force tenant_id to be correct for current_user
           obj.tenant_id = Thread.current[:tenant_id]
         end
@@ -16,7 +16,7 @@ module Milia
 
       def acts_as_universal()
         attr_protected :tenant_id
-        default_scope where( 'tenant_id IS NULL' )
+        default_scope where( "#{table_name}.tenant_id IS NULL" )
         before_save do |obj|   # force tenant_id to be correct for current_user
           obj.tenant_id = nil
         end
