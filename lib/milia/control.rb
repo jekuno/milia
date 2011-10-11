@@ -45,6 +45,10 @@ module Milia
     end
     
 # ------------------------------------------------------------------------------
+# initiate_tenant -- initiates first-time tenant; establishes thread
+# ONLY for brand-new tenants upon User account sign up
+# arg
+#   tenant -- tenant obj of the new tenant
 # ------------------------------------------------------------------------------
   def initiate_tenant( tenant )
     Thread.current[:tenant_id] = tenant.id
