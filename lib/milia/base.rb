@@ -50,11 +50,10 @@ module Milia
         before_create do |new_user|
           puts ">>>>> before user create >>>>>"
           tenant = Tenant.find( Thread.current[:tenant_id] )
-          true if tenant.users.include?(new_user)
-
-          tenant.users << new_user  # add user to this tenant if not already there
-          # new_user.tenants << tenant   # add to tenants ok list
-          tenant.save!   # false if error breaks callback chain
+          unless tenant.users.include?(new_user)
+            puts ">>>>> before user create 2222  >>>>>"
+            tenant.users << new_user  # add user to this tenant if not already there
+          end
 
         end # before_create do
         
