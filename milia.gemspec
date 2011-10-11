@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.1.16"
+  s.version = "0.1.17"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
@@ -26,11 +26,13 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "app/controllers/user/registrations_controller.rb",
     "doc/ref_notes.txt",
     "lib/milia.rb",
     "lib/milia/base.rb",
     "lib/milia/control.rb",
     "lib/milia/railtie.rb",
+    "lib/milia/tasks.rb",
     "milia.gemspec",
     "test/helper.rb",
     "test/test_milia.rb"
