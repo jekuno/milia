@@ -1,6 +1,5 @@
 module Milia
 
-class User
   class RegistrationsController < Devise::RegistrationsController
 
 # ------------------------------------------------------------------------------
@@ -31,6 +30,5 @@ class User
 # ------------------------------------------------------------------------------
 
   end   # class Registrations
-end   # class User
 
 end  # module Milia

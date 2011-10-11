@@ -8,7 +8,7 @@ module Milia
         ActiveRecord::Base.send(:include, Milia::Base)
         ActionController::Base.send(:include, Milia::Control)
         
-        require File.dirname(__FILE__) + '/../../app/controllers/user/registrations_controller'
+        require File.dirname(__FILE__) + '/../../app/controllers/registrations_controller'
     end
 
     rake_tasks do
