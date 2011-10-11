@@ -40,23 +40,44 @@ module Milia
 # All the characteristics of acts_as_universal AND also does the magic
 # of binding a user to a tenant
 # ------------------------------------------------------------------------
-      def acts_as_universal_and_determines_tenant_reference()
+      def acts_as_universal_and_determines_account()
+        has_and_belongs_to_many :tenants, :dependent => :delete_all
+
         acts_as_universal()
         
           # before create, tie user with current tenant
           # return true if ok to proceed; false if break callback chain
         before_create do |new_user|
           tenant = Tenant.find( Thread.current[:tenant_id] )
-          return true if tenant.my_users.include?(new_user)
+          return true if tenant.users.include?(new_user)
 
-          tenant.my_users << new_user  # add user to this tenant if not already there
-          new_user.my_tenants << tenant   # add to tenants ok list
+          tenant.users << new_user  # add user to this tenant if not already there
+          # new_user.tenants << tenant   # add to tenants ok list
           return tenant.save!   # false if error breaks callback chain
 
         end # before_create do
         
+        # before_destroy do |old_user|
+          # tenant = Tenant.find( Thread.current[:tenant_id] )
+          # tenant.users.delete(old_user)
+          # tenant.save
+        # end # before_destroy do
+        
       end  # acts_as
 
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+  def acts_as_universal_and_determines_tenant()
+        has_and_belongs_to_many :users, :dependent => :delete_all
+
+        acts_as_universal()
+        
+        # before_destroy do |old_tenant|
+          # tenant = Tenant.find( Thread.current[:tenant_id] )
+          # tenant.users.delete(old_tenant)
+        # end # before_destroy do
+        
+  end
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 

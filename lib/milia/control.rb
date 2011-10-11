@@ -28,7 +28,7 @@ module Milia
 # ------------------------------------------------------------------------------
     def set_current_tenant( tenant_id = nil )
       if user_signed_in?
-        @_my_tenants ||= current_user.my_tenants  # gets all possible tenants for user
+        @_my_tenants ||= current_user.tenants  # gets all possible tenants for user
         
         if tenant_id.nil?  # no arg; find automatically from user
           tenant_id = @_my_tenants.first.id

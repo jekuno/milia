@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.1.9"
+  s.version = "0.1.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
-  s.date = "2011-10-10"
+  s.date = "2011-10-11"
   s.description = "enables row-based multi-tenanting that is transparent to application; enforced at lowest DB connection level"
   s.email = "dsaronin@gmail.com"
   s.extra_rdoc_files = [
