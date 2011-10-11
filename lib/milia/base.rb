@@ -41,7 +41,7 @@ module Milia
 # of binding a user to a tenant
 # ------------------------------------------------------------------------
       def acts_as_universal_and_determines_account()
-        has_and_belongs_to_many :tenants, :dependent => :delete_all
+        has_and_belongs_to_many :tenants
 
         acts_as_universal()
         
@@ -57,25 +57,24 @@ module Milia
 
         end # before_create do
         
-        # before_destroy do |old_user|
-          # tenant = Tenant.find( Thread.current[:tenant_id] )
-          # tenant.users.delete(old_user)
-          # tenant.save
-        # end # before_destroy do
+        before_destroy do |old_user|
+          old_user.tenants.clear    # remove all tenants for this user
+          true
+        end # before_destroy do
         
       end  # acts_as
 
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
   def acts_as_universal_and_determines_tenant()
-        has_and_belongs_to_many :users, :dependent => :delete_all
+        has_and_belongs_to_many :users
 
         acts_as_universal()
         
-        # before_destroy do |old_tenant|
-          # tenant = Tenant.find( Thread.current[:tenant_id] )
-          # tenant.users.delete(old_tenant)
-        # end # before_destroy do
+        before_destroy do |old_tenant|
+          old_tenant.users.clear  # remove all users from this tenant
+          true
+        end # before_destroy do
         
   end
 # ------------------------------------------------------------------------
