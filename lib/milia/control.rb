@@ -28,13 +28,19 @@ module Milia
 # ------------------------------------------------------------------------------
     def set_current_tenant( tenant_id = nil )
       if user_signed_in?
+        
         @_my_tenants ||= current_user.tenants  # gets all possible tenants for user
         
-        if tenant_id.nil?  # no arg; find automatically from user
-          tenant_id = @_my_tenants.first.id
-        else   # passed an arg; validate tenant_id before setup
+        tenant_id ||= session[:tenant_id]   # use session tenant_id ?
+        
+        if tenant_id.nil?  # no arg; find automatically based on user
+          tenant_id = @_my_tenants.first.id  # just pick the first one
+        else   # validate the specified tenant_id before setup
           raise InvalidTenantAccess unless @_my_tenants.any?{|tu| tu.id == tenant_id}
         end
+        
+        session[:tenant_id] = tenant_id  # remember it going forward
+
       else   # user not signed in yet...
         tenant_id = 0  if tenant_id.nil?   # an impossible tenant_id
       end
@@ -46,6 +52,7 @@ module Milia
     
 # ------------------------------------------------------------------------------
 # initiate_tenant -- initiates first-time tenant; establishes thread
+# assumes not in a session yet (since here only upon new account sign-up)
 # ONLY for brand-new tenants upon User account sign up
 # arg
 #   tenant -- tenant obj of the new tenant
