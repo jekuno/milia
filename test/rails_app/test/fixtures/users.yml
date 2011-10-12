@@ -4,8 +4,110 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-#one: {}
-# column: value
-#
-#two: {}
-#  column: value
+demarcus:
+  email: "demarcus@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 0
+  confirmation_token: "86encX4wx7uqTWcwMvu1"
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+
+deshawn:
+  email: "deshawn@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 1
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+jemell:
+  email: "jemell@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 2
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+jermaine:
+  email: "jermaine@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 3
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+jabari:
+  email: "jabari@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 4
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+kwashaun:
+  email: "kwashaun@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 5
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+musa:
+  email: "musa@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 6
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
+nigel:
+  email: "nigel@example.com"
+  encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
+  sign_in_count: 7
+  current_sign_in_at: "2011-10-12 21:50:12"
+  last_sign_in_at: "2011-10-12 21:50:12"
+  current_sign_in_ip: "127.0.0.1"
+  last_sign_in_ip: "127.0.0.1"
+  confirmation_token: nil
+  confirmation_sent_at: "2011-10-12 21:36:30"
+  confirmed_at: "2011-10-12 21:50:12"
+  created_at: "2011-10-12 21:36:30"
+  updated_at: "2011-10-12 21:36:30"
+  
