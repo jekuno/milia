@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
   s.date = "2011-10-12"
-  s.description = "enables row-based multi-tenanting that is transparent to application"
+  s.description = "Transparent Multi-tenanting for hosted Rails 3.1+/Ruby 1.9.2 applications"
   s.email = "dsaronin@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -35,6 +35,73 @@ Gem::Specification.new do |s|
     "lib/milia/tasks.rb",
     "milia.gemspec",
     "test/helper.rb",
+    "test/rails_app/.gitignore",
+    "test/rails_app/Gemfile",
+    "test/rails_app/Gemfile.lock",
+    "test/rails_app/Procfile",
+    "test/rails_app/README",
+    "test/rails_app/Rakefile",
+    "test/rails_app/app/assets/images/rails.png",
+    "test/rails_app/app/assets/javascripts/application.js",
+    "test/rails_app/app/assets/javascripts/home.js.coffee",
+    "test/rails_app/app/assets/stylesheets/application.css",
+    "test/rails_app/app/assets/stylesheets/home.css.scss",
+    "test/rails_app/app/controllers/application_controller.rb",
+    "test/rails_app/app/controllers/home_controller.rb",
+    "test/rails_app/app/helpers/application_helper.rb",
+    "test/rails_app/app/helpers/home_helper.rb",
+    "test/rails_app/app/mailers/.gitkeep",
+    "test/rails_app/app/models/.gitkeep",
+    "test/rails_app/app/models/tenant.rb",
+    "test/rails_app/app/models/user.rb",
+    "test/rails_app/app/views/home/index.html.erb",
+    "test/rails_app/app/views/layouts/application.html.erb",
+    "test/rails_app/config.ru",
+    "test/rails_app/config/application.rb",
+    "test/rails_app/config/boot.rb",
+    "test/rails_app/config/database.yml",
+    "test/rails_app/config/environment.rb",
+    "test/rails_app/config/environments/development.rb",
+    "test/rails_app/config/environments/production.rb",
+    "test/rails_app/config/environments/test.rb",
+    "test/rails_app/config/initializers/backtrace_silencers.rb",
+    "test/rails_app/config/initializers/devise.rb",
+    "test/rails_app/config/initializers/inflections.rb",
+    "test/rails_app/config/initializers/mime_types.rb",
+    "test/rails_app/config/initializers/secret_token.rb",
+    "test/rails_app/config/initializers/session_store.rb",
+    "test/rails_app/config/initializers/wrap_parameters.rb",
+    "test/rails_app/config/locales/devise.en.yml",
+    "test/rails_app/config/locales/en.yml",
+    "test/rails_app/config/routes.rb",
+    "test/rails_app/db/migrate/20111012050340_devise_create_users.rb",
+    "test/rails_app/db/migrate/20111012050532_create_tenants.rb",
+    "test/rails_app/db/migrate/20111012050600_create_tenants_users.rb",
+    "test/rails_app/db/migrate/20111012060818_add_sessions_table.rb",
+    "test/rails_app/db/schema.rb",
+    "test/rails_app/db/seeds.rb",
+    "test/rails_app/lib/assets/.gitkeep",
+    "test/rails_app/lib/tasks/.gitkeep",
+    "test/rails_app/log/.gitkeep",
+    "test/rails_app/public/404.html",
+    "test/rails_app/public/422.html",
+    "test/rails_app/public/500.html",
+    "test/rails_app/public/favicon.ico",
+    "test/rails_app/script/rails",
+    "test/rails_app/test/fixtures/.gitkeep",
+    "test/rails_app/test/fixtures/tenants.yml",
+    "test/rails_app/test/fixtures/users.yml",
+    "test/rails_app/test/functional/.gitkeep",
+    "test/rails_app/test/functional/home_controller_test.rb",
+    "test/rails_app/test/integration/.gitkeep",
+    "test/rails_app/test/performance/browsing_test.rb",
+    "test/rails_app/test/test_helper.rb",
+    "test/rails_app/test/unit/.gitkeep",
+    "test/rails_app/test/unit/helpers/home_helper_test.rb",
+    "test/rails_app/test/unit/tenant_test.rb",
+    "test/rails_app/test/unit/user_test.rb",
+    "test/rails_app/vendor/assets/stylesheets/.gitkeep",
+    "test/rails_app/vendor/plugins/.gitkeep",
     "test/test_milia.rb"
   ]
   s.homepage = "http://github.com/dsaronin/milia"
@@ -47,7 +114,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activerecord>, [">= 3.1"])
+      s.add_runtime_dependency(%q<rails>, [">= 3.1"])
       s.add_runtime_dependency(%q<devise>, [">= 1.4.8"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -55,7 +122,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
     else
-      s.add_dependency(%q<activerecord>, [">= 3.1"])
+      s.add_dependency(%q<rails>, [">= 3.1"])
       s.add_dependency(%q<devise>, [">= 1.4.8"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -64,7 +131,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rdoc>, [">= 0"])
     end
   else
-    s.add_dependency(%q<activerecord>, [">= 3.1"])
+    s.add_dependency(%q<rails>, [">= 3.1"])
     s.add_dependency(%q<devise>, [">= 1.4.8"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
