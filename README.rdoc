@@ -184,6 +184,16 @@ immediately after the new tenant has been created).
     return tenant
   end
 
+=== Alternate use case: user belongs to multiple tenants
+Your application might allow a user to belong to multiple tenants. You will need
+to provide some type of mechanism to allow the user to choose which account
+(thus tenant) they wish to access. Once chosen, in your controller, you will need
+to put:
+
+<i>app/controllers/any_controller.rb</i>
+  
+  set_current_tenant( new_tenant_id )
+
 
 == Cautions
 * Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes.

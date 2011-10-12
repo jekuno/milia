@@ -69,7 +69,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Setup a pepper to generate the encrypted password.
-  # config.pepper = "65dd7824c5eba8641e82fd6ccea3b221b1d55e25c808fce86cafebdefc216c985bf4d306a1805ddbeb29e1de4f5104f1df696735f884a1723e2793b4e026cd6f"
+  config.pepper = "65dd7824c5eba8641e82fd6ccea3b221b1d55e25c808fce86cafebdefc216c985bf4d306a1805ddbeb29e1de4f5104f1df696735f884a1723e2793b4e026cd6f"
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without
@@ -80,7 +80,7 @@ Devise.setup do |config|
   # config.confirm_within = 2.days
 
   # Defines which key will be used when confirming an account
-  # config.confirmation_keys = [ :email ]
+  config.confirmation_keys = [ :email ]
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
@@ -140,7 +140,7 @@ Devise.setup do |config|
   # ==> Configuration for :recoverable
   #
   # Defines which key will be used when recovering the password for an account
-  # config.reset_password_keys = [ :email ]
+  config.reset_password_keys = [ :email ]
 
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
