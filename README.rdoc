@@ -1,6 +1,180 @@
 = milia
 
-Milia is a multi-tenanting gem for hosted Rails 3.1/Postgres applications (such as on heroku).
+Milia is a multi-tenanting gem for hosted Rails 3.1 applications which use
+devise for user authentication.
+
+== Basic concepts
+* should be transparent to the main application code
+* should be symbiotic with user authentication
+* should raise exceptions upon attempted illegal access
+* should force tenanting (not allow sloppy access to all tenant records)
+* should allow application flexibility upon new tenant sign-up, usage of eula information, etc
+* should be as non-invasive (as possible) to Rails code
+* row-based tenanting is used
+* default_scope is used to enforce tenanting
+
+The author used schema-based tenanting in the past but found it deficient for
+the following reasons: most DBMS are optimized to handle enormous number of
+rows but not an enormous number of schema (tables). Schema-based tenancy took a
+performance hit, was seriously time-consuming to backup and restore, was invasive
+into the Rails code structure (monkey patching), was complex to implement, and
+couldn't use Rails migration tools as-is.
+
+== Structure
+* necessary models: user, tenant
+* necessary migrations: user, tenant, tenants_users (join table)
+
+== Dependency requirements
+* Rails 3.1 or higher
+* Devise 1.4.8 or higher
+
+== Installation
+
+Either install the gem manually:
+
+  gem install milia
+
+Or in the Gemfile:
+
+  gem 'milia'
+  
+== Getting started
+
+=== Devise setup
+* See https://github.com/plataformatec/devise for how to set up devise.
+* The current version of milia requires a *User* model.
+
+=== Milia setup
+<i>db/migrate</i>
+
+*ALL* models require a tenanting field, whether they are to be universal or to
+be tenanted.
+
+  t.references :tenant
+
+Tenanted models will also require indexes for the tenant field:
+
+  add_index :TABLE, :tenant_id
+
+<i>db/migrate/20111008081639_create_tenants_users.rb</i>
+
+  class CreateTenantsUsers < ActiveRecord::Migration
+    def change
+      create_table :tenants_users, :id => false  do |t|
+        t.references   :tenant
+        t.references   :user
+      end
+      add_index :tenants_users, :tenant_id
+      add_index :tenants_users, :user_id
+    end
+  end
+
+
+<i>app/controllers/application_controller.rb</i>
+add the following line AFTER the devise-required filter for authentications:
+
+  before_filter :authenticate_user!   # forces devise to authenticate user
+  before_filter :set_current_tenant   # forces milia to set up current tenant
+
+catch any exceptions with the following (be sure to also add the designated methods!)
+
+  rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
+  rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
+
+
+<i>config/routes.rb</i>
+Add the following line into the devise_for :users block
+
+  devise_for :users do
+    post  "users" => "milia/registrations#create"
+  end
+  
+=== Designate which model determines account
+<i>app/models/user.rb</i>
+Add the following acts_as_... to designate which model will be used as the key
+into tenants_users to find the tenant for a given user. 
+Only designate one model in this manner.
+
+  class User < ActiveRecord::Base
+    
+    acts_as_universal_and_determines_account
+  
+  end  # class User
+
+=== Designate which model determines tenant
+<i>app/models/tenant.rb</i>
+Add the following acts_as_... to designate which model will be used as the
+tenant model. It is this id field which designates the tenant for an entire 
+group of users which exist within a single tenanted domain.
+
+  class Tenant < ActiveRecord::Base
+    
+    acts_as_universal_and_determines_tenant
+    
+  end  # class Tenant
+
+=== Designate universal models
+Add the following acts_as_universal to *ALL* models which are to be universal:
+
+  class Eula < ActiveRecord::Base
+    
+    acts_as_universal
+  
+  end  # class Eula
+
+Note that the tenant_id of a universal model will always be forced to nil.
+
+=== Designate tenanted models
+Add the following acts_as_tenant to *ALL* models which are to be tenanted:
+
+
+  class Post < ActiveRecord::Base
+    
+    acts_as_tenant
+  
+  end  # class Post
+
+Note that the tenant_id of a tenanted model must always match the current 
+valid tenant.
+
+=== Exceptions raised
+
+  Milia::Control::InvalidTenantAccess
+  Milia::Control::MaxTenantExceeded
+
+=== Tenant pre-processing hooks
+Milia expects a tenant pre-processing & setup hook:
+
+  Tenant.create_new_tenant(params)
+  
+where the sign-up params are passed, the new tenant must be validated, created,
+and then returned. Any other kinds of prepatory processing are permitted here,
+but should be minimal, and should not involve any tenanted models. At this point
+in the new account sign-up chain, no tenant has been set up yet (but will be
+immediately after the new tenant has been created).
+
+<i>app/models/tenant.rb</i>
+  def self.create_new_tenant(params)
+    
+    tenant = Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
+
+    if new_signups_not_permitted?(params)
+      
+      raise MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
+      
+    else 
+      tenant.save    # create the tenant
+    end
+    return tenant
+  end
+
+
+== Cautions
+* Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes.
+* Milia uses Thread.current[:tenant_id] to hold the current tenant for the existing Action request in the application.
+* SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
+
+
 
 == Contributing to milia
  
