@@ -42,13 +42,13 @@ Or in the Gemfile:
 
 === Devise setup
 * See https://github.com/plataformatec/devise for how to set up devise.
-* The current version of milia requires a *User* model.
+* The current version of milia requires that devise use a *User* model.
 
 === Milia setup
-<i>db/migrate</i>
-
 *ALL* models require a tenanting field, whether they are to be universal or to
 be tenanted.
+
+<i>db/migrate</i>
 
   t.references :tenant
 
@@ -69,9 +69,9 @@ Tenanted models will also require indexes for the tenant field:
     end
   end
 
+add the following line AFTER the devise-required filter for authentications:
 
 <i>app/controllers/application_controller.rb</i>
-add the following line AFTER the devise-required filter for authentications:
 
   before_filter :authenticate_user!   # forces devise to authenticate user
   before_filter :set_current_tenant   # forces milia to set up current tenant
@@ -81,19 +81,20 @@ catch any exceptions with the following (be sure to also add the designated meth
   rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
   rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
 
+Add the following line into the devise_for :users block
 
 <i>config/routes.rb</i>
-Add the following line into the devise_for :users block
 
   devise_for :users do
     post  "users" => "milia/registrations#create"
   end
   
 === Designate which model determines account
-<i>app/models/user.rb</i>
 Add the following acts_as_... to designate which model will be used as the key
 into tenants_users to find the tenant for a given user. 
 Only designate one model in this manner.
+
+<i>app/models/user.rb</i>
 
   class User < ActiveRecord::Base
     
@@ -102,10 +103,11 @@ Only designate one model in this manner.
   end  # class User
 
 === Designate which model determines tenant
-<i>app/models/tenant.rb</i>
 Add the following acts_as_... to designate which model will be used as the
 tenant model. It is this id field which designates the tenant for an entire 
 group of users which exist within a single tenanted domain.
+
+<i>app/models/tenant.rb</i>
 
   class Tenant < ActiveRecord::Base
     
@@ -115,6 +117,8 @@ group of users which exist within a single tenanted domain.
 
 === Designate universal models
 Add the following acts_as_universal to *ALL* models which are to be universal:
+
+<i>app/models/eula.rb</i>
 
   class Eula < ActiveRecord::Base
     
@@ -127,6 +131,7 @@ Note that the tenant_id of a universal model will always be forced to nil.
 === Designate tenanted models
 Add the following acts_as_tenant to *ALL* models which are to be tenanted:
 
+<i>app/models/post.rb</i>
 
   class Post < ActiveRecord::Base
     
@@ -154,6 +159,7 @@ in the new account sign-up chain, no tenant has been set up yet (but will be
 immediately after the new tenant has been created).
 
 <i>app/models/tenant.rb</i>
+
   def self.create_new_tenant(params)
     
     tenant = Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
