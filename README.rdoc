@@ -56,6 +56,8 @@ Tenanted models will also require indexes for the tenant field:
 
   add_index :TABLE, :tenant_id
 
+Also create a tenants_users join table:
+
 <i>db/migrate/20111008081639_create_tenants_users.rb</i>
 
   class CreateTenantsUsers < ActiveRecord::Migration
@@ -106,6 +108,7 @@ Only designate one model in this manner.
 Add the following acts_as_... to designate which model will be used as the
 tenant model. It is this id field which designates the tenant for an entire 
 group of users which exist within a single tenanted domain.
+Only designate one model in this manner.
 
 <i>app/models/tenant.rb</i>
 
@@ -150,7 +153,7 @@ valid tenant.
 === Tenant pre-processing hooks
 Milia expects a tenant pre-processing & setup hook:
 
-  Tenant.create_new_tenant(params)
+  Tenant.create_new_tenant(params)   # see sample code below
   
 where the sign-up params are passed, the new tenant must be validated, created,
 and then returned. Any other kinds of prepatory processing are permitted here,
