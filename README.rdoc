@@ -40,13 +40,20 @@ Or in the Gemfile:
   
 == Getting started
 
+=== Rails setup
+Milia expects a user session, so please set one up
+
+  $ rails g session_migration
+      invoke  active_record
+      create    db/migrate/20111012060818_add_sessions_table.rb
+  
 === Devise setup
 * See https://github.com/plataformatec/devise for how to set up devise.
 * The current version of milia requires that devise use a *User* model.
 
 === Milia setup
 *ALL* models require a tenanting field, whether they are to be universal or to
-be tenanted.
+be tenanted. So make sure the following is added to each migration
 
 <i>db/migrate</i>
 

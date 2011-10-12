@@ -20,7 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/dsaronin/milia"
   gem.license = "MIT"
   gem.summary = %Q{Multi-tenanting for hosted Rails 3.1+ applications}
-  gem.description = %Q{enables row-based multi-tenanting that is transparent to application}
+  gem.description = %Q{Transparent Multi-tenanting for hosted Rails 3.1+/Ruby 1.9.2 applications}
   gem.email = "dsaronin@gmail.com"
   gem.authors = ["David Anderson"]
   # dependencies defined in Gemfile
