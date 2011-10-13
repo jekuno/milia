@@ -1,15 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-<% Q1 = Datetime.new(2011,1,1,0,0,0) %>
-<% Q1end = Datetime.new(2011,3,31,23,59,59) %>
+<% Q1 = DateTime.new(2011,1,1,0,0,0) %>
+<% Q1end = DateTime.new(2011,3,31,23,59,59) %>
 
-<% Q2 = Datetime.new(2011,4,1,0,0,0) %>
-<% Q2end = Datetime.new(2011,6,30,23,59,59) %>
+<% Q2 = DateTime.new(2011,4,1,0,0,0) %>
+<% Q2end = DateTime.new(2011,6,30,23,59,59) %>
 
-<% Q3 = Datetime.new(2011,7,1,0,0,0) %>
-<% Q3end = Datetime.new(2011,9,30,23,59,59) %>
+<% Q3 = DateTime.new(2011,7,1,0,0,0) %>
+<% Q3end = DateTime.new(2011,9,30,23,59,59) %>
 
-<% Q4 = Datetime.new(2011,10,1,0,0,0) %>
-<% Q4end = Datetime.new(2011,12,31,23,59,59) %>
+<% Q4 = DateTime.new(2011,10,1,0,0,0) %>
+<% Q4end = DateTime.new(2011,12,31,23,59,59) %>
 
 cal_10:
   tenant: mangoland

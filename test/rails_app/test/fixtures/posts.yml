@@ -56,7 +56,7 @@ post_islesmile_musa_13:
 
 post_mangoland_nigel_14:
   tenant: mangoland
-  author: nigel
+  author: nigel_mangoland
   zine: mangoland_1
   content: wild blue 2
 
@@ -68,7 +68,7 @@ post_limesublime_kwashaun_15:
 
 post_islesmile_nigel_16:
   tenant: islesmile
-  author: nigel
+  author: nigel_islesmile
   zine: islesmile_1
   content: peanut clusters 2
 

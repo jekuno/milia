@@ -19,6 +19,11 @@ RailsApp::Application.configure do
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :stderr
 
+  # See everything in the log (default is :debug)
+#  config.log_level = :debug
+#  config.assets.logger = nil
+#  config.active_record.logger = Logger.new(STDOUT)
+
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 

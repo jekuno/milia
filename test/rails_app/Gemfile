@@ -37,6 +37,12 @@ gem 'jquery-rails'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :test do
+   gem  'ZenTest'
+   gem  'autotest'
+   gem  'autotest-inotify'
+   gem  'autotest-rails'
+   gem  'rb-inotify'
+   gem  'test-unit'
   # Pretty printed test output
   gem 'turn', :require => false
 end

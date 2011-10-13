@@ -36,4 +36,10 @@ RailsApp::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # See everything in the log (default is :debug)
+#  config.log_level = :debug
+#  config.assets.logger = nil
+#  config.active_record.logger = Logger.new(STDOUT)
+
 end
