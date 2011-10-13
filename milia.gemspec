@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.3.4"
+  s.version = "0.3.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
@@ -52,8 +52,14 @@ Gem::Specification.new do |s|
     "test/rails_app/app/helpers/home_helper.rb",
     "test/rails_app/app/mailers/.gitkeep",
     "test/rails_app/app/models/.gitkeep",
+    "test/rails_app/app/models/author.rb",
+    "test/rails_app/app/models/calendar.rb",
+    "test/rails_app/app/models/post.rb",
+    "test/rails_app/app/models/team.rb",
+    "test/rails_app/app/models/team_asset.rb",
     "test/rails_app/app/models/tenant.rb",
     "test/rails_app/app/models/user.rb",
+    "test/rails_app/app/models/zine.rb",
     "test/rails_app/app/views/home/index.html.erb",
     "test/rails_app/app/views/layouts/application.html.erb",
     "test/rails_app/config.ru",
@@ -78,6 +84,12 @@ Gem::Specification.new do |s|
     "test/rails_app/db/migrate/20111012050532_create_tenants.rb",
     "test/rails_app/db/migrate/20111012050600_create_tenants_users.rb",
     "test/rails_app/db/migrate/20111012060818_add_sessions_table.rb",
+    "test/rails_app/db/migrate/20111012231923_create_posts.rb",
+    "test/rails_app/db/migrate/20111013050558_create_calendars.rb",
+    "test/rails_app/db/migrate/20111013050657_create_zines.rb",
+    "test/rails_app/db/migrate/20111013050753_create_teams.rb",
+    "test/rails_app/db/migrate/20111013050837_create_team_assets.rb",
+    "test/rails_app/db/migrate/20111013053403_create_authors.rb",
     "test/rails_app/db/schema.rb",
     "test/rails_app/db/seeds.rb",
     "test/rails_app/lib/assets/.gitkeep",
@@ -88,18 +100,30 @@ Gem::Specification.new do |s|
     "test/rails_app/public/500.html",
     "test/rails_app/public/favicon.ico",
     "test/rails_app/script/rails",
+    "test/rails_app/test/ctlr_test_helper.rb",
     "test/rails_app/test/fixtures/.gitkeep",
+    "test/rails_app/test/fixtures/authors.yml",
+    "test/rails_app/test/fixtures/calendars.yml",
+    "test/rails_app/test/fixtures/posts.yml",
+    "test/rails_app/test/fixtures/team_assets.yml",
+    "test/rails_app/test/fixtures/teams.yml",
     "test/rails_app/test/fixtures/tenants.yml",
     "test/rails_app/test/fixtures/users.yml",
+    "test/rails_app/test/fixtures/zines.yml",
     "test/rails_app/test/functional/.gitkeep",
     "test/rails_app/test/functional/home_controller_test.rb",
     "test/rails_app/test/integration/.gitkeep",
     "test/rails_app/test/performance/browsing_test.rb",
     "test/rails_app/test/test_helper.rb",
     "test/rails_app/test/unit/.gitkeep",
+    "test/rails_app/test/unit/author_test.rb",
+    "test/rails_app/test/unit/calendar_test.rb",
     "test/rails_app/test/unit/helpers/home_helper_test.rb",
+    "test/rails_app/test/unit/post_test.rb",
+    "test/rails_app/test/unit/team_test.rb",
     "test/rails_app/test/unit/tenant_test.rb",
     "test/rails_app/test/unit/user_test.rb",
+    "test/rails_app/test/unit/zine_test.rb",
     "test/rails_app/vendor/assets/stylesheets/.gitkeep",
     "test/rails_app/vendor/plugins/.gitkeep",
     "test/test_milia.rb"
