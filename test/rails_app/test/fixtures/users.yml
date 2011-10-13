@@ -8,7 +8,7 @@ demarcus:
   email: "demarcus@example.com"
   encrypted_password: "$2a$10$pSZNOWGt/9jQoeA5EDB3MuItdIXJUer3RMqCbVqq9UCjlFGx7D2fe"  # monkey
   sign_in_count: 0
-  confirmation_token: "86encX4wx7uqTWcwMvu1"
+  confirmation_token: "86encX4wx7uqTWcwMvu0"
   confirmation_sent_at: "2011-10-12 21:36:30"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
@@ -21,11 +21,12 @@ deshawn:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu1"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: mangoland
   
 jemell:
   email: "jemell@example.com"
@@ -35,11 +36,12 @@ jemell:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu2"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: limesublime
   
 jermaine:
   email: "jermaine@example.com"
@@ -49,11 +51,12 @@ jermaine:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu3"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: islesmile
   
 jabari:
   email: "jabari@example.com"
@@ -63,11 +66,12 @@ jabari:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu4"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: mangoland
   
 kwashaun:
   email: "kwashaun@example.com"
@@ -77,11 +81,12 @@ kwashaun:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu5"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: limesublime
   
 musa:
   email: "musa@example.com"
@@ -91,11 +96,12 @@ musa:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu6"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: islesmile
   
 nigel:
   email: "nigel@example.com"
@@ -105,9 +111,10 @@ nigel:
   last_sign_in_at: "2011-10-12 21:50:12"
   current_sign_in_ip: "127.0.0.1"
   last_sign_in_ip: "127.0.0.1"
-  confirmation_token: nil
+  confirmation_token: "86encX4wx7uqTWcwMvu7"
   confirmation_sent_at: "2011-10-12 21:36:30"
   confirmed_at: "2011-10-12 21:50:12"
   created_at: "2011-10-12 21:36:30"
   updated_at: "2011-10-12 21:36:30"
+  tenants: mangoland, islesmile
   

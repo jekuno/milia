@@ -15,6 +15,8 @@ module Milia
 # ------------------------------------------------------------------------
       def acts_as_tenant()
         attr_protected :tenant_id
+        belongs_to  :tenant
+
         default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
 
       # ..........................callback enforcers............................
@@ -43,6 +45,8 @@ module Milia
 # ------------------------------------------------------------------------
       def acts_as_universal()
         attr_protected :tenant_id
+        belongs_to  :tenant
+
         default_scope where( "#{table_name}.tenant_id IS NULL" )
 
       # ..........................callback enforcers............................

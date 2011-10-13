@@ -9,8 +9,16 @@ class ActiveSupport::TestCase
   # -- they do not yet inherit this setting
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  
 
-  include Devise::TestHelpers
+protected
+
+  def set_tenant( tenant )
+    Thread.current[:tenant_id]  = tenant.id
+  end
+  
+  def reset_tenant()
+     Thread.current[:tenant_id]  = 0   # an impossible tenant
+  end
 
 end

@@ -52,6 +52,8 @@ Milia expects a user session, so please set one up
 * The current version of milia requires that devise use a *User* model.
 
 === Milia setup
+
+==== migrations
 *ALL* models require a tenanting field, whether they are to be universal or to
 be tenanted. So make sure the following is added to each migration
 
@@ -78,6 +80,7 @@ Also create a tenants_users join table:
     end
   end
 
+==== application controller
 add the following line AFTER the devise-required filter for authentications:
 
 <i>app/controllers/application_controller.rb</i>
@@ -90,6 +93,7 @@ catch any exceptions with the following (be sure to also add the designated meth
   rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
   rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
 
+==== routes
 Add the following line into the devise_for :users block
 
 <i>config/routes.rb</i>
@@ -126,7 +130,12 @@ Only designate one model in this manner.
   end  # class Tenant
 
 === Designate universal models
-Add the following acts_as_universal to *ALL* models which are to be universal:
+Add the following acts_as_universal to *ALL* models which are to be universal and
+remove any superfluous
+  
+  belongs_to  :tenant
+  
+which the generator might have generated ( acts_as_tenant will specify that ).
 
 <i>app/models/eula.rb</i>
 
@@ -136,10 +145,13 @@ Add the following acts_as_universal to *ALL* models which are to be universal:
   
   end  # class Eula
 
-Note that the tenant_id of a universal model will always be forced to nil.
-
 === Designate tenanted models
-Add the following acts_as_tenant to *ALL* models which are to be tenanted:
+Add the following acts_as_tenant to *ALL* models which are to be tenanted and
+remove any superfluous
+  
+  belongs_to  :tenant
+  
+which the generator might have generated ( acts_as_tenant will specify that ).
 
 <i>app/models/post.rb</i>
 
@@ -149,8 +161,6 @@ Add the following acts_as_tenant to *ALL* models which are to be tenanted:
   
   end  # class Post
 
-Note that the tenant_id of a tenanted model must always match the current 
-valid tenant.
 
 === Exceptions raised
 
@@ -199,7 +209,8 @@ to put:
 * Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes.
 * Milia uses Thread.current[:tenant_id] to hold the current tenant for the existing Action request in the application.
 * SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
-
+* The tenant_id of a universal model will always be forced to nil.
+* The tenant_id of a tenanted model will be set to the current_tenant of the current_user upon creation.
 
 
 == Contributing to milia

@@ -1,0 +1,61 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+post_mangoland_deshawn_01:
+  tenant: mangoland
+  user: deshawn
+  content: wild blue 1
+
+post_limesublime_jemell_02:
+  tenant: limesublime
+  user: jemell
+  content: passion pink 1
+
+post_islesmile_jermaine_03:
+  tenant: islesmile
+  user: jermaine
+  content: peanut clusters 1
+
+post_mangoland_deshawn_04:
+  tenant: mangoland
+  user: deshawn
+  content: wild blue 2
+
+post_limesublime_jemell_05:
+  tenant: limesublime
+  user: jemell
+  content: passion pink 2
+
+post_islesmile_jermaine_06:
+  tenant: islesmile
+  user: jermaine
+  content: peanut clusters 2
+
+post_mangoland_jabari_11:
+  tenant: mangoland
+  user: jabari
+  content: wild blue 1
+
+post_limesublime_kwashaun_12:
+  tenant: limesublime
+  user: kwashaun
+  content: passion pink 1
+
+post_islesmile_musa_13:
+  tenant: islesmile
+  user: musa
+  content: peanut clusters 1
+
+post_mangoland_nigel_14:
+  tenant: mangoland
+  user: nigel
+  content: wild blue 2
+
+post_limesublime_kwashaun_15:
+  tenant: limesublime
+  user: kwashaun
+  content: passion pink 2
+
+post_islesmile_nigel_16:
+  tenant: islesmile
+  user: nigel
+  content: peanut clusters 2

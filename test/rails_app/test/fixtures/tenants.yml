@@ -1,2 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
+mangoland:
+  users: deshawn, jabari, nigel
+  
+limesublime:
+  users: jemell, kwashaun
+  
+islesmile:
+  users: jermaine, musa, nigel
+  
