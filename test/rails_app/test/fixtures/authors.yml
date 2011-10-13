@@ -1,0 +1,67 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+deshawn:
+  tenant: mangoland
+  user: deshawn
+  name: deshawn
+
+jabari:
+  tenant: mangoland
+  user: jabari
+  name: jabari
+
+nigel_mangoland:
+  tenant: mangoland
+  user: nigel
+  name: nigel
+
+jemell:
+  tenant: limesublime
+  user: jemell
+  name: jemell
+
+kwashaun:
+  tenant: limesublime
+  user: kwashaun
+  name: kwashaun
+
+musa:
+  tenant: islesmile
+  user: musa
+  name: musa
+
+nigel_islesmile:
+  tenant: islesmile
+  user: nigel
+  name: nigel
+
+jermaine:
+  tenant: islesmile
+  user: jermaine
+  name: jermaine
+
+kissamu:
+  tenant: mangoland
+  name: kissamu
+
+yona:
+  tenant: mangoland
+  name: yona
+  
+brendon:
+  tenant: limesublime
+  name: brendon
+  
+terell:
+  tenant: islesmile
+  name: terell
+  
+treven:
+  tenant: limesublime
+  name: treven
+  
+tyrese:
+  tenant: islesmile
+  name: tyrese
+  
+  

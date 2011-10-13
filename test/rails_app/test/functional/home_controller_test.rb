@@ -1,5 +1,4 @@
-require 'test_helper'
-require 'unit/helpers/home_helper_test'
+require 'ctlr_test_helper'
 
 class HomeControllerTest < ActionController::TestCase
 

@@ -7,9 +7,9 @@ class ActiveSupport::TestCase
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
+
   fixtures :all
 
-  
 
 protected
 
@@ -21,4 +21,4 @@ protected
      Thread.current[:tenant_id]  = 0   # an impossible tenant
   end
 
-end
+end   #  class ActiveSupport::TestCase

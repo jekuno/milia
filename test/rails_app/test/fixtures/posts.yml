@@ -2,60 +2,108 @@
 
 post_mangoland_deshawn_01:
   tenant: mangoland
-  user: deshawn
+  author: deshawn
+  zine: mangoland_1
   content: wild blue 1
 
 post_limesublime_jemell_02:
   tenant: limesublime
-  user: jemell
+  author: jemell
+  zine: limesublime_1
   content: passion pink 1
 
 post_islesmile_jermaine_03:
   tenant: islesmile
-  user: jermaine
+  author: jermaine
+  zine: islesmile_1
   content: peanut clusters 1
 
 post_mangoland_deshawn_04:
   tenant: mangoland
-  user: deshawn
+  author: deshawn
+  zine: mangoland_1
   content: wild blue 2
 
 post_limesublime_jemell_05:
   tenant: limesublime
-  user: jemell
+  author: jemell
+  zine: limesublime_2
   content: passion pink 2
 
 post_islesmile_jermaine_06:
   tenant: islesmile
-  user: jermaine
+  author: jermaine
+  zine: islesmile_1
   content: peanut clusters 2
 
 post_mangoland_jabari_11:
   tenant: mangoland
-  user: jabari
+  author: jabari
+  zine: mangoland_1
   content: wild blue 1
 
 post_limesublime_kwashaun_12:
   tenant: limesublime
-  user: kwashaun
+  author: kwashaun
+  zine: limesublime_2
   content: passion pink 1
 
 post_islesmile_musa_13:
   tenant: islesmile
-  user: musa
+  author: musa
+  zine: islesmile_1
   content: peanut clusters 1
 
 post_mangoland_nigel_14:
   tenant: mangoland
-  user: nigel
+  author: nigel
+  zine: mangoland_1
   content: wild blue 2
 
 post_limesublime_kwashaun_15:
   tenant: limesublime
-  user: kwashaun
+  author: kwashaun
+  zine: limesublime_1
   content: passion pink 2
 
 post_islesmile_nigel_16:
   tenant: islesmile
-  user: nigel
+  author: nigel
+  zine: islesmile_1
   content: peanut clusters 2
+
+post_mangoland_kissamu:
+  tenant: mangoland
+  author: kissamu
+  zine: mangoland_1
+  content: duck walk 1
+
+post_mangoland_yona:
+  tenant: mangoland
+  author: yona
+  zine: mangoland_2
+  content: zebra zip 1
+  
+post_limesublime_brendon:
+  tenant: limesublime
+  author: brendon
+  zine: limesublime_2
+  content: goose step 1
+  
+post_islesmile_terell:
+  tenant: islesmile
+  author: terell
+  zine: islesmile_2
+  content: horse trot 1
+  
+post_limesublime_treven:
+  tenant: limesublime
+  author: treven
+  zine: limesublime_2
+  content: dog shake 1
+  
+post_islesmile_tyrese:
+  tenant: islesmile
+  author: tyrese
+  zine: islesmile_1
+  content: lion yawn 1
