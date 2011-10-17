@@ -37,6 +37,8 @@ gem 'jquery-rails'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :test do
+  gem "factory_girl_rails", "~> 1.2"
+  gem "shoulda", ">= 0"
   # Pretty printed test output
   gem 'turn', :require => false
 end
