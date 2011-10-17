@@ -15,6 +15,5 @@ group :development, :test do
   gem "jeweler", "~> 1.6.4"
   gem "rcov", ">= 0"
   gem 'rdoc'
-  gem  'test-unit'
   gem 'turn', :require => false
 end
