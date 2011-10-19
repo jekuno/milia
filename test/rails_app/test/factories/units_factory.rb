@@ -7,7 +7,15 @@ FactoryGirl.define do
       return USERNAMES[ (n % USERNAMES.size) ] + n.to_s
     end
     
-  end
+    def current_tenant=(new_tenant)
+      @current_tenant = new_tenant
+    end
+    
+    def current_tenant()
+      return @current_tenant
+    end
+    
+  end  # anon class extensions
   
   factory :tenant do |f|
     f.tenant_id   nil
@@ -21,13 +29,22 @@ FactoryGirl.define do
   end  # user
   
   factory :author do |f|
+    f.tenant_id  current_tenant
     f.sequence( :name ) { |n| "#{pick_name(n)}@example.com" }
     f.association :user
   end   # :author
   
   factory :calendar do |f|
-    
+    f.tenant_id  current_tenant
+    f.association :team
+    f.cal_start   Time.now.at_beginning_of_month 
+    f.cal_end     Time.now.at_end_of_month
   end   # calendar
   
+  factory :team do |f|
+    f.tenant_id  current_tenant
+    f.sequence( :name ) { |n| "team_#{n}" }
+  end  # team
   
-end
+  
+end  # FactoryGirl.define
