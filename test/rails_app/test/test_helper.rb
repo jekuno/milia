@@ -15,6 +15,7 @@ class ActiveSupport::TestCase
 
   # fixtures :all
   class << self
+    
     def set_tenant( tenant )
       Thread.current[:tenant_id]  = tenant.id
     end
@@ -22,7 +23,13 @@ class ActiveSupport::TestCase
     def reset_tenant()
        Thread.current[:tenant_id]  = 0   # an impossible tenant
     end
-  end
+    
+    def current_tenant()
+      return Thread.current[:tenant_id]
+    end
+    
+    
+  end  #  anon class
 
 protected
 
