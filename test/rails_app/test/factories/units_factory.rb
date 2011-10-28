@@ -1,27 +1,34 @@
-  class << self
-    USERNAMES = %w(demarcus deshaun jemell jermaine jabari kwashaun musa nigel kissamu yona brenden terell treven tyrese adonys)
-
-#    def pick_name(n)
-#      return USERNAMES[ (n % USERNAMES.size) ] + n.to_s
-#    end
+FactoryGirl.define do |binding| 
+  class << binding
     
     def current_tenant()
       return Thread.current[:tenant_id]
     end
-    
+
+    def set_tenant( tenant_id )
+      Thread.current[:tenant_id] = tenant_id
+    end
     
   end  # anon class extensions
 
-FactoryGirl.define do
-  
-  
   factory :tenant do |f|
     f.tenant_id   nil
   end
   
   factory :user do |f|
+
+    class << f
+
+      USERNAMES = %w(demarcus deshaun jemell jermaine jabari kwashaun musa nigel kissamu yona brenden terell treven tyrese adonys)
+  
+      def pick_name(n)
+        return USERNAMES[ (n % USERNAMES.size) ] + n.to_s
+      end
+
+    end  # anon class extensions
+
     f.tenant_id   nil
-    f.sequence( :email ) { |n| "bob#{n}@example.com" }
+    f.sequence( :email ) { |n| "#{ f.pick_name(n) }@example.com" }
     f.password  'MonkeyMocha'
     f.password_confirmation { |u| u.password }
   end  # user
