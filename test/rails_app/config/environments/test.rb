@@ -21,6 +21,14 @@ RailsApp::Application.configure do
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = false
 
+  # Print deprecation notices to the Rails logger
+  config.active_support.deprecation = :log
+
+#  config.logger = Logger.new(STDOUT)
+  config.log_level = :debug
+  config.assets.logger = nil
+#  config.active_record.logger = Logger.new(STDOUT)
+
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
 
