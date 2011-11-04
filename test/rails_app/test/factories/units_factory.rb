@@ -5,6 +5,7 @@ FactoryGirl.define do |binding|
 # #############################################################################
   class << binding
     
+    # current_tenant -- create or work within a default tenant
     def current_tenant()
       @current_tenant ||= Factory(:tenant)
       Thread.current[:tenant_id] = @current_tenant.id
@@ -12,8 +13,20 @@ FactoryGirl.define do |binding|
 
     USERNAMES = %w(demarcus deshaun jemell jermaine jabari kwashaun musa nigel kissamu yona brenden terell treven tyrese adonys)
 
-    def pick_name(n)
-      return USERNAMES[ (n % USERNAMES.size) ] + n.to_s
+    # pick_name -- construct a unique user name based on sequence & world
+    def pick_name(n,w)
+      return USERNAMES[ (n % USERNAMES.size) ] + n.to_s + "_w#{w.to_s}"
+    end
+    
+    # new_tenant -- switch over to a new tenant to be the default tenant
+    def new_tenant()
+      @current_tenant = Factory(:tenant)
+      Thread.current[:tenant_id] = @current_tenant.id
+    end
+    
+    # my_tenant -- returns the current tenant
+    def my_tenant
+      @current_tenant.id
     end
 
   end  # anon class extensions
@@ -26,16 +39,17 @@ FactoryGirl.define do |binding|
   end
   
   factory :user do |f|
+    w = binding.current_tenant    # establish a current tenant for this duration
     f.tenant_id   nil
-    f.sequence( :email ) { |n| "#{binding.pick_name(n)}@example.com" }
+    f.sequence( :email ) { |n| "#{binding.pick_name(n,w)}@example.com" }
     f.password  'MonkeyMocha'
     f.password_confirmation { |u| u.password }
-    binding.current_tenant    # establish a current tenant for this duration
   end  # user
   
   factory :author do |f|
-    f.tenant_id  binding.current_tenant
-    f.sequence( :name ) { |n| "#{binding.pick_name(n)}@example.com" }
+    w = binding.current_tenant
+    f.tenant_id  w
+    f.sequence( :name ) { |n| "#{binding.pick_name(n,w)}@example.com" }
     f.association :user
   end   # :author
   

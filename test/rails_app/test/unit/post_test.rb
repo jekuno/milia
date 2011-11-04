@@ -8,7 +8,6 @@ class PostTest < ActiveSupport::TestCase
    end
   
    test "should get all posts within mangoland" do
-     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> output <<<<<"
      set_tenant( tenants(:mangoland) )
      assert_equal 6, Post.count
    end
