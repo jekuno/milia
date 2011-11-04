@@ -49,6 +49,7 @@ FactoryGirl.define do |binding|
   factory :team do |f|
     f.tenant_id  binding.current_tenant
     f.sequence( :name ) { |n| "team_#{n}" }
+    f.after_create {|team| f.team_assets = 3.times{ Factory(:team_asset, :team => team) } }
   end  # team
   
   factory :team_asset do |f|
@@ -57,5 +58,16 @@ FactoryGirl.define do |binding|
     f.association :author
   end
   
+  factory :zine do |f|
+    f.tenant_id   binding.current_tenant
+    f.association :calendar
+  end
   
+  
+  factory :post do |f|
+    f.tenant_id   binding.current_tenant
+    f.association :author
+    f.association :zine
+  end
+
 end  # FactoryGirl.define

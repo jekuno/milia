@@ -20,6 +20,10 @@ class TeamTest < ActiveSupport::TestCase
 
     should have_many( :team_assets )
     should have_many( :team_members ).through( :team_assets )
+    
+    should 'ensure team asset creation' do
+      assert  @team.team_assets.size > 1
+    end
   
   end   # context team
 
