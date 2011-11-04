@@ -7,8 +7,12 @@ FactoryGirl.define do |binding|
     
     # current_tenant -- create or work within a default tenant
     def current_tenant()
-      @current_tenant ||= Factory(:tenant)
-      Thread.current[:tenant_id] = @current_tenant.id
+      Thread.current[:tenant_id] ||= Factory(:tenant).id
+    end
+    
+    # new_tenant -- switch over to a new tenant to be the default tenant
+    def new_tenant()
+      Thread.current[:tenant_id] = Factory(:tenant).id
     end
 
     USERNAMES = %w(demarcus deshaun jemell jermaine jabari kwashaun musa nigel kissamu yona brenden terell treven tyrese adonys)
@@ -18,17 +22,6 @@ FactoryGirl.define do |binding|
       return USERNAMES[ (n % USERNAMES.size) ] + n.to_s + "_w#{w.to_s}"
     end
     
-    # new_tenant -- switch over to a new tenant to be the default tenant
-    def new_tenant()
-      @current_tenant = Factory(:tenant)
-      Thread.current[:tenant_id] = @current_tenant.id
-    end
-    
-    # my_tenant -- returns the current tenant
-    def my_tenant
-      @current_tenant.id
-    end
-
   end  # anon class extensions
 # #############################################################################
 # #############################################################################
