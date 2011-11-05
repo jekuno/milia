@@ -4,8 +4,8 @@ require 'rails/test_help'
 
   # Shoulda looks for RAILS_ROOT before loading shoulda/rails, and Rails 3.1
   # doesn't have that anymore.
+  
 require 'shoulda/rails'
-
 
 class ActiveSupport::TestCase
 
@@ -29,7 +29,9 @@ class ActiveSupport::TestCase
     
   end  #  anon class
   
-  
+# -----------------------------------------------------------------------------
+# setup_world -- sets up test rig for three tenants, multiple users, authors, etc
+# -----------------------------------------------------------------------------  
   def setup_world()
     @Q1 = DateTime.new(2011,1,1,0,0,0)
     @Q1end = DateTime.new(2011,3,31,23,59,59)
@@ -43,6 +45,7 @@ class ActiveSupport::TestCase
     @Q4 = DateTime.new(2011,10,1,0,0,0)
     @Q4end = DateTime.new(2011,12,31,23,59,59)
     
+    @max_worlds = 3
     @max_teams = 2
     @max_users = 3
     
@@ -57,10 +60,10 @@ class ActiveSupport::TestCase
       # we'll name objects for each of three worlds to be created
     @worlds = [ ]
     
-    3.times do |w|
-      teams = []
-      cals  = []
-      zines = []
+    @max_worlds.times do |w|
+      @teams = []
+      @cals  = []
+      @zines = []
       
       world = Factory(:tenant)
       @worlds << world
@@ -68,12 +71,12 @@ class ActiveSupport::TestCase
       
       @max_teams.times do |i|
         team = Factory(:team)
-        teams << team
+        @teams << team
         
         cal = Factory(:calendar, :team => team, :cal_start => @dates[i % @dates.size][0], :cal_end =>  @dates[i % @dates.size][1])
-        cals << cal
+        @cals << cal
         
-        zines << Factory(:zine, :calendar => cal)
+        @zines << Factory(:zine, :calendar => cal)
 
       end # calendars, teams, zines
       
@@ -81,17 +84,24 @@ class ActiveSupport::TestCase
       @max_users.times do |i|
         user = Factory(:user)
         
+        if (w.zero? && i == 2) # special case for multiple tenants
+          @jemell = user    # jemell will be in two different tenants
+          setup_author_posts(@jemell,1,1)
+        end
+        
           # create extra authors w/o associated user
         @max_teams.times do |j|
-          author = Factory(:author, :user => user)
-          Factory(:team_asset, :author => author, :team => teams[i % @max_teams])
-          Factory(:post, :zine => zines[j], :author => author)
+          setup_author_posts(user,i,j)
           user = nil
         end
         
       end   # users, authors, posts
       
-# TODO: pick a couple of users/authors and put in multiple worlds
+# pick a user and put in multiple tenants
+      if (!@jemell.nil? && w == 2)   # last world
+        world.users << @jemell    # add to current tenant users
+        setup_author_posts(@jemell,0,0)
+      end
       
     end  # setup each world
     
@@ -100,15 +110,15 @@ class ActiveSupport::TestCase
     @islesmile   =  @worlds[2]
 
   end  # setup world for testing
+# -----------------------------------------------------------------------------  
+# -----------------------------------------------------------------------------  
 
 protected
+  def setup_author_posts(user,i,j)
+    author = Factory(:author, :user => user)
+    Factory(:team_asset, :author => author, :team => @teams[i % @max_teams])
+    Factory(:post, :zine => @zines[j], :author => author)
+  end
 
-  # def set_tenant( tenant )
-    # Thread.current[:tenant_id]  = tenant.id
-  # end
-#   
-  # def reset_tenant()
-     # Thread.current[:tenant_id]  = 0   # an impossible tenant
-  # end
 
 end   #  class ActiveSupport::TestCase

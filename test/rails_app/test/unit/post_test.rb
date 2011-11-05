@@ -27,7 +27,7 @@ class PostTest < ActiveSupport::TestCase
 # model-specific tests
    should "get all posts within mangoland" do
      ActiveSupport::TestCase.set_tenant( @mangoland )
-     assert_equal (@max_users * @max_teams), Post.count
+     assert_equal (@max_users * @max_teams) + 1, Post.count
    end
   
    should "get only author posts in mangoland" do
@@ -36,12 +36,25 @@ class PostTest < ActiveSupport::TestCase
      assert_equal 1, x.posts.size
    end
 
-  should "not get any non-world user posts in mangoland" do
-     ActiveSupport::TestCase.set_tenant( @mangoland )
-     x = User.all.last
-     assert   x.posts.size.zero?
-  end
+    should "not get any non-world user posts in mangoland" do
+       ActiveSupport::TestCase.set_tenant( @mangoland )
+       x = User.all.last  # should be from islesmile
+       assert   x.posts.size.zero?
+    end
+  
+    should "see jemell in two tenants with dif posts" do
+       ActiveSupport::TestCase.set_tenant( @mangoland )
+       assert_equal   2, @jemell.posts.size
+       ActiveSupport::TestCase.set_tenant( @islesmile )
+       assert_equal   1, @jemell.posts.size
+    end
 
+    should "get all team posts" do
+      ActiveSupport::TestCase.set_tenant( @mangoland )
+      list = Post.get_team_posts( Author.first.teams.first.id ).all
+      assert_equal  3,list.size
+    end
+    
   end   # context post
 
 # _____________________________________________________________________________    
