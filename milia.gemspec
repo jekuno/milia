@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.3.6"
+  s.version = "0.3.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
-  s.date = "2011-10-13"
+  s.date = "2011-11-05"
   s.description = "Transparent Multi-tenanting for hosted Rails 3.1+/Ruby 1.9.2 applications"
   s.email = "dsaronin@gmail.com"
   s.extra_rdoc_files = [
@@ -101,15 +101,8 @@ Gem::Specification.new do |s|
     "test/rails_app/public/favicon.ico",
     "test/rails_app/script/rails",
     "test/rails_app/test/ctlr_test_helper.rb",
+    "test/rails_app/test/factories/units_factory.rb",
     "test/rails_app/test/fixtures/.gitkeep",
-    "test/rails_app/test/fixtures/authors.yml",
-    "test/rails_app/test/fixtures/calendars.yml",
-    "test/rails_app/test/fixtures/posts.yml",
-    "test/rails_app/test/fixtures/team_assets.yml",
-    "test/rails_app/test/fixtures/teams.yml",
-    "test/rails_app/test/fixtures/tenants.yml",
-    "test/rails_app/test/fixtures/users.yml",
-    "test/rails_app/test/fixtures/zines.yml",
     "test/rails_app/test/functional/.gitkeep",
     "test/rails_app/test/functional/home_controller_test.rb",
     "test/rails_app/test/integration/.gitkeep",
@@ -126,6 +119,7 @@ Gem::Specification.new do |s|
     "test/rails_app/test/unit/zine_test.rb",
     "test/rails_app/vendor/assets/stylesheets/.gitkeep",
     "test/rails_app/vendor/plugins/.gitkeep",
+    "test/rails_app/vendor/plugins/rails_log_stdout/init.rb",
     "test/test_milia.rb"
   ]
   s.homepage = "http://github.com/dsaronin/milia"
@@ -146,7 +140,6 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
-      s.add_development_dependency(%q<test-unit>, [">= 0"])
       s.add_development_dependency(%q<turn>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 3.1"])
@@ -157,7 +150,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<rdoc>, [">= 0"])
-      s.add_dependency(%q<test-unit>, [">= 0"])
       s.add_dependency(%q<turn>, [">= 0"])
     end
   else
@@ -169,7 +161,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<rdoc>, [">= 0"])
-    s.add_dependency(%q<test-unit>, [">= 0"])
     s.add_dependency(%q<turn>, [">= 0"])
   end
 end
