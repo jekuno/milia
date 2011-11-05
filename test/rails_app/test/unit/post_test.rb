@@ -6,8 +6,8 @@ class PostTest < ActiveSupport::TestCase
   context "a post" do
     
     setup do
-      @user = Factory( :user )  # establishes current_user & tenant
-      @post = Factory( :post )
+      setup_world()
+      @post = Factory( :post )  # stock object for validation testing
     end
 
 # validate multi-tenanting structure
@@ -25,6 +25,22 @@ class PostTest < ActiveSupport::TestCase
     should belong_to( :zine )
 
 # model-specific tests
+   should "get all posts within mangoland" do
+     ActiveSupport::TestCase.set_tenant( @mangoland )
+     assert_equal (@max_users * @max_teams), Post.count
+   end
+  
+   should "get only author posts in mangoland" do
+     ActiveSupport::TestCase.set_tenant( @mangoland )
+     x = Author.all[1]  # pick an author
+     assert_equal 1, x.posts.size
+   end
+
+  should "not get any non-world user posts in mangoland" do
+     ActiveSupport::TestCase.set_tenant( @mangoland )
+     x = User.all.last
+     assert   x.posts.size.zero?
+  end
 
   end   # context post
 

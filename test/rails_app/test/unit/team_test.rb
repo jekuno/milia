@@ -5,8 +5,8 @@ class TeamTest < ActiveSupport::TestCase
   context "a team" do
     
     setup do
-      @user = Factory( :user )  # establishes current_user & tenant
-      @team = Factory( :team )
+      setup_world()
+      @team = Factory( :team )  # stock object for validation testing
     end
 
     should have_db_column(:tenant_id)

@@ -55,18 +55,16 @@ class ActiveSupport::TestCase
     
     
       # we'll name objects for each of three worlds to be created
-    @mangoland   = nil
-    @limesublime = nil
-    @islesmile   = nil
-    @worlds = [ @mangoland, @limesublime, @islesmile ]
+    @worlds = [ ]
     
-    @world.each do |world|
+    3.times do |w|
       teams = []
       cals  = []
       zines = []
       
-      world ||= Factory(:tenant)
-      set_tenant( world )   # set the tenant
+      world = Factory(:tenant)
+      @worlds << world
+      ActiveSupport::TestCase.set_tenant( world )   # set the tenant
       
       @max_teams.times do |i|
         team = Factory(:team)
@@ -96,6 +94,10 @@ class ActiveSupport::TestCase
 # TODO: pick a couple of users/authors and put in multiple worlds
       
     end  # setup each world
+    
+    @mangoland   =  @worlds[0]
+    @limesublime =  @worlds[1]
+    @islesmile   =  @worlds[2]
 
   end  # setup world for testing
 

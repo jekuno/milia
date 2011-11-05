@@ -5,6 +5,7 @@ class UserTest < ActiveSupport::TestCase
   context "a user" do
     
     setup do
+      setup_world()
       @user = Factory( :user )
     end
 

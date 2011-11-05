@@ -5,8 +5,8 @@ class ZineTest < ActiveSupport::TestCase
   context "a zine" do
     
     setup do
-      @user = Factory( :user )  # establishes current_user & tenant
-      @zine = Factory( :zine )
+      setup_world()
+      @zine = Factory( :zine )  # stock object for validation testing
     end
 
 # validate multi-tenanting structure

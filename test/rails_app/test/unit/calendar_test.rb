@@ -5,8 +5,8 @@ class CalendarTest < ActiveSupport::TestCase
   context "a calendar" do
     
     setup do
-      @user = Factory( :user )  # establishes current_user & tenant
-      @calendar = Factory( :calendar )
+      setup_world()
+      @calendar = Factory( :calendar )  # stock object for validation testing
     end
 
 # validate multi-tenanting structure

@@ -5,8 +5,8 @@ class AuthorTest < ActiveSupport::TestCase
   context "an author" do
     
     setup do
-      @user = Factory( :user )  # establishes current_user & tenant
-      @author = Factory( :author, :user => @user )
+      setup_world()
+      @author = Factory( :author )  # stock object for validation testing
     end
 
 # validate multi-tenanting structure
