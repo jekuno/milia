@@ -1,5 +1,7 @@
 FactoryGirl.define do |binding|
   
+  Thread.current[:tenant_id] = nil  # reset at start
+  
 # #############################################################################
 # ************* HELPER METHODS FOR THIS FACTORY *******************************
 # #############################################################################
@@ -70,9 +72,11 @@ FactoryGirl.define do |binding|
     f.association :calendar
   end
   
+  CONTENT = %w(wild_blue passion_pink mellow_yellow)
   
   factory :post do |f|
     f.tenant_id   binding.current_tenant
+    f.sequence( :content ) {|n| CONTENT[n % 3] + n.to_s }
     f.association :author
     f.association :zine
   end
