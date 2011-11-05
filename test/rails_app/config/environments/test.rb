@@ -27,7 +27,7 @@ RailsApp::Application.configure do
 #  config.logger = Logger.new(STDOUT)
   config.log_level = :debug
   config.assets.logger = nil
-#  config.active_record.logger = Logger.new(STDOUT)
+  config.active_record.logger = Logger.new(STDOUT)
 
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false

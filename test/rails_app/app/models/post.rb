@@ -6,14 +6,10 @@ class Post < ActiveRecord::Base
 
 
   def self.get_team_posts( team_id )
-    Post.joins( {:zine => :calendar}, :author).where( ["calendars.team_id = ?", team_id] ).order("authors.name")
+    Post.joins( {:zine => :calendar}, :author)\
+        .where( ["calendars.team_id = ?", team_id] )\
+        .where( where_restrict_tenant(Zine, Calendar, Author) )\
+        .order("authors.name")
   end
-
-    # Post.joins(", #{Calendar.table_name()} AS c, #{Zine.table_name()} AS z," + 
-                # " #{Author.table_name()} AS a")\
-        # .where( "#{team_id} = c.team_id AND c.id = z.calendar_id " +
-                # " AND #{Post.table_name}.zine_id = z.id AND #{Post.table_name}.author_id = a.id")\
-        # .order("a.name")    
-
 
 end

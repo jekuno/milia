@@ -110,6 +110,25 @@ module Milia
         end # before_destroy do
         
   end
+
+# ------------------------------------------------------------------------
+# where_restrict_tenant -- gens tenant restrictive where clause for each klass
+# NOTE: subordinate join tables will not get the default scope by Rails
+# theoretically, the default scope on the master table alone should be sufficient
+# in restricting answers to the current_tenant alone .. HOWEVER, it doesn't feel
+# right. adding an additional .where( where_restrict_tenants(klass1, klass2,...))
+# for each of the subordinate models in the join seems like a nice safety issue.
+# ------------------------------------------------------------------------
+  def where_restrict_tenant(*args)
+    args.map{|klass| "#{klass.table_name}.tenant_id = #{Thread.current[:tenant_id]}"}.join(" AND ")
+  end
+  
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 

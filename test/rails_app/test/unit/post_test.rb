@@ -49,7 +49,7 @@ class PostTest < ActiveSupport::TestCase
        assert_equal   1, @jemell.posts.size
     end
 
-    should "get all team posts" do
+    should "zoom get all team posts" do
       ActiveSupport::TestCase.set_tenant( @mangoland )
       list = Post.get_team_posts( Author.first.teams.first.id ).all
       assert_equal  3,list.size
