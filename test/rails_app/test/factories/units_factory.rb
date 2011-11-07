@@ -76,7 +76,7 @@ FactoryGirl.define do |binding|
   
   factory :post do |f|
     f.tenant_id   binding.current_tenant
-    f.sequence( :content ) {|n| CONTENT[n % 3] + n.to_s }
+    f.sequence( :content ) {|n| CONTENT[n % 3] + "_#{n}" }
     f.association :author
     f.association :zine
   end

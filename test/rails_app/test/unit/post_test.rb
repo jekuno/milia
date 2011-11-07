@@ -32,7 +32,8 @@ class PostTest < ActiveSupport::TestCase
   
    should "get only author posts in mangoland" do
      ActiveSupport::TestCase.set_tenant( @mangoland )
-     x = Author.all[1]  # pick an author
+     x = Author.all.detect{|a| !a.user.nil? }  # pick an author
+     assert x
      assert_equal 1, x.posts.size
    end
 
@@ -43,10 +44,13 @@ class PostTest < ActiveSupport::TestCase
     end
   
     should "see jemell in two tenants with dif posts" do
-       ActiveSupport::TestCase.set_tenant( @mangoland )
-       assert_equal   2, @jemell.posts.size
        ActiveSupport::TestCase.set_tenant( @islesmile )
-       assert_equal   1, @jemell.posts.size
+       assert_equal   1, @target.posts.size
+       assert_equal   'mellow_yellow', @target.posts.first.content.sub(/_\d+/,"")
+
+       ActiveSupport::TestCase.set_tenant( @mangoland )
+       assert_equal   2, @target.posts.size
+       assert_equal   %w(mellow_yellow wild_blue), @target.posts.map{|p| p.content.sub(/_\d+/,"") }.sort
     end
 
     should "zoom get all team posts" do
@@ -54,6 +58,19 @@ class PostTest < ActiveSupport::TestCase
       list = Post.get_team_posts( Author.first.teams.first.id ).all
       assert_equal  3,list.size
     end
+    
+    should "exception if tenant not set up yet" do
+      ActiveSupport::TestCase.void_tenant
+      assert_raise(ActiveRecord::RecordNotFound,"should RecordNotFound if world incorrect"){Post.find( @post.id )}
+    end    
+    
+    should "exception if tenant different" do
+      ActiveSupport::TestCase.set_tenant( @mangoland )
+      assert_raise(ActiveRecord::RecordNotFound,"should RecordNotFound if world incorrect"){Post.find( @post.id )}
+    end    
+    
+    
+    
     
   end   # context post
 

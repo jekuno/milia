@@ -85,8 +85,8 @@ class ActiveSupport::TestCase
         user = Factory(:user)
         
         if (w.zero? && i == 2) # special case for multiple tenants
-          @jemell = user    # jemell will be in two different tenants
-          setup_author_posts(@jemell,1,1)
+          @target = user    # jemell will be in two different tenants
+          setup_author_posts(@target,1,1)
         end
         
           # create extra authors w/o associated user
@@ -98,9 +98,9 @@ class ActiveSupport::TestCase
       end   # users, authors, posts
       
 # pick a user and put in multiple tenants
-      if (!@jemell.nil? && w == 2)   # last world
-        world.users << @jemell    # add to current tenant users
-        setup_author_posts(@jemell,0,0)
+      if (!@target.nil? && w == 2)   # last world
+        world.users << @target    # add to current tenant users
+        setup_author_posts(@target,0,0)
       end
       
     end  # setup each world
