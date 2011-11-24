@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.3.7"
+  s.version = "0.3.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
-  s.date = "2011-11-05"
+  s.date = "2011-11-24"
   s.description = "Transparent Multi-tenanting for hosted Rails 3.1+/Ruby 1.9.2 applications"
   s.email = "dsaronin@gmail.com"
   s.extra_rdoc_files = [
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
     "lib/milia/railtie.rb",
     "lib/milia/tasks.rb",
     "milia.gemspec",
+    "pkg/milia-0.3.8.gem",
     "test/helper.rb",
     "test/rails_app/.gitignore",
     "test/rails_app/Gemfile",
