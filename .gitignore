@@ -1,44 +1,86 @@
-# rcov generated
-coverage
-
-# rdoc generated
-rdoc
-
-# bundler
+#####################################################################################
+# Rails
 .bundle
+db/*.sqlite3
+db/*.sqlite3-journal
+log/
+tmp/
+*.log
+tmp/**/*
+.tmp*
 
-# jeweler generated
-pkg
+# Documentation
+doc/api
+doc/app
+.yardoc
+.yardopts
+rdoc/
 
-# Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
-#
-# * Create a file at ~/.gitignore
-# * Include files you want ignored
-# * Run: git config --global core.excludesfile ~/.gitignore
-#
-# After doing this, these files will be ignored in all your git projects,
-# saving you from having to 'pollute' every project you touch with them
-#
-# Not sure what to needs to be ignored for particular editors/OSes? Here's some ideas to get you started. (Remember, remove the leading # of the line)
-#
-# For MacOS:
-#
-#.DS_Store
+# Public Uploads
+public/system/*
+public/themes/*
 
-# For TextMate
-#*.tmproj
-#tmtags
+# Public Cache
+public/javascripts/cache
+public/stylesheets/cache
 
-# For emacs:
-#*~
-#\#*
-#.\#*
+# Vendor Cache
+vendor/cache
 
-# For vim:
-#*.swp
+# Acts as Indexed
+index/**/*
 
-# For redcar:
-#.redcar
+# Refinery Specific
+*.tmproj
+*.autobackupbyrefinery.*
+/refinerycms-*.gem
+.autotest
 
-# For rubinius:
-#*.rbc
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# NetBeans
+nbproject
+
+# Eclipse
+.project
+
+# Redcar
+.redcar
+
+# Rubinius
+*.rbc
+
+# Vim
+*.swp
+*.swo
+*~
+
+# RubyMine
+.idea
+
+# Backup
+*~
+
+# Capybara Bug
+capybara-*html
+
+# sass
+.sass-cache
+.sass-cache/*
+
+#rvm
+.rvmrc
+.rvmrc.*
+
+# other
+.loadpath
+all.js
+all.css
+temp*.txt
+config/database.yml
+*.dump
+.bashrc

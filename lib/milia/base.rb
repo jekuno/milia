@@ -100,17 +100,50 @@ module Milia
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
   def acts_as_universal_and_determines_tenant()
-        has_and_belongs_to_many :users
+    has_and_belongs_to_many :users
 
-        acts_as_universal()
-        
-        before_destroy do |old_tenant|
-          old_tenant.users.clear  # remove all users from this tenant
-          true
-        end # before_destroy do
-        
+    acts_as_universal()
+    
+    before_destroy do |old_tenant|
+      old_tenant.users.clear  # remove all users from this tenant
+      true
+    end # before_destroy do
   end
 
+# ------------------------------------------------------------------------
+# current_tenant -- returns tenant obj for current tenant
+# ------------------------------------------------------------------------
+  def current_tenant()
+    return Tenant.find( Thread.current[:tenant_id] )
+  end
+    
+# ------------------------------------------------------------------------
+# current_tenant_id -- returns tenant_id for current tenant
+# ------------------------------------------------------------------------
+  def current_tenant_id()
+    return Thread.current[:tenant_id]
+  end
+  
+# ------------------------------------------------------------------------
+# set_current_tenant -- model-level ability to set the current tenant
+# NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
+# the models ... it's only useful and safe WHEN performed at the start
+# of a background job (DelayedJob#perform)
+# ------------------------------------------------------------------------
+  def set_current_tenant( tenant )
+      # able to handle tenant obj or tenant_id
+    case tenant
+      when Tenant then tenant_id = tenant.id
+      when Integer then tenant_id = tenant
+      else
+        raise ArgumentError, "invalid tenant object or id"
+    end  # case
+    
+    Thread.current[:tenant_id] = tenant_id
+  end
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+ 
 # ------------------------------------------------------------------------
 # where_restrict_tenant -- gens tenant restrictive where clause for each klass
 # NOTE: subordinate join tables will not get the default scope by Rails

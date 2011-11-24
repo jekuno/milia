@@ -8,6 +8,8 @@ module Milia
 # ------------------------------------------------------------------------------
 # create -- intercept the POST create action upon new sign-up
 # new tenant account is vetted, then created, then proceed with devise create user
+# CALLBACK: Tenant.create_new_tenant  -- prior to completing user account
+# CALLBACK: Tenant.tenant_signup      -- after completing user account
 # ------------------------------------------------------------------------------
     def create
       
@@ -18,6 +20,13 @@ module Milia
         
         initiate_tenant( @tenant )    # first time stuff for new tenant
         super   # do the rest of the user account creation
+        
+        if user_signed_in?
+          Tenant.tenant_signup(current_user,@tenant,params[:coupon])
+        else
+          puts ">>>>>>>>>>>>> [milia create] false assumption that user signed in upon new registrations <<<<<<<<<<<<"
+          raise RuntimeError, "Milia false assumption in reg_ctlr#create"
+        end
       
       else
         @user = User.new(params[:user])
