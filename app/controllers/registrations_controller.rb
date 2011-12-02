@@ -19,14 +19,11 @@ module Milia
       if @tenant.errors.empty?   # tenant created
         
         initiate_tenant( @tenant )    # first time stuff for new tenant
-        super   # do the rest of the user account creation
+        super   # devise resource(user) creation; sets resource
+
+        puts "************* resource is: #{resource.inspect} ***************"
         
-        if user_signed_in?
-          Tenant.tenant_signup(current_user,@tenant,params[:coupon])
-        else
-          puts ">>>>>>>>>>>>> [milia create] false assumption that user signed in upon new registrations <<<<<<<<<<<<"
-          raise RuntimeError, "Milia false assumption in reg_ctlr#create"
-        end
+        Tenant.tenant_signup(resource, @tenant,params[:coupon])
       
       else
         @user = User.new(params[:user])
