@@ -21,8 +21,6 @@ module Milia
         initiate_tenant( @tenant )    # first time stuff for new tenant
         super   # devise resource(user) creation; sets resource
 
-        puts "************* resource is: #{resource.inspect} ***************"
-        
         Tenant.tenant_signup(resource, @tenant,params[:coupon])
       
       else
