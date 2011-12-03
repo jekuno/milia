@@ -21,7 +21,7 @@ module Milia
         default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
 
       # ..........................callback enforcers............................
-        before_validation_on_create do |obj|   # force tenant_id to be correct for current_user
+        before_validation(:on => :create) do |obj|   # force tenant_id to be correct for current_user
           obj.tenant_id = Thread.current[:tenant_id]
           true  #  ok to proceed
         end
