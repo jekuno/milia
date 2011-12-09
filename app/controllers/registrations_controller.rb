@@ -15,19 +15,27 @@ module Milia
       
       sign_out_session!
 
-      @tenant = Tenant.create_new_tenant(params)
-      if @tenant.errors.empty?   # tenant created
-        
-        initiate_tenant( @tenant )    # first time stuff for new tenant
-        super   # devise resource(user) creation; sets resource
+      if verify_recaptcha
 
-        Tenant.tenant_signup(resource, @tenant,params[:coupon])
-      
+        @tenant = Tenant.create_new_tenant(params)
+        if @tenant.errors.empty?   # tenant created
+          
+          initiate_tenant( @tenant )    # first time stuff for new tenant
+          super   # devise resource(user) creation; sets resource
+
+          Tenant.tenant_signup(resource, @tenant,params[:coupon])
+        
+        else
+          @user = User.new(params[:user])
+          render :action => 'new'
+        end
+            
       else
+        flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
         @user = User.new(params[:user])
         render :action => 'new'
       end
-            
+
     end   # def create
 
 # ------------------------------------------------------------------------------
