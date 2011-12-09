@@ -15,7 +15,7 @@ module Milia
       
       sign_out_session!
 
-      if verify_recaptcha
+      # if verify_recaptcha  # ?? does this need: :model => resource ??
 
         @tenant = Tenant.create_new_tenant(params)
         if @tenant.errors.empty?   # tenant created
@@ -30,11 +30,11 @@ module Milia
           render :action => 'new'
         end
             
-      else
-        flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
-        @user = User.new(params[:user])
-        render :action => 'new'
-      end
+      # else
+        # flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
+        # @user = User.new(params[:user])
+        # render :action => 'new'
+      # end
 
     end   # def create
 
