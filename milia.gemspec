@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.3.14"
+  s.version = "0.3.15"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
@@ -34,12 +34,6 @@ Gem::Specification.new do |s|
     "lib/milia/railtie.rb",
     "lib/milia/tasks.rb",
     "milia.gemspec",
-    "pkg/milia-0.3.10.gem",
-    "pkg/milia-0.3.11.gem",
-    "pkg/milia-0.3.12.gem",
-    "pkg/milia-0.3.13.gem",
-    "pkg/milia-0.3.8.gem",
-    "pkg/milia-0.3.9.gem",
     "test/helper.rb",
     "test/rails_app/.gitignore",
     "test/rails_app/Gemfile",
