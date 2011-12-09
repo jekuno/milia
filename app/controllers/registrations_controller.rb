@@ -23,7 +23,9 @@ module Milia
           initiate_tenant( @tenant )    # first time stuff for new tenant
           super   # devise resource(user) creation; sets resource
 
-          Tenant.tenant_signup(resource, @tenant,params[:coupon])
+          # w/o background task:  Tenant.tenant_signup(resource, @tenant,params[:coupon])
+          
+          StartupJob.queue_startup(@tenant, resource, params[:coupon])
         
         else
           @user = User.new(params[:user])
