@@ -2,6 +2,8 @@ module Milia
 
   class RegistrationsController < Devise::RegistrationsController
 
+  skip_before_filter :authenticate_tenant!
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # TODO: options if using recaptcha
