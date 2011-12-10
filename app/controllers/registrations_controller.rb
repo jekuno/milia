@@ -30,6 +30,8 @@ module Milia
               Tenant.tenant_signup(resource, @tenant, params[:coupon])
             else  # user creation failed; force tenant rollback
               raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
+              prep_signup_view( @tenant, resource )
+              render :new
             end  # if..then..else for valid user creation
 
           else
