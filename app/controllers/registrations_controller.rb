@@ -18,29 +18,29 @@ module Milia
 
       # if verify_recaptcha  # ?? does this need: :model => resource ??
 
-        Tenant.transaction  do 
-          @tenant = Tenant.create_new_tenant(params)
-          if @tenant.errors.empty?   # tenant created
-            
-            initiate_tenant( @tenant )    # first time stuff for new tenant
+      Tenant.transaction  do 
+        @tenant = Tenant.create_new_tenant(params)
+        if @tenant.errors.empty?   # tenant created
+          
+          initiate_tenant( @tenant )    # first time stuff for new tenant
 
-            super   # devise resource(user) creation; sets resource
+          super   # devise resource(user) creation; sets resource
 
-            if resource.errors.empty?
-              Tenant.tenant_signup(resource, @tenant, params[:coupon])
-            else  # user creation failed; force tenant rollback
-              raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
-              prep_signup_view( @tenant, resource )
-              render :new
-            end  # if..then..else for valid user creation
-
-          else
-            prep_signup_view( @tenant, params[:user] )
+          if resource.errors.empty?
+            Tenant.tenant_signup(resource, @tenant, params[:coupon])
+          else  # user creation failed; force tenant rollback
+            prep_signup_view( @tenant, resource )
             render :new
-          end # if .. then .. else no tenant errors
+            raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
+          end  # if..then..else for valid user creation
 
-        end  #  wrap tenant/user creation in a transaction
-            
+        else
+          prep_signup_view( @tenant, params[:user] )
+          render :new
+        end # if .. then .. else no tenant errors
+
+      end  #  wrap tenant/user creation in a transaction
+          
       # else
         # flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
         # prep_signup_view( params[:tenant], params[:user] )
