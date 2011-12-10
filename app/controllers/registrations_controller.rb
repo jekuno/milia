@@ -4,7 +4,11 @@ module Milia
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
+# TODO: options if using recaptcha
+# TODO: options if non-standard path for new signups view
+# TODO: options if background task for tenant creation
+# TODO: options if 
+# TODO: options if 
 # ------------------------------------------------------------------------------
 # create -- intercept the POST create action upon new sign-up
 # new tenant account is vetted, then created, then proceed with devise create user
@@ -23,19 +27,22 @@ module Milia
           initiate_tenant( @tenant )    # first time stuff for new tenant
           super   # devise resource(user) creation; sets resource
 
-          # w/o background task:  Tenant.tenant_signup(resource, @tenant,params[:coupon])
-          
-          StartupJob.queue_startup(@tenant, resource, params[:coupon])
-        
+          if resource.errors.empty?
+            # w/o background task:  Tenant.tenant_signup(resource, @tenant,params[:coupon])
+            StartupJob.queue_startup(@tenant, resource, params[:coupon])
+          else
+            @tenant.destroy   # remove the newly created tenant item before retrying
+          end
+
         else
           @user = User.new(params[:user])
-          render :action => 'new'
+          render 'home/new'
         end
             
       # else
         # flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
         # @user = User.new(params[:user])
-        # render :action => 'new'
+        # render 'home/new'
       # end
 
     end   # def create
