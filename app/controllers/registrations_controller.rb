@@ -14,40 +14,40 @@ module Milia
 # CALLBACK: Tenant.create_new_tenant  -- prior to completing user account
 # CALLBACK: Tenant.tenant_signup      -- after completing user account
 # ------------------------------------------------------------------------------
-    def create
-      
-      sign_out_session!
+def create
+  
+  sign_out_session!
 
-      # if verify_recaptcha  # ?? does this need: :model => resource ??
+  if verify_recaptcha  # ?? does this need: :model => resource ??
 
-      Tenant.transaction  do 
-        @tenant = Tenant.create_new_tenant(params)
-        if @tenant.errors.empty?   # tenant created
-          
-          initiate_tenant( @tenant )    # first time stuff for new tenant
+    Tenant.transaction  do 
+      @tenant = Tenant.create_new_tenant(params)
+      if @tenant.errors.empty?   # tenant created
+        
+        initiate_tenant( @tenant )    # first time stuff for new tenant
 
-          devise_create   # devise resource(user) creation; sets resource
+        devise_create   # devise resource(user) creation; sets resource
 
-          if resource.errors.empty?
-            Tenant.tenant_signup(resource, @tenant, params[:coupon])
-          else  # user creation failed; force tenant rollback
-            raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
-          end  # if..then..else for valid user creation
+        if resource.errors.empty?
+          Tenant.tenant_signup(resource, @tenant, params[:coupon])
+        else  # user creation failed; force tenant rollback
+          raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
+        end  # if..then..else for valid user creation
 
-        else
-          prep_signup_view( @tenant, params[:user] )
-          render :new
-        end # if .. then .. else no tenant errors
+      else
+        prep_signup_view( @tenant, params[:user] , params[:coupon])
+        render :new
+      end # if .. then .. else no tenant errors
 
-      end  #  wrap tenant/user creation in a transaction
-          
-      # else
-        # flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
-        # prep_signup_view( params[:tenant], params[:user] )
-        # render :new
-      # end
+    end  #  wrap tenant/user creation in a transaction
+        
+  else
+    flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
+    prep_signup_view( params[:tenant], params[:user], params[:coupon] )
+    render :new
+  end
 
-    end   # def create
+end   # def create
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ module Milia
 # ------------------------------------------------------------------------------
   def prep_devise_new_view( tenant, resource )
     clean_up_passwords(resource)
-    prep_signup_view( tenant, resource )   # PUNDA special addition
+    prep_signup_view( tenant, resource, params[:coupon] )   # PUNDA special addition
     respond_with_navigational(resource) { render_with_scope :new }
   end
   
