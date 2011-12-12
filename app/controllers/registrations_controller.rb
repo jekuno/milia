@@ -18,7 +18,7 @@ def create
   
   sign_out_session!
 
-  if verify_recaptcha  # ?? does this need: :model => resource ??
+  if verify_recaptcha
 
     Tenant.transaction  do 
       @tenant = Tenant.create_new_tenant(params)
@@ -42,7 +42,7 @@ def create
     end  #  wrap tenant/user creation in a transaction
         
   else
-    flash[:error] = "Recaptcha code error; please re-enter the code and click submit again"
+    flash[:error] = "Recaptcha codes didn't match; please try again"
     prep_signup_view( params[:tenant], params[:user], params[:coupon] )
     render :new
   end
@@ -51,14 +51,15 @@ end   # def create
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+
   private
+
 # ------------------------------------------------------------------------------
 # sign_out_session! -- force the devise session signout
 # ------------------------------------------------------------------------------
-
-    def sign_out_session!()
-      Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name) if user_signed_in?
-    end
+  def sign_out_session!()
+    Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name) if user_signed_in?
+  end
 
 # ------------------------------------------------------------------------------
 # devise_create -- duplicate of Devise::RegistrationsController
