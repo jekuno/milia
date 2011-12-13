@@ -54,6 +54,8 @@ def create
     render :new
   end
 
+  trace_flash
+
 end   # def create
 
 # ------------------------------------------------------------------------------
