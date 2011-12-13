@@ -50,8 +50,6 @@ def create
     render :new
   end
 
-  trace_flash( "milia" )
-
 end   # def create
 
 # ------------------------------------------------------------------------------
