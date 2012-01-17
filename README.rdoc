@@ -1,9 +1,10 @@
-= milia
+# milia
 
 Milia is a multi-tenanting gem for hosted Rails 3.1 applications which use
 devise for user authentication.
 
-== Basic concepts
+## Basic concepts
+
 * should be transparent to the main application code
 * should be symbiotic with user authentication
 * should raise exceptions upon attempted illegal access
@@ -20,15 +21,17 @@ performance hit, was seriously time-consuming to backup and restore, was invasiv
 into the Rails code structure (monkey patching), was complex to implement, and
 couldn't use Rails migration tools as-is.
 
-== Structure
+## Structure
+
 * necessary models: user, tenant
 * necessary migrations: user, tenant, tenants_users (join table)
 
-== Dependency requirements
+## Dependency requirements
+
 * Rails 3.1 or higher
 * Devise 1.4.8 or higher
 
-== Installation
+## Installation
 
 Either install the gem manually:
 
@@ -38,22 +41,25 @@ Or in the Gemfile:
 
   gem 'milia'
   
-== Getting started
+## Getting started
 
-=== Rails setup
+### Rails setup
+
 Milia expects a user session, so please set one up
 
   $ rails g session_migration
       invoke  active_record
       create    db/migrate/20111012060818_add_sessions_table.rb
   
-=== Devise setup
+### Devise setup
+
 * See https://github.com/plataformatec/devise for how to set up devise.
 * The current version of milia requires that devise use a *User* model.
 
-=== Milia setup
+### Milia setup
 
-==== migrations
+#### migrations
+
 *ALL* models require a tenanting field, whether they are to be universal or to
 be tenanted. So make sure the following is added to each migration
 
@@ -80,7 +86,8 @@ Also create a tenants_users join table:
     end
   end
 
-==== application controller
+#### application controller
+
 add the following line AFTER the devise-required filter for authentications:
 
 <i>app/controllers/application_controller.rb</i>
@@ -93,7 +100,8 @@ catch any exceptions with the following (be sure to also add the designated meth
   rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
   rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
 
-==== routes
+#### routes
+
 Add the following line into the devise_for :users block
 
 <i>config/routes.rb</i>
@@ -102,7 +110,8 @@ Add the following line into the devise_for :users block
     post  "users" => "milia/registrations#create"
   end
   
-=== Designate which model determines account
+### Designate which model determines account
+
 Add the following acts_as_... to designate which model will be used as the key
 into tenants_users to find the tenant for a given user. 
 Only designate one model in this manner.
@@ -115,7 +124,8 @@ Only designate one model in this manner.
   
   end  # class User
 
-=== Designate which model determines tenant
+### Designate which model determines tenant
+
 Add the following acts_as_... to designate which model will be used as the
 tenant model. It is this id field which designates the tenant for an entire 
 group of users which exist within a single tenanted domain.
@@ -129,7 +139,8 @@ Only designate one model in this manner.
     
   end  # class Tenant
 
-=== Designate universal models
+### Designate universal models
+
 Add the following acts_as_universal to *ALL* models which are to be universal and
 remove any superfluous
   
@@ -145,7 +156,8 @@ which the generator might have generated ( acts_as_tenant will specify that ).
   
   end  # class Eula
 
-=== Designate tenanted models
+### Designate tenanted models
+
 Add the following acts_as_tenant to *ALL* models which are to be tenanted and
 remove any superfluous
   
@@ -162,12 +174,13 @@ which the generator might have generated ( acts_as_tenant will specify that ).
   end  # class Post
 
 
-=== Exceptions raised
+### Exceptions raised
 
   Milia::Control::InvalidTenantAccess
   Milia::Control::MaxTenantExceeded
 
-=== Tenant pre-processing hooks
+### Tenant pre-processing hooks
+
 Milia expects a tenant pre-processing & setup hook:
 
   Tenant.create_new_tenant(params)   # see sample code below
@@ -182,7 +195,7 @@ immediately after the new tenant has been created).
 
   def self.create_new_tenant(params)
     
-    tenant = Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
+    tenant # Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
 
     if new_signups_not_permitted?(params)
       
@@ -194,7 +207,8 @@ immediately after the new tenant has been created).
     return tenant
   end
 
-=== Alternate use case: user belongs to multiple tenants
+### Alternate use case: user belongs to multiple tenants
+
 Your application might allow a user to belong to multiple tenants. You will need
 to provide some type of mechanism to allow the user to choose which account
 (thus tenant) they wish to access. Once chosen, in your controller, you will need
@@ -205,7 +219,8 @@ to put:
   set_current_tenant( new_tenant_id )
 
 
-== Cautions
+## Cautions
+
 * Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes.
 * Milia uses Thread.current[:tenant_id] to hold the current tenant for the existing Action request in the application.
 * SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
@@ -213,7 +228,7 @@ to put:
 * The tenant_id of a tenanted model will be set to the current_tenant of the current_user upon creation.
 
 
-== Contributing to milia
+## Contributing to milia
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
@@ -223,7 +238,7 @@ to put:
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
-== Copyright
+## Copyright
 
 Copyright (c) 2011 Daudi Amani. See LICENSE.txt for
 further details.
