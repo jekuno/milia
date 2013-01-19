@@ -92,7 +92,7 @@ end   # def create
   def prep_devise_new_view( tenant, resource )
     clean_up_passwords(resource)
     prep_signup_view( tenant, resource, params[:coupon] )   # PUNDA special addition
-    respond_with_navigational(resource) { render_with_scope :new }
+    respond_with_navigational(resource) { render :new }
   end
   
 # ------------------------------------------------------------------------------
