@@ -143,6 +143,42 @@ catch any exceptions with the following (be sure to also add the designated meth
   rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
 ```
 
+You'll need to place prep_signup_view method in application_controller.rb; it sets up any attributes required by your signup form. below is the example from my application.
+
+```ruby
+# ------------------------------------------------------------------------------
+  # klass_option_obj -- returns a (new?) object of a given klass
+  # purpose is to handle the variety of ways to prepare for a view
+  # args:
+  #   klass -- class of object to be returned
+  #   option_obj -- any one of the following
+  #       -- nil -- will return klass.new
+  #       -- object -- will return the object itself
+  #       -- hash   -- will return klass.new( hash ) for parameters
+# ------------------------------------------------------------------------------
+  def klass_option_obj(klass, option_obj)
+    return option_obj if option_obj.instance_of?(klass)
+    option_obj ||= {}  # if nil, makes it empty hash
+    return klass.send( :new, option_obj )
+  end  
+
+# ------------------------------------------------------------------------------
+  # prep_signup_view -- prepares for the signup view
+  # args:
+  #   tenant: either existing tenant obj or params for tenant
+  #   user:   either existing user obj or params for user
+# ------------------------------------------------------------------------------
+  def prep_signup_view(tenant=nil, user=nil, coupon='')
+    @user   = klass_option_obj( User, user )
+    @tenant = klass_option_obj( Tenant, tenant )
+    @coupon = coupon
+    @eula   = Eula.get_latest.first
+ end
+```
+
+My signup form has fields for user's email, organization's name (tenant model), coupon code, and current EULA version.
+
+
 #### routes
 
 Add the following line into the devise_for :users block
