@@ -34,13 +34,13 @@ module Milia
 
       # ..........................callback enforcers............................
         before_update do |obj|   # force tenant_id to be correct for current_user
-          raise ::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
           true  #  ok to proceed
         end
 
       # ..........................callback enforcers............................
         before_destroy do |obj|   # force tenant_id to be correct for current_user
-          raise ::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
           true  #  ok to proceed
         end
 
@@ -58,19 +58,19 @@ module Milia
 
       # ..........................callback enforcers............................
         before_save do |obj|   # force tenant_id to be universal
-          raise ::Control::InvalidTenantAccess unless obj.tenant_id.nil?
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
           true  #  ok to proceed
         end
 
       # ..........................callback enforcers............................
         before_update do |obj|   # force tenant_id to be universal
-          raise ::Control::InvalidTenantAccess unless obj.tenant_id.nil?
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
           true  #  ok to proceed
         end
 
       # ..........................callback enforcers............................
         before_destroy do |obj|   # force tenant_id to be universal
-          raise ::Control::InvalidTenantAccess unless obj.tenant_id.nil?
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
           true  #  ok to proceed
         end
 
