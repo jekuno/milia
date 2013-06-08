@@ -1,7 +1,7 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 3.1 applications which use
-devise for user authentication.
+Milia is a multi-tenanting gem for hosted Rails 3.1 applications which uses
+the devise gem for user authentication.
 
 ## Basic concepts
 
@@ -20,6 +20,14 @@ rows but not an enormous number of schema (tables). Schema-based tenancy took a
 performance hit, was seriously time-consuming to backup and restore, was invasive
 into the Rails code structure (monkey patching), was complex to implement, and
 couldn't use Rails migration tools as-is.
+
+A tenant == an organization; users == members of the organization. 
+Only organizations sign up for new tenants, not members (users).  
+The very first user of an organization, let's call him the Organizer, 
+is the one responsible for initiating the organizational signup.
+The Organizer becomes the first member (user) of the organization (tenant). 
+Thereafter, other members only obtain entry to the organization (tenant) 
+by invitation. New tenants are not created for every new user.
 
 ## Structure
 
@@ -390,8 +398,6 @@ load when I start the console. This does the following:
 change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
 ```
 
-
-
 ## Cautions
 
 * Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes and will invalidate multi-tenanting; so *DO NOT USE default_scope*
@@ -399,6 +405,11 @@ change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
 * SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
 * The tenant_id of a universal model will always be forced to nil.
 * The tenant_id of a tenanted model will be set to the current_tenant of the current_user upon creation.
+
+## Further documentation
+* Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
+at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
+* See the Milia tutorial at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails_3982.html
 
 
 ## Contributing to milia
