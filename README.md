@@ -194,9 +194,7 @@ Add the following line into the devise_for :users block
 <i>config/routes.rb</i>
 
 ```ruby
-  devise_for :users do
-    post  "users" => "milia/registrations#create"
-  end
+  devise_for :users, :controllers => { :registrations => "milia/registrations" }
 ```
   
 ### Designate which model determines account

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.9'
+gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -38,7 +38,9 @@ gem 'jquery-rails'
 
 group :test do
   gem "factory_girl_rails", "~> 1.2"
-  gem "shoulda", ">= 0"
+  gem "shoulda", "3.5.0"
+  gem "shoulda-matchers", "~>2.1.0"
+  gem "shoulda-context", "~>1.1.2"
   # Pretty printed test output
   gem 'turn', :require => false
 end

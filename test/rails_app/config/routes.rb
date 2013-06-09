@@ -2,9 +2,7 @@ RailsApp::Application.routes.draw do
   root :to => "home#index"
   get "home/index"
 
-  devise_for :users do
-    post  "users" => "milia/registrations#create"
-  end
+  devise_for :users , :controllers => { :registrations => "milia/registrations" }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

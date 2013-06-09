@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
     t.integer  "tenant_id"
     t.integer  "user_id"
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "authors", ["tenant_id"], :name => "index_authors_on_tenant_id"
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
     t.integer  "team_id"
     t.datetime "cal_start"
     t.datetime "cal_end"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "calendars", ["team_id"], :name => "index_calendars_on_team_id"
@@ -41,8 +41,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
     t.integer  "author_id"
     t.integer  "zine_id"
     t.string   "content"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "posts", ["author_id"], :name => "index_posts_on_author_id"
@@ -52,8 +52,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
@@ -63,8 +63,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
     t.integer  "tenant_id"
     t.integer  "author_id"
     t.integer  "team_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "team_assets", ["author_id"], :name => "index_team_assets_on_author_id"
@@ -74,16 +74,16 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
   create_table "teams", :force => true do |t|
     t.integer  "tenant_id"
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "teams", ["tenant_id"], :name => "index_teams_on_tenant_id"
 
   create_table "tenants", :force => true do |t|
     t.integer  "tenant_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "tenants_users", :id => false, :force => true do |t|
@@ -95,12 +95,12 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
   add_index "tenants_users", ["user_id"], :name => "index_tenants_users_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -108,10 +108,11 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
     t.string   "authentication_token"
     t.integer  "tenant_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
@@ -122,8 +123,8 @@ ActiveRecord::Schema.define(:version => 20111013053403) do
   create_table "zines", :force => true do |t|
     t.integer  "tenant_id"
     t.integer  "calendar_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "zines", ["calendar_id"], :name => "index_zines_on_calendar_id"
