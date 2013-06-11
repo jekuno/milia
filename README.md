@@ -36,8 +36,8 @@ by invitation. New tenants are not created for every new user.
 
 ## Dependency requirements
 
-* Rails 3.1 or higher
-* Devise 1.4.8 or higher
+* Rails 3.2 or higher
+* Devise 2.1.2 or higher
 
 ## Installation
 
