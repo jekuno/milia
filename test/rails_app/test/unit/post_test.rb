@@ -50,7 +50,9 @@ class PostTest < ActiveSupport::TestCase
 
        ActiveSupport::TestCase.set_tenant( @mangoland )
        assert_equal   2, @target.posts.size
-       assert_equal   %w(mellow_yellow wild_blue), @target.posts.map{|p| p.content.sub(/_\d+/,"") }.sort
+       assert         @target.posts.all?{ |p| 
+          %w(wild_blue passion_pink mellow_yellow).include?( p.content.sub(/_\d+/,"") )
+       }
     end
 
     should "zoom get all team posts" do
