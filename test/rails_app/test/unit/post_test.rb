@@ -46,7 +46,7 @@ class PostTest < ActiveSupport::TestCase
     should "see jemell in two tenants with dif posts" do
        ActiveSupport::TestCase.set_tenant( @islesmile )
        assert_equal   1, @target.posts.size
-       assert_equal   'mellow_yellow', @target.posts.first.content.sub(/_\d+/,"")
+       assert         %w(wild_blue passion_pink mellow_yellow).include?( @target.posts.first.content.sub(/_\d+/,"") )
 
        ActiveSupport::TestCase.set_tenant( @mangoland )
        assert_equal   2, @target.posts.size

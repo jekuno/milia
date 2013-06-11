@@ -28,6 +28,9 @@ module Milia
 
       # ..........................callback enforcers............................
         before_save do |obj|   # force tenant_id to be correct for current_user
+
+          puts "=========== thread:#{Thread.current[:tenant_id]}\tpost:#{@post.tenant_id} *******************************************"
+
           obj.tenant_id = Thread.current[:tenant_id]
           true  #  ok to proceed
         end
@@ -35,6 +38,9 @@ module Milia
       # ..........................callback enforcers............................
         before_update do |obj|   # force tenant_id to be correct for current_user
           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
+
+          puts ">>>>>>>>>>> thread:#{Thread.current[:tenant_id]}\tpost:#{@post.tenant_id} *******************************************"
+
           true  #  ok to proceed
         end
 
