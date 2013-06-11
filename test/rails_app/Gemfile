@@ -45,4 +45,4 @@ group :test do
   gem 'turn', :require => false
 end
 
-gem 'milia', "0.3.35", :path => "../../../milia"
+gem 'milia', :path => "../../../milia"

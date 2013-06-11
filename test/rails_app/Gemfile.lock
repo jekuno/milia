@@ -1,7 +1,7 @@
 PATH
   remote: ../../../milia
   specs:
-    milia (0.3.35)
+    milia (0.3.36)
       devise (= 2.1.2)
       rails (= 3.2.13)
 
@@ -154,7 +154,7 @@ DEPENDENCIES
   factory_girl_rails (~> 1.2)
   foreman
   jquery-rails
-  milia (= 0.3.35)!
+  milia!
   pg
   rails (= 3.2.13)
   rdoc

@@ -14,7 +14,7 @@ class TenantTest < ActiveSupport::TestCase
 
         
     should "exception if tenant is different" do
-      ActiveSupport::TestCase.void_tenant
+      ActiveSupport::TestCase.reset_tenant
       
 puts "*********** thread:#{Thread.current[:tenant_id]}\tpost:#{@post.tenant_id} *******************************************"
 

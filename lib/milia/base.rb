@@ -28,21 +28,18 @@ module Milia
 
       # ..........................callback enforcers............................
         before_save do |obj|   # force tenant_id to be correct for current_user
-
-          puts "=========== thread:#{Thread.current[:tenant_id]}\tpost:#{obj.tenant_id} *******************************************"
-
-          obj.tenant_id = Thread.current[:tenant_id]
+          # raise exception if updates attempted on wrong data
+          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
           true  #  ok to proceed
         end
 
       # ..........................callback enforcers............................
-        before_update do |obj|   # force tenant_id to be correct for current_user
-          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
-
-          puts ">>>>>>>>>>> thread:#{Thread.current[:tenant_id]}\tpost:#{obj.tenant_id} *******************************************"
-
-          true  #  ok to proceed
-        end
+        # no longer needed because before_save invoked prior to before_update
+        #
+#         before_update do |obj|   # force tenant_id to be correct for current_user
+#           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
+#           true  #  ok to proceed
+#         end
 
       # ..........................callback enforcers............................
         before_destroy do |obj|   # force tenant_id to be correct for current_user
@@ -69,10 +66,12 @@ module Milia
         end
 
       # ..........................callback enforcers............................
-        before_update do |obj|   # force tenant_id to be universal
-          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
-          true  #  ok to proceed
-        end
+#         before_update do |obj|   # force tenant_id to be universal
+        # no longer needed because before_save invoked prior to before_update
+        #
+#           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
+#           true  #  ok to proceed
+#         end
 
       # ..........................callback enforcers............................
         before_destroy do |obj|   # force tenant_id to be universal
