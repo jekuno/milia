@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "milia"
-  s.version = "0.3.34"
+  s.version = "0.3.35"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Anderson"]
-  s.date = "2013-01-19"
+  s.date = "2013-06-11"
   s.description = "Transparent Multi-tenanting for hosted Rails 3.1+/Ruby 1.9.2 applications"
   s.email = "dsaronin@gmail.com"
   s.extra_rdoc_files = [
@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
     "test/rails_app/.gitignore",
     "test/rails_app/Gemfile",
     "test/rails_app/Gemfile.lock",
+    "test/rails_app/Gemfile.lock.backup",
     "test/rails_app/Procfile",
     "test/rails_app/README",
     "test/rails_app/Rakefile",
@@ -134,27 +135,27 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rails>, [">= 3.2.9"])
+      s.add_runtime_dependency(%q<rails>, ["= 3.2.13"])
       s.add_runtime_dependency(%q<devise>, ["= 2.1.2"])
       s.add_development_dependency(%q<pg>, [">= 0"])
-      s.add_development_dependency(%q<shoulda>, [">= 0"])
+      s.add_development_dependency(%q<shoulda>, ["= 3.5.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<turn>, [">= 0"])
     else
-      s.add_dependency(%q<rails>, [">= 3.2.9"])
+      s.add_dependency(%q<rails>, ["= 3.2.13"])
       s.add_dependency(%q<devise>, ["= 2.1.2"])
       s.add_dependency(%q<pg>, [">= 0"])
-      s.add_dependency(%q<shoulda>, [">= 0"])
+      s.add_dependency(%q<shoulda>, ["= 3.5.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<turn>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rails>, [">= 3.2.9"])
+    s.add_dependency(%q<rails>, ["= 3.2.13"])
     s.add_dependency(%q<devise>, ["= 2.1.2"])
     s.add_dependency(%q<pg>, [">= 0"])
-    s.add_dependency(%q<shoulda>, [">= 0"])
+    s.add_dependency(%q<shoulda>, ["= 3.5.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
     s.add_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<turn>, [">= 0"])

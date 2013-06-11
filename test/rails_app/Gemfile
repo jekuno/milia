@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.13'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -45,4 +45,4 @@ group :test do
   gem 'turn', :require => false
 end
 
-gem 'milia', :path => "../../../milia"
+gem 'milia', "0.3.35", :path => "../../../milia"
