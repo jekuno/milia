@@ -1,6 +1,6 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 3.1 applications which uses
+Milia is a multi-tenanting gem for hosted Rails 3.2 applications which uses
 the devise gem for user authentication.
 
 ## Basic concepts
@@ -408,6 +408,8 @@ change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
 * Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
 at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
 * See the Milia tutorial at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails_3982.html
+* see code & setup sample in test/railsapp, which is also used to run the tests.
+* see milia wiki on github for a CHANGE HISTORY page.
 
 
 ## Contributing to milia
