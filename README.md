@@ -299,7 +299,7 @@ immediately after the new tenant has been created).
 ```ruby
   def self.create_new_tenant(params)
     
-    tenant # Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
+    tenant = Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
 
     if new_signups_not_permitted?(params)
       
@@ -341,6 +341,77 @@ work in setting things up for a new tenant.
   end
 ```
 
+### tenant migration
+
+Here's a sample migration for the tenant table. Note that *ALL*
+universal tables require a tenant_id field which will always be nil.
+
+<i>app/views/home/new.html.haml</i>
+
+```ruby
+class CreateTenants < ActiveRecord::Migration
+  def change
+    create_table :tenants do |t|
+      t.references :tenant      # tenant to which belongs; nil is UNIVERSAL 
+      t.string  :cname,  :limit => 80, :null => false
+      t.string  :company, :limit => 50
+      t.timestamps
+    end
+      add_index :tenants, :cname
+      add_index :tenants, :company
+  end
+end
+```
+
+### View for Organizer sign ups
+
+This example shows how to display a signup form together with recaptcha and eula display & acceptance.
+The exact nature of eulo is not relevant to milia usage. It also shows usage of a coupon field
+for whatever reason you might need. If you're not familiar with haml, leading spaces are significant
+and are used to indicate logical blocks. Otherwise, it's kinda like erb without all the syntactical cruff.
+Leading "." indicate div class; "#" indicates a div ID.
+
+<i>app/views/home/new.html.haml</i>
+
+```ruby
+.basic-form
+  = error_messages( @user )
+  = form_for(:user, :url => user_registration_path ) do |f|
+    %input{ :name => :eula_id, :value => @eula.id.to_s, :type => :hidden }
+    %fieldset
+      %h3 create a new account for your organization or group
+      
+      = f.label( :email, 'Email*', {:title => "Enter a valid email address for your user ID; this is how your account will be accessed"} )
+      = f.text_field( :email )
+      = fields_for( :tenant ) do |w|
+        = w.label( :company, 'organization*', {:title => "This is a name for your group or organization for the account."} ) 
+        = w.text_field( :company)
+      = label_tag( 'coupon', 'coupon', {:title => "optional promotional code"} )
+      = text_field_tag("coupon", @coupon.to_s, :size => 5 )
+      %br 
+      %p *required; cursor any label for help
+      %br 
+
+      #dynamic_recaptcha
+        :javascript
+          Recaptcha.create(
+          '#{ENV['RECAPTCHA_PUBLIC_KEY']}',
+          document.getElementById('dynamic_recaptcha'),
+          {
+          theme: 'clean',
+          tabindex: 0,
+          callback: Recaptcha.focus_response_field
+          })
+      = submit_tag( 'Sign up', :class => "submit modal-submit", :value => "Create account & accept terms of service" )
+
+    %fieldset
+      = label_tag(:eula,"terms of service*",{:title => "you are agreeing to these terms of service when you sign up"} )
+      = text_area_tag(:eula, @eula.eula_text, :class => "legal", :readonly => true)
+      %br 
+      %p{:style => "display:block;padding: 1.5em 0;"}
+        = @eula.click_msg
+
+```
 
 ### Alternate use case: user belongs to multiple tenants
 
