@@ -106,6 +106,26 @@ Also create a tenants_users join table:
   end
 ```
 
+Here's a sample migration for the tenant table. Note that *ALL*
+universal tables require a tenant_id field which will always be nil.
+
+<i>db/migrate/20111008081620_create_tenants.rb</i>
+
+```ruby
+class CreateTenants < ActiveRecord::Migration
+  def change
+    create_table :tenants do |t|
+      t.references :tenant      # tenant to which belongs; nil is UNIVERSAL 
+      t.string  :cname,  :limit => 80, :null => false
+      t.string  :company, :limit => 50
+      t.timestamps
+    end
+      add_index :tenants, :cname
+      add_index :tenants, :company
+  end
+end
+```
+
 #### application controller
 
 add the following line AFTER the devise-required filter for authentications:
@@ -341,32 +361,12 @@ work in setting things up for a new tenant.
   end
 ```
 
-### tenant migration
-
-Here's a sample migration for the tenant table. Note that *ALL*
-universal tables require a tenant_id field which will always be nil.
-
-<i>app/views/home/new.html.haml</i>
-
-```ruby
-class CreateTenants < ActiveRecord::Migration
-  def change
-    create_table :tenants do |t|
-      t.references :tenant      # tenant to which belongs; nil is UNIVERSAL 
-      t.string  :cname,  :limit => 80, :null => false
-      t.string  :company, :limit => 50
-      t.timestamps
-    end
-      add_index :tenants, :cname
-      add_index :tenants, :company
-  end
-end
-```
-
 ### View for Organizer sign ups
 
 This example shows how to display a signup form together with recaptcha and eula display & acceptance.
-The exact nature of eulo is not relevant to milia usage. It also shows usage of a coupon field
+The exact nature of eula is not relevant to milia usage. 
+You can ignore it, if you wish.
+It also shows usage of an optional coupon field
 for whatever reason you might need. If you're not familiar with haml, leading spaces are significant
 and are used to indicate logical blocks. Otherwise, it's kinda like erb without all the syntactical cruff.
 Leading "." indicate div class; "#" indicates a div ID.
