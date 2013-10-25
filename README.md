@@ -474,6 +474,13 @@ change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
 * SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
 * The tenant_id of a universal model will always be forced to nil.
 * The tenant_id of a tenanted model will be set to the current_tenant of the current_user upon creation.
+* HABTM (has_and_belongs_to_many) associations don't have models; they shouldn't have id fields
+  (setup as below) nor any field other than the joined references; they don't have a tenant_id field;
+  rails will invoke the default_scope of the appropriate joined table which does have a tenant_id field.
+
+```
+   create_table :tablename, :id => false  do |t|
+```
 
 ## Further documentation
 * Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
