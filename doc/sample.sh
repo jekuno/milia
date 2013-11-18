@@ -56,12 +56,12 @@ git push -u origin master
 
 # STEP 2 - SET UP GEMFILE, BUNDLE INSTALL GEMS
 
-# EDIT Gemfile
+# EDIT Gemfile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # enable rubyracer in Gemfile by de-commenting
 gem 'therubyracer', platforms: :ruby
 
-# ADD the following lines to Gemfile
+# ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
 
 ruby "2.0.0"
 
@@ -89,10 +89,9 @@ gem 'recaptcha', :require => "recaptcha/rails"
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # save Gemfile and exit editor
-
+# EDIT: app/assets/javascripts/application.js >>>>>>>>>>>>>>>>>>>>>>>>
 # comment out turbolinks in your Javascript manifest file 
-# (usually found at app/assets/javascripts/application.js
-# we won't need it for this simple sample.
+# we won't need turbolinks for this simple sample.
 //  require turbolinks to 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
@@ -103,8 +102,8 @@ bundle install
 #  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
 
 
-# EDIT the config/routes.rb
-# ADD the root :to => "home#index" within the do..end block
+# EDIT the config/routes.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD the root :to => "home#index" within the do..end block 
 
 SampleMiliaApp::Application.routes.draw do
   root :to => "home#index"
@@ -141,7 +140,7 @@ mv app/views/home/show.html.haml app/views/home/index.html.haml
 # tweaking the web-app-theme to correct for defaults
 rails g web_app_theme:assets
 
-# EDIT: app/views/layouts/application.html.haml 
+# EDIT: app/views/layouts/application.html.haml  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # correct: 
 = stylesheet_link_tag 'application'
 = javascript_include_tag 'application'
@@ -154,8 +153,8 @@ cp $(bundle show web-app-theme)/spec/dummy/public/images/* app/assets/images/web
 rails g devise:install
 rails g devise user
 
-# EDIT: config/environments/development.rb
-# ADD: following AFTER the final config.action_xxxxx stuff
+# EDIT: config/environments/development.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD: following AFTER the final config.action_xxxxx stuff >>>>>>>>>>>>>>>>>>>>>>>
 
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
@@ -179,8 +178,8 @@ rails g devise user
 # of course, you will want to change your domain, email user_name and password
 # to match your actual values!
 
-# EDIT: config/environments/production.rb
-# ADD: following AFTER the final config.action_xxxxx stuff
+# EDIT: config/environments/production.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD: following AFTER the final config.action_xxxxx stuff >>>>>>>>>>>>>>>>>>>>>>
 
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app', :protocol => 'https' }
@@ -201,37 +200,19 @@ rails g devise user
 # is hosted via heroku.com using the SENDGRID plugin for emailing
 
 
-# EDIT: config/environments/test.rb
-# ADD: following AFTER the final config.action_xxxxx stuff
+# EDIT: config/environments/test.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD: following AFTER the final config.action_xxxxx stuff >>>>>>>>>>>>>>>>
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => "www.example.com" }
 #<<<<<< EDIT <<<<<<<<<<<<
 
-# IF: you will be deploying production on heroku, then
-# EDIT: config/application.rb
-# NOTE: please see details and cautions at: 
-#       http://guides.rubyonrails.org/asset_pipeline.html
-#       Section 4.1 Precompiling Assets
-
-# uncomment the config.time_zone line and set it to your timezone
-    config.time_zone = 'Pacific Time (US & Canada)'
-
-# ADD: following AFTER the config.time_zone line
-    #  For faster asset precompiles, you can partially load your application. 
-    #  In that case, templates cannot see application objects or methods. 
-    #  Heroku requires this to be false.
-    config.assets.initialize_on_precompile = false
-#<<<<<< ADD  <<<<<<<<<<<<
-
-#<<<<<< EDIT <<<<<<<<<<<<
-
 # set up scopes for device
-# EDIT: app/models/user.rb
+# EDIT: app/models/user.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # add confirmable to line 4; add attr_accessible to lines 7,8
   devise :database_authenticatable, :registerable, :confirmable,
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
-# EDIT: db/migrate/xxxxxxx_devise_create_users.rb
+# EDIT: db/migrate/xxxxxxx_devise_create_users.rb >>>>>>>>>>>>>>>>>>>>>>>>>
 # uncomment the confirmable section, it will then look as follows:
 
       ## Confirmable
@@ -242,7 +223,7 @@ rails g devise user
 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
-# EDIT: config/initializers/devise.rb
+# EDIT: config/initializers/devise.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # change mailer_sender to be your from: email address
   config.mailer_sender = "conjugalis@gmail.com"
 
@@ -265,9 +246,24 @@ rake db:migrate
 
 rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=haml --app-name="Simple Milia App"
 
-# EDIT: config/application.rb file
+# EDIT: config/application.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# NOTE: please see details and cautions at: 
+#       http://guides.rubyonrails.org/asset_pipeline.html
+#       Section 4.1 Precompiling Assets
+
+# uncomment the config.time_zone line and set it to your timezone
+    config.time_zone = 'Pacific Time (US & Canada)'
+
+# IF: you will be deploying production on heroku, then
+# ADD: following AFTER the config.time_zone line >>>>>>>>>>>>>>>>>>>>>>>>>>>
+    #  For faster asset precompiles, you can partially load your application. 
+    #  In that case, templates cannot see application objects or methods. 
+    #  Heroku requires this to be false.
+    config.assets.initialize_on_precompile = false
+#<<<<<< ADD  <<<<<<<<<<<<
+
 # change the layout for sign-in/sign-up
-# be adding the following into the class .... end block
+# by adding the following into the class .... end block
 
 config.to_prepare do
   Devise::SessionsController.layout "sign"
@@ -295,7 +291,7 @@ end
 = link_to t("web-app-theme.logout", :default => "Logout"), destroy_user_session_path, :method => :delete
 
 
-# EDIT: app/controllers/application_controller.rb
+# EDIT: app/controllers/application_controller.rb  >>>>>>>>>>>>>>>>>>>>>
 # ADD following lines immediately after line 4 protect_from_forgery ...
 
   before_filter :authenticate_user!
@@ -309,7 +305,7 @@ private
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: app/controllers/home_controller.rb
-# ADD immediately after line 1 class HomeController
+# ADD immediately after line 1 class HomeController 
   skip_before_filter :authenticate_user!, :only => [ :index, :new ]
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
