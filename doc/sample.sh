@@ -56,10 +56,12 @@ git push -u origin master
 
 # STEP 2 - SET UP GEMFILE, BUNDLE INSTALL GEMS
 
+# EDIT Gemfile
+
 # enable rubyracer in Gemfile by de-commenting
 gem 'therubyracer', platforms: :ruby
 
-# add the following lines to Gemfile
+# ADD the following lines to Gemfile
 
 ruby "2.0.0"
 
@@ -80,20 +82,34 @@ gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
 gem 'devise'
 gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
 gem 'recaptcha', :require => "recaptcha/rails"
+#<<<< ADD <<<<<<<<<<<<<<<<<
 
+# comment OUT the turbolinks gem
+# gem 'turbolinks'
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# save Gemfile and exit editor
+
+# comment out turbolinks in your Javascript manifest file 
+# (usually found at app/assets/javascripts/application.js
+# we won't need it for this simple sample.
+//  require turbolinks to 
+#<<<< EDIT <<<<<<<<<<<<<<<<<
 
 bundle install
 
 # STEP 3 - PREP APP UI TEMPLATES & TEST
+# Source for web-app-theme notes and revisions:
+#  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
 
-rails g controller home index
 
-# edit the config/routes.rb
-# add the root :to => "home#index" within the do..end block
+# EDIT the config/routes.rb
+# ADD the root :to => "home#index" within the do..end block
 
 SampleMiliaApp::Application.routes.draw do
   root :to => "home#index"
 end
+#<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # create the database
 rake db:create
@@ -101,7 +117,7 @@ rake db:create
 # test by starting server:
 foreman start
 
-# then at your browser:
+# CHECK-OUT: then at your browser:
 http://localhost:3000/
 
 # and the template page should come up
@@ -113,23 +129,24 @@ rails g web_app_theme:theme --engine=haml --theme="red" --app-name="Simple Milia
 
 rm app/views/layouts/application.html.erb
 
-# over at the browser, refresh the page and see the theme and colors for the basic template
+# CHECK-OUT: over at the browser, refresh the page and see the theme and colors for the basic template
 
 # generate some sample text for the page to flesh it out
 rails g web_app_theme:themed home --themed-type=text --engine=haml
 mv app/views/home/show.html.haml app/views/home/index.html.haml
 
-# over at the browser, refresh the page
+# CHECK-OUT: over at the browser, refresh the page
 
 
 # tweaking the web-app-theme to correct for defaults
 rails g web_app_theme:assets
 
-# correct: app/views/layouts/application.html.haml line 6 to:
+# EDIT: app/views/layouts/application.html.haml 
+# correct: line 6 to:
 = javascript_include_tag 'application'
 
-# correct: app/assets/stylesheets/web-app-theme/basic.css
-# around line 300, comment out the three lines below and
+# EDIT: app/assets/stylesheets/web-app-theme/basic.css
+# correct around line 300, comment out the three lines below and
 # add following instead
 /*
 .form .fieldWithErrors .error {
@@ -183,8 +200,108 @@ rails g web_app_theme:assets
     margin-bottom: 15px;
   }
 
+#<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # move images for buttons to correct folder
 cp $(bundle show web-app-theme)/spec/dummy/public/images/* app/assets/images/web-app-theme/ -r
+
+
+# STEP 4 - SIMPLE devise SET UP (pre-milia)
+rails g devise:install
+rails g devise user
+
+#===============================================================================
+# EXTRA-INFO: from devise: Some setup you must do manually if you haven't yet:
+#===============================================================================
+
+#  1. Ensure you have defined default url options in your environments files. Here 
+#     is an example of default_url_options appropriate for a development environment 
+#     in config/environments/development.rb:
+#       config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+#     In production, :host should be set to the actual host of your application.
+
+#  2. Ensure you have defined root_url to *something* in your config/routes.rb.
+#     For example:
+#       root :to => "home#index"
+
+#  3. Ensure you have flash messages in app/views/layouts/application.html.erb.
+#     For example:
+#       <p class="notice"><%= notice %></p>
+#       <p class="alert"><%= alert %></p>
+
+#  4. If you are deploying on Heroku with Rails 3.2 only, you may want to set:
+#       config.assets.initialize_on_precompile = false
+#     On config/application.rb forcing your application to not access the DB
+#     or load models when precompiling your assets.
+
+#  5. You can copy Devise views (for customization) to your app by running:
+#       rails g devise:views
+#===============================================================================
+
+# set up scopes for device
+# app/models/user.rb
+# add confirmable to line 4; add attr_accessible to lines 7,8
+  devise :database_authenticatable, :registerable, :confirmable,
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# run the migration
+rake db:migrate
+
+# CHECK-OUT: check things out at browser before proceeding
+# stop/restart foreman
+# ^c stops foreman; foreman start  restarts it; F5 refreshes the browser page
+
+# customize login screen
+# generate the sign-in/sign-out layout:
+
+rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=haml --app-name="Simple Milia App"
+
+# EDIT: config/application.rb file
+# change the layout for sign-in/sign-up
+# be adding the following into the class .... end block
+
+config.to_prepare do
+  Devise::SessionsController.layout "sign"
+  Devise::RegistrationsController.layout "sign"
+end
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# if we use devise to gen the views, they'll be genned in erb and 
+# a different format from the layout style we're using.
+# instead, get the two files from simple-milia-app on github
+# and put them in similarly names paths in your app:
+
+# USE:  app/views/devise/sessions/new.html.haml
+# USE:  app/views/devise/registrations/new.html.haml
+
+# CHECK-OUT: 
+#   http://localhost:3000/users/sign_in
+# to view the sign-in form
+# then click SIGN UP and view the sign-up form 
+
+# FINISHING TOUCHES TO SIMPLE USAGE OF devise
+# modigy layout so that loutout button will work:
+# EDIT: app/views/layouts/application.html.haml
+# line 20 replace with:
+= link_to t("web-app-theme.logout", :default => "Logout"), destroy_user_session_path, :method => :delete
+
+
+# EDIT: app/controllers/application_controller.rb
+# ADD following lines immediately after line 4 protect_from_forgery ...
+
+  before_filter :authenticate_user!
+
+private
+  
+  def after_sign_out_path_for(resource_or_scope)
+    scope = Devise::Mapping.find_scope!(resource_or_scope)
+    send(:"new_#{scope}_session_path")
+  end
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# EDIT: app/controllers/home_controller.rb
+# ADD immediately after line 1 class HomeController
+  skip_before_filter :authenticate_user!, :only => [ :index, :new ]
+#<<<< EDIT <<<<<<<<<<<<<<<<<
 
 
