@@ -210,36 +210,80 @@ cp $(bundle show web-app-theme)/spec/dummy/public/images/* app/assets/images/web
 rails g devise:install
 rails g devise user
 
-#===============================================================================
-# EXTRA-INFO: from devise: Some setup you must do manually if you haven't yet:
-#===============================================================================
+# EDIT: config/environments/development.rb
+# ADD: following AFTER the final config.action_xxxxx stuff
 
-#  1. Ensure you have defined default url options in your environments files. Here 
-#     is an example of default_url_options appropriate for a development environment 
-#     in config/environments/development.rb:
-#       config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-#     In production, :host should be set to the actual host of your application.
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
-#  2. Ensure you have defined root_url to *something* in your config/routes.rb.
-#     For example:
-#       root :to => "home#index"
+  # set up for email sending even in dev mode
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = false
 
-#  3. Ensure you have flash messages in app/views/layouts/application.html.erb.
-#     For example:
-#       <p class="notice"><%= notice %></p>
-#       <p class="alert"><%= alert %></p>
+  config.action_mailer.delivery_method = :smtp
+  
+  config.action_mailer.smtp_settings = {
+    :address => "smtp.gmail.com",
+    :port => "587",
+    :domain => "simple-milia-app.com",
+    :authentication => :plain,
+    :user_name => "my-email@simple-milia-app.com",
+    :password => "my-password",
+    :enable_starttls_auto => true
+  }
+#<<<<<< EDIT <<<<<<<<<<<<
 
-#  4. If you are deploying on Heroku with Rails 3.2 only, you may want to set:
-#       config.assets.initialize_on_precompile = false
-#     On config/application.rb forcing your application to not access the DB
-#     or load models when precompiling your assets.
+# of course, you will want to change your domain, email user_name and password
+# to match your actual values!
 
-#  5. You can copy Devise views (for customization) to your app by running:
-#       rails g devise:views
-#===============================================================================
+# EDIT: config/environments/production.rb
+# ADD: following AFTER the final config.action_xxxxx stuff
+
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app', :protocol => 'https' }
+
+  ActionMailer::Base.delivery_method = :smtp
+
+  ActionMailer::Base.smtp_settings = {
+    :address        => 'smtp.sendgrid.net',
+    :port           => '587',
+    :authentication => :plain,
+    :user_name      => ENV['SENDGRID_USERNAME'],
+    :password       => ENV['SENDGRID_PASSWORD'],
+    :domain         => 'heroku.com'
+  }
+#<<<<<< EDIT <<<<<<<<<<<<
+
+# this sample is showing as how it would be if your production server
+# is hosted via heroku.com using the SENDGRID plugin for emailing
+
+
+# EDIT: config/environments/test.rb
+# ADD: following AFTER the final config.action_xxxxx stuff
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => "www.example.com" }
+#<<<<<< EDIT <<<<<<<<<<<<
+
+# IF: you will be deploying production on heroku, then
+# EDIT: config/application.rb
+# NOTE: please see details and cautions at: 
+#       http://guides.rubyonrails.org/asset_pipeline.html
+#       Section 4.1 Precompiling Assets
+
+# uncomment the config.time_zone line and set it to your timezone
+    config.time_zone = 'Pacific Time (US & Canada)'
+
+# ADD: following AFTER the config.time_zone line
+    #  For faster asset precompiles, you can partially load your application. 
+    #  In that case, templates cannot see application objects or methods. 
+    #  Heroku requires this to be false.
+    config.assets.initialize_on_precompile = false
+#<<<<<< ADD  <<<<<<<<<<<<
+
+#<<<<<< EDIT <<<<<<<<<<<<
 
 # set up scopes for device
-# app/models/user.rb
+# EDIT: app/models/user.rb
 # add confirmable to line 4; add attr_accessible to lines 7,8
   devise :database_authenticatable, :registerable, :confirmable,
 #<<<< EDIT <<<<<<<<<<<<<<<<<
