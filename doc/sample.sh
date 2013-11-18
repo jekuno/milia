@@ -98,7 +98,7 @@ gem 'recaptcha', :require => "recaptcha/rails"
 
 bundle install
 
-# STEP 3 - PREP APP UI TEMPLATES & TEST
+# STEP 3 - PREP APP UI TEMPLATES & CHECK OUT DISPLAYS
 # Source for web-app-theme notes and revisions:
 #  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
 
@@ -288,6 +288,18 @@ rails g devise user
   devise :database_authenticatable, :registerable, :confirmable,
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
+# EDIT: db/migrate/xxxxxxx_devise_create_users.rb
+# uncomment the confirmable section, it will then look as follows:
+
+      ## Confirmable
+      t.string   :confirmation_token
+      t.datetime :confirmed_at
+      t.datetime :confirmation_sent_at
+      # t.string   :unconfirmed_email # Only if using reconfirmable
+
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+
 # run the migration
 rake db:migrate
 
@@ -347,5 +359,23 @@ private
 # ADD immediately after line 1 class HomeController
   skip_before_filter :authenticate_user!, :only => [ :index, :new ]
 #<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# STEP 4 - TEST devise SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
+# NOTE: we will later DELETE all users added in this manner BEFORE we
+# install milia. Reason is because currently there is no tenanting.
+# DO NOT TRY TO LATER MANUALLY ATTEMPT TO CONVERT THESE INITIAL USERS
+# TO A TENANTING MODEL: it is poor software practice to do that.
+# you are just testing and verifying that we've got devise up and enabled.
+
+# CHECK-OUT: 
+# sign up as a new user, 
+# the log file will show that an email was sent 
+# together with the activation code & URL
+# copy & paste this address as-is into the browser address area & go to it to activate
+# it will take you to a sign in screen; sign in
+# refresh index page (to refresh the logout validity token)
+# sign out
+# sign in again as the user
+
 
 
