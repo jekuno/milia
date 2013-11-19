@@ -1,3 +1,18 @@
+
+# tweaking the web-app-theme to correct for defaults
+rails g web_app_theme:assets
+
+# EDIT: app/views/layouts/application.html.haml  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# correct: 
+= stylesheet_link_tag 'application'
+= javascript_include_tag 'application'
+
+# move images for buttons to correct folder
+cp $(bundle show web-app-theme)/spec/dummy/public/images/* app/assets/images/web-app-theme/ -r
+
+
+
+
 # EDIT: app/assets/stylesheets/web-app-theme/basic.css
 # correct around line 300, comment out the three lines below and
 # add following instead

@@ -55,6 +55,9 @@ git push -u origin master
 
 
 # STEP 2 - SET UP GEMFILE, BUNDLE INSTALL GEMS
+# change .gitignore to match your development environment
+# I just copy my standard .gitignore from another project
+cp ../swalapala/.gitignore .
 
 # EDIT Gemfile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -73,7 +76,7 @@ ruby "2.0.0"   # heroku likes this at the head, as line 2
 # =========================================================
 # Bundle the extra gems:
 gem 'haml-rails'   
-gem 'html2haml', "2.0.0.beta.2"
+gem 'html2haml', :git => 'git://github.com/haml/html2haml.git'  # "2.0.0.beta.2", 
 
 # stuff that heroku likes to have
 gem 'thin'
@@ -103,10 +106,10 @@ bundle install
 #  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
 
 # Generate home page
-$ rails g controller home index
+rails g controller home index
  
 # remove default Rails index page
-$ rm public/index.html
+rm public/index.html
 
 # EDIT the config/routes.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD the root :to => "home#index" within the do..end block 
@@ -125,7 +128,7 @@ foreman start
 
 # CHECK-OUT: at your browser:
 http://localhost:3000/
-# you should see an empty template page
+# you should see an empty template page for home/index
 
 
 # ******* NOW WE'LL GENERATE A THEME with web-app-theme ********
@@ -146,18 +149,6 @@ rails g web_app_theme:themed home --themed-type=text --theme="red" --engine=haml
 mv app/views/home/show.html.haml app/views/home/index.html.haml
 
 # CHECK-OUT: over at the browser, refresh the page
-
-
-# tweaking the web-app-theme to correct for defaults
-rails g web_app_theme:assets
-
-# EDIT: app/views/layouts/application.html.haml  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# correct: 
-= stylesheet_link_tag 'application'
-= javascript_include_tag 'application'
-
-# move images for buttons to correct folder
-cp $(bundle show web-app-theme)/spec/dummy/public/images/* app/assets/images/web-app-theme/ -r
 
 
 # STEP 4 - SIMPLE devise SET UP (pre-milia)
@@ -230,13 +221,13 @@ rails g devise user
       t.string   :confirmation_token
       t.datetime :confirmed_at
       t.datetime :confirmation_sent_at
-      # t.string   :unconfirmed_email # Only if using reconfirmable
+      t.string   :unconfirmed_email # Only if using reconfirmable
 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: config/initializers/devise.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # change mailer_sender to be your from: email address
-  config.mailer_sender = "conjugalis@gmail.com"
+  config.mailer_sender = "my-email@simple-milia-app.com"
 
 # uncomment the following:
   config.pepper = '46f2....'
