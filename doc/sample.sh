@@ -1,65 +1,97 @@
 # capture of everything I did to create the sample app for milia
 
+# *********************************************************************
+# NOTES:
+# Although this file has a ".sh" extension, it isn't fully executable
+# as a shell script. There are just too many things you'll have to
+# to do to help things along.
+# 1. Instructions for you to do things are in comments;
+#    what you should type or cut&paste, is not.
+#    commands preceded by a "$" prompt indicate shell level command.
+#    commands preceded by a ">" prompt indicate some other program command.
+#    in either case, don't type the prompt as part of the command!
+# 2. I've bracketed groups of text to be edited/added to a file
+#    with the following style:
+#    # EDIT: <path/filename> >>>>>>>>>>>>
+#      things to do &/or edit or add
+#    # ADD:  stuff to add follows
+#      things to add
+#    #<<< ADD  <<<<<<<<<<<<<<<<<<<<<<<<<<  up to here
+#      maybe some more edit stuff
+#    #<<< EDIT <<<<<<<<<<<<<<<<<<<<<<<<<<  up to here
+# 3. follow everything exactly in the order given
+# 4. there's non-milia related stuff if you'll be using heroku to host
+#    treat this as optional, if you'd like. but at least I know it
+#    works as a completed app.
+# *********************************************************************
+
+# *********************************************************************
 # STEP 0 - PREREQUISITES
+# *********************************************************************
 # make sure you have your ssh keys gened
-ssh-keygen
+$ ssh-keygen
 
 # make sure you have some basics packages on your system
-sudo apt-get install curl git vim vim-gnome
+$ sudo apt-get install curl git vim vim-gnome
 
 # make sure you've set up a github account, and git globals
 
 # Install RVM on your system; see rvm.io for more information
-\curl -L https://get.rvm.io | bash -s stable
+$ \curl -L https://get.rvm.io | bash -s stable
 # do any adjustments to your .bashrc, etc files as needed
 
 # make sure to install ruby 2.0.0
-rvm install 2.0.0
+$ rvm install 2.0.0
 
 # I have all my projects in a directory called "projectspace'
-mkdir projectspace
-rvm gemset create projectspace
-echo "projectspace" > projectspace/.ruby-gemset
-echo "2.0.0" > projectspace/.ruby-version
-cd projectspace
+$ mkdir projectspace
+$ rvm gemset create projectspace
+$ echo "projectspace" > projectspace/.ruby-gemset
+$ echo "2.0.0" > projectspace/.ruby-version
+$ cd projectspace
 
 # install rails (latest version)
-gem install rails
+$ gem install rails
 
 # OPTIONAL -- get ready for heroku
 # set up a heroku account at: heroku.com
 # install heroku toolbelt: heroku, foreman 
-wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-heroku login
+$ wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+$ heroku login
 
 # set environment variable for later Procfile
 export PORT=3000
 export RACK_ENV=development
 
 
+# *********************************************************************
 # STEP 1 - CREATION OF SKELETON APP & REPOSITORY
+# *********************************************************************
 
-cd projectspace   # if not there already
+$ cd projectspace   # if not there already
 
-rails new sample-milia-app
-echo "sample" > sample-milia-app/.ruby-gemset
-echo "2.0.0" > sample-milia-app/.ruby-version
-echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
-rvm gemset create sample
-cd sample-milia-app
-git init
-git add --all .
-git commit -am 'initial commit'
-git remote add origin git@github.com:dsaronin/sample-milia-app.git
-git push -u origin master
+$ rails new sample-milia-app
+$ echo "sample" > sample-milia-app/.ruby-gemset
+$ echo "2.0.0" > sample-milia-app/.ruby-version
+$ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
+$ rvm gemset create sample
+$ cd sample-milia-app
+$ git init
+$ git add --all .
+$ git commit -am 'initial commit'
+$ git remote add origin git@github.com:dsaronin/sample-milia-app.git
+$ git push -u origin master
 
 
+# *********************************************************************
 # STEP 2 - SET UP GEMFILE, BUNDLE INSTALL GEMS
+# *********************************************************************
 # change .gitignore to match your development environment
 # I just copy my standard .gitignore from another project
-cp ../swalapala/.gitignore .
+$ cp ../swalapala/.gitignore .
 
 # EDIT Gemfile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+$ vim Gemfile
 
 # First, comment OUT the turbolinks gem
 # gem 'turbolinks'
@@ -83,6 +115,7 @@ gem 'thin'
 gem "SystemTimer", :require => "system_timer", :platforms => :ruby_18
 gem "rack-timeout"
 gem 'rails_12factor'
+# gem 'airbrake'   # uncomment this if you will use airbrake for exception notifications
 
 gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
 gem 'devise'
@@ -99,32 +132,35 @@ gem 'recaptcha', :require => "recaptcha/rails"
 //  require turbolinks to 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
-bundle install
+$ bundle install
 
+# *********************************************************************
 # STEP 3 - PREP APP UI TEMPLATES & CHECK OUT DISPLAYS
+# *********************************************************************
 # Source for web-app-theme notes and revisions:
 #  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
+# *********************************************************************
 
 # Generate home page
-rails g controller home index
+$ rails g controller home index
  
 # remove default Rails index page
-rm public/index.html
+$ rm public/index.html
 
 # EDIT the config/routes.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD the root :to => "home#index" within the do..end block 
 
-SampleMiliaApp::Application.routes.draw do
-  root :to => "home#index"
-end
+    SampleMiliaApp::Application.routes.draw do
+      root :to => "home#index"
+    end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 
 # create the database
-rake db:create
+$ rake db:create
 
 # test by starting server:
-foreman start
+$ foreman start
 
 # CHECK-OUT: at your browser:
 http://localhost:3000/
@@ -132,11 +168,11 @@ http://localhost:3000/
 
 
 # ******* NOW WE'LL GENERATE A THEME with web-app-theme ********
-rails g web_app_theme:theme --engine=haml --theme="red" --app-name="Simple Milia App"
+$ rails g web_app_theme:theme --engine=haml --theme="red" --app-name="Simple Milia App"
 # you may see a bunch of html2haml warnings; ok to ignore
 
 # Delete the default layout originally generated
-rm app/views/layouts/application.html.erb
+$ rm app/views/layouts/application.html.erb
 
 # CHECK-OUT: 
 # stop, restart server
@@ -144,16 +180,16 @@ rm app/views/layouts/application.html.erb
 # and the template page should come up
 
 # generate some sample text for the page to flesh it out
-rails g web_app_theme:themed home --themed-type=text --theme="red" --engine=haml
+$ rails g web_app_theme:themed home --themed-type=text --theme="red" --engine=haml
 
-mv app/views/home/show.html.haml app/views/home/index.html.haml
+$ mv app/views/home/show.html.haml app/views/home/index.html.haml
 
 # CHECK-OUT: over at the browser, refresh the page
 
 
 # STEP 4 - SIMPLE devise SET UP (pre-milia)
-rails g devise:install
-rails g devise user
+$ rails g devise:install
+$ rails g devise user
 
 # EDIT: config/environments/development.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD: following AFTER the final config.action_xxxxx stuff >>>>>>>>>>>>>>>>>>>>>>>
@@ -223,6 +259,9 @@ rails g devise user
       t.datetime :confirmation_sent_at
       t.string   :unconfirmed_email # Only if using reconfirmable
 
+# and uncomment the confirmation_token index line
+    add_index :users, :confirmation_token,   :unique => true
+
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: config/initializers/devise.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -237,7 +276,7 @@ rails g devise user
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # run the migration
-rake db:migrate
+$ rake db:migrate
 
 # CHECK-OUT: check things out at browser before proceeding
 # stop/restart foreman
@@ -246,7 +285,7 @@ rake db:migrate
 # customize login screen
 # generate the sign-in/sign-out layout:
 
-rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=haml --app-name="Simple Milia App"
+$ rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=haml --app-name="Simple Milia App"
 
 # EDIT: config/application.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # NOTE: please see details and cautions at: 
@@ -311,12 +350,15 @@ private
   skip_before_filter :authenticate_user!, :only => [ :index, :new ]
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
+# *********************************************************************
 # STEP 4 - TEST devise SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
+# *********************************************************************
 # NOTE: we will later DELETE all users added in this manner BEFORE we
 # install milia. Reason is because currently there is no tenanting.
 # DO NOT TRY TO LATER MANUALLY ATTEMPT TO CONVERT THESE INITIAL USERS
 # TO A TENANTING MODEL: it is poor software practice to do that.
 # you are just testing and verifying that we've got devise up and enabled.
+# *********************************************************************
 
 # CHECK-OUT: 
 # sign up as a new user, 
@@ -325,9 +367,213 @@ private
 # and if your email/password are correct, an email should have been sent as well!
 # copy & paste this address as-is into the browser address area & go to it to activate
 # it will take you to a sign in screen; sign in
-# refresh index page (to refresh the logout validity token)
+# REFRESH index page (to refresh the logout validity token)
 # sign out
 # sign in again as the user
 
+# *********************************************************************
+# STEP 5 - adding in milia and making multi-tenantable
+# *********************************************************************
+# remove any users created above in STEP 4
+# start the rails console
+  $ rail c
+> User.all.each{|x| x.destroy}
+> exit
 
+# rollback the initial migration (because we'll be changing it slightly)
+  $ rake db:rollback
+
+# Milia expects a user session, so please set one up
+# EDIT: Gemfile
+# ADD
+gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+  $ bundle install
+  $ rails g active_record:session_migration
+
+# EDIT: db/migrate/xxxxxxx_devise_create_users.rb >>>>>>>>>>>>>>>>>>>>>>>>>
+# add above the t.timestamps line:
+    t.references :tenant
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# generate the tenant migration
+  $ rails g model tenant tenant:references name:string:index
+
+# generate the tenants_users join table migration
+  $ rails g migration CreateTenantsUsersJoinTable tenants users
+
+# EDIT: db/migrate/20131119092046_create_tenants_users_join_table.rb >>>>>>>>>>
+# then uncomment the first index line as follows:
+      t.index [:tenant_id, :user_id]
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+
+
+# EDIT: app/controllers/application_controller.rb  >>>>>>>>>>>>>>>>>>>>>
+# comment the authenticate_user! before filter we previously added in
+#  before_filter :authenticate_user!
+
+# ADD following lines immediately after that: >>>>>>>>>>>>>>>>>>>>>>>>>>
+  before_filter :authenticate_tenant!   # authenticate user and setup tenant
+
+  rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
+  rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
+#<<<<<< ADD  <<<<<<<<<<<<
+
+# ADD following lines AFTER private >>>>>>>>>>>>>>>>>>>>>>>>>>
+private
+
+# ------------------------------------------------------------------------------
+# authenticate_tenant! -- authorization & tenant setup
+# -- authenticates user
+# -- sets current tenant
+# -- sets up app environment for this user
+# ------------------------------------------------------------------------------
+  def authenticate_tenant!()
+
+    unless authenticate_user!
+      email = ( params.nil? || params[:user].nil?  ?  ""  : " as: " + params[:user][:email] )
+
+      flash[:notice] = "cannot sign you in#{email}; check email/password and try again"
+
+      return false  # abort the before_filter chain
+    end
+
+    # user_signed_in? == true also means current_user returns valid user
+    raise SecurityError,"*** invalid sign-in  ***" unless user_signed_in?
+
+    set_current_tenant   # relies on current_user being non-nil
+
+    # any application-specific environment set up goes here
+
+    true  # allows before filter chain to continue
+  end
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def max_tenants()
+    logger.info("MARKETING - New account attempted #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:company]}")
+    flash[:notice] = "Sorry: new accounts not permitted at this time"
+      
+    # uncomment if using Airbrake & airbrake gem
+    #  notify_airbrake( $! )  # have airbrake report this -- requires airbrake gem
+    redirect_back
+  end
+  
+# ------------------------------------------------------------------------------
+# invalid_tenant -- using wrong or bad data
+# ------------------------------------------------------------------------------
+  def invalid_tenant
+    flash[:notice] = "wrong tenant access; sign out & try again"
+    flash[:show_flash] = true
+    redirect_back
+  end
+ 
+# ------------------------------------------------------------------------------
+# redirect_back -- bounce client back to referring page
+# ------------------------------------------------------------------------------
+  def redirect_back
+    redirect_to :back rescue redirect_to root_path
+  end
+
+# ------------------------------------------------------------------------------
+  # klass_option_obj -- returns a (new?) object of a given klass
+  # purpose is to handle the variety of ways to prepare for a view
+  # args:
+  #   klass -- class of object to be returned
+  #   option_obj -- any one of the following
+  #       -- nil -- will return klass.new
+  #       -- object -- will return the object itself
+  #       -- hash   -- will return klass.new( hash ) for parameters
+# ------------------------------------------------------------------------------
+  def klass_option_obj(klass, option_obj)
+    return option_obj if option_obj.instance_of?(klass)
+    option_obj ||= {}  # if nil, makes it empty hash
+    return klass.send( :new, option_obj )
+  end  
+
+# ------------------------------------------------------------------------------
+  # prep_signup_view -- prepares for the signup view
+  # args:
+  #   tenant: either existing tenant obj or params for tenant
+  #   user:   either existing user obj or params for user
+# ------------------------------------------------------------------------------
+  def prep_signup_view(tenant=nil, user=nil, coupon='')
+    @user   = klass_option_obj( User, user )
+    @tenant = klass_option_obj( Tenant, tenant )
+    #  @coupon = coupon
+    #  @eula   = Eula.get_latest.first
+ end 
+#<<<<<< ADD  <<<<<<<<<<<<
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# EDIT: config/routes.rb  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD:
+  devise_for :users, :controllers => { :registrations => "milia/registrations" }
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# EDIT: app/models/user.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ADD after the class User line:
+    acts_as_universal_and_determines_account
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+
+# EDIT: app/models/tenant.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# DELETE
+  belongs_to  :tenant
+
+# ADD after the class Tenant line: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    acts_as_universal_and_determines_tenant
+
+  def self.create_new_tenant(params)
+
+    tenant = Tenant.new(:name => params[:tenant][:name])
+
+    if new_signups_not_permitted?(params)
+
+      raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
+
+    else 
+      tenant.save    # create the tenant
+    end
+    return tenant
+  end
+
+  # ------------------------------------------------------------------------
+  # new_signups_not_permitted? -- returns true if no further signups allowed
+  # args: params from user input; might contain a special 'coupon' code
+  #       used to determine whether or not to allow another signup
+  # ------------------------------------------------------------------------
+  def self.new_signups_not_permitted?(params)
+    return false
+  end
+
+  # ------------------------------------------------------------------------
+  # tenant_signup -- setup a new tenant in the system
+  # CALLBACK from devise RegistrationsController (milia override)
+  # AFTER user creation and current_tenant established
+  # args:
+  #   user  -- new user  obj
+  #   tenant -- new tenant obj
+  #   other  -- any other parameter string from initial request
+  # ------------------------------------------------------------------------
+    def self.tenant_signup(user, tenant, other = nil)
+      #  StartupJob.queue_startup( tenant, user, other )
+      # any special seeding required for a new organizational tenant
+    end
+#<<<<<< ADD  <<<<<<<<<<<<
+
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# run the migration
+  $ rake db:migrate
+
+********* FIX  *********************
+Calling #default_scope without a block is deprecated. For example instead of `default_scope where(color: 'red')`, please use `default_scope { where(color: 'red') }`. (Alternatively you can just redefine self.default_scope.). (called from acts_as_universal at /home/daudi/.rvm/gems/ruby-2.0.0-p247@sample/bundler/gems/milia-ea2b425b95dc/lib/milia/base.rb:60)
+rake aborted!
+Invalid route name, already in use: 'new_user_session' 
+You may have defined two routes with the same name using the `:as` option, or you may be overriding a route already defined by a resource with the same naming. For the latter, you can restrict the routes created with `resources` as explained here: 
+http://guides.rubyonrails.org/routing.html#restricting-the-routes-created
 
