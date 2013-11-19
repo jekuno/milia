@@ -44,7 +44,7 @@ cd projectspace   # if not there already
 rails new sample-milia-app
 echo "sample" > sample-milia-app/.ruby-gemset
 echo "2.0.0" > sample-milia-app/.ruby-version
-echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > Procfile
+echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
 rvm gemset create sample
 cd sample-milia-app
 git init
@@ -58,19 +58,22 @@ git push -u origin master
 
 # EDIT Gemfile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-# enable rubyracer in Gemfile by de-commenting
+# First, comment OUT the turbolinks gem
+# gem 'turbolinks'
+
+# then, enable rubyracer in Gemfile by de-commenting
 gem 'therubyracer', platforms: :ruby
 
-# ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
+# finally, ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
 
-ruby "2.0.0"
+ruby "2.0.0"   # heroku likes this at the head, as line 2
 
 # =========================================================
 # sample-milia-app specific stuff
 # =========================================================
 # Bundle the extra gems:
 gem 'haml-rails'   
-gem 'html2haml'
+gem 'html2haml', "2.0.0.beta.2"
 
 # stuff that heroku likes to have
 gem 'thin'
@@ -84,8 +87,6 @@ gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
 gem 'recaptcha', :require => "recaptcha/rails"
 #<<<< ADD <<<<<<<<<<<<<<<<<
 
-# comment OUT the turbolinks gem
-# gem 'turbolinks'
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # save Gemfile and exit editor
@@ -101,6 +102,11 @@ bundle install
 # Source for web-app-theme notes and revisions:
 #  http://blog.bryanbibat.net/2011/09/24/starting-a-professional-rails-3-1-app-with-web-app-theme-devise-and-kaminari/
 
+# Generate home page
+$ rails g controller home index
+ 
+# remove default Rails index page
+$ rm public/index.html
 
 # EDIT the config/routes.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD the root :to => "home#index" within the do..end block 
@@ -110,28 +116,33 @@ SampleMiliaApp::Application.routes.draw do
 end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
+
 # create the database
 rake db:create
 
 # test by starting server:
 foreman start
 
-# CHECK-OUT: then at your browser:
+# CHECK-OUT: at your browser:
 http://localhost:3000/
+# you should see an empty template page
 
-# and the template page should come up
 
 # ******* NOW WE'LL GENERATE A THEME with web-app-theme ********
 rails g web_app_theme:theme --engine=haml --theme="red" --app-name="Simple Milia App"
+# you may see a bunch of html2haml warnings; ok to ignore
 
 # Delete the default layout originally generated
-
 rm app/views/layouts/application.html.erb
 
-# CHECK-OUT: over at the browser, refresh the page and see the theme and colors for the basic template
+# CHECK-OUT: 
+# stop, restart server
+# over at the browser, refresh the page and see the theme and colors for the basic template
+# and the template page should come up
 
 # generate some sample text for the page to flesh it out
-rails g web_app_theme:themed home --themed-type=text --engine=haml
+rails g web_app_theme:themed home --themed-type=text --theme="red" --engine=haml
+
 mv app/views/home/show.html.haml app/views/home/index.html.haml
 
 # CHECK-OUT: over at the browser, refresh the page
