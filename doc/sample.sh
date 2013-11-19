@@ -267,10 +267,10 @@ rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=haml 
 # change the layout for sign-in/sign-up
 # by adding the following into the class .... end block
 
-config.to_prepare do
-  Devise::SessionsController.layout "sign"
-  Devise::RegistrationsController.layout "sign"
-end
+  config.to_prepare do
+    Devise::SessionsController.layout "sign"
+    Devise::RegistrationsController.layout "sign"
+  end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # if we use devise to gen the views, they'll be genned in erb and 
@@ -322,6 +322,7 @@ private
 # sign up as a new user, 
 # the log file will show that an email was sent 
 # together with the activation code & URL
+# and if your email/password are correct, an email should have been sent as well!
 # copy & paste this address as-is into the browser address area & go to it to activate
 # it will take you to a sign in screen; sign in
 # refresh index page (to refresh the logout validity token)
