@@ -1,5 +1,15 @@
-# capture of everything I did to create the sample app for milia
-
+# *********************************************************************
+#     sample-milia-app  HOW TO CAPTURE
+# *********************************************************************
+# This is a capture of everything I did to create a sample app for milia.
+# There's enough brief comments for anyone to follow step-by-step.
+# It is based on my dev environment which is Ubuntu 13.10 on a PC. YMMV.
+#
+# The "app" itself is merely a simple barebones structure to display
+# an index page, require sign-in to do anything else, has a sign-up
+# page for starting a new organization (ie tenant), a way to send
+# invitations to other members, and a single tenanted model to prove
+# that tenanting is working.
 # *********************************************************************
 # NOTES:
 # Although this file has a ".sh" extension, it isn't fully executable
@@ -510,7 +520,7 @@ private
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: config/routes.rb  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# ADD:
+# ADD the :controllers clause to the existing devise_for :users  :
   devise_for :users, :controllers => { :registrations => "milia/registrations" }
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
@@ -571,7 +581,11 @@ private
   $ rake db:migrate
 
 ********* FIX  *********************
-Calling #default_scope without a block is deprecated. For example instead of `default_scope where(color: 'red')`, please use `default_scope { where(color: 'red') }`. (Alternatively you can just redefine self.default_scope.). (called from acts_as_universal at /home/daudi/.rvm/gems/ruby-2.0.0-p247@sample/bundler/gems/milia-ea2b425b95dc/lib/milia/base.rb:60)
+Calling #default_scope without a block is deprecated. 
+For example instead of `default_scope where(color: 'red')`, 
+please use `default_scope { where(color: 'red') }`. 
+(Alternatively you can just redefine self.default_scope.). 
+(called from acts_as_universal at /home/daudi/.rvm/gems/ruby-2.0.0-p247@sample/bundler/gems/milia-ea2b425b95dc/lib/milia/base.rb:60)
 rake aborted!
 Invalid route name, already in use: 'new_user_session' 
 You may have defined two routes with the same name using the `:as` option, or you may be overriding a route already defined by a resource with the same naming. For the latter, you can restrict the routes created with `resources` as explained here: 
