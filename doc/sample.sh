@@ -1,5 +1,5 @@
 # *********************************************************************
-#     sample-milia-app  HOW TO CAPTURE
+# HOW TO SET IT UP --     sample-milia-app
 # *********************************************************************
 # This is a capture of everything I did to create a sample app for milia.
 # There's enough brief comments for anyone to follow step-by-step.
@@ -10,8 +10,23 @@
 # page for starting a new organization (ie tenant), a way to send
 # invitations to other members, and a single tenanted model to prove
 # that tenanting is working.
+#
 # *********************************************************************
-# NOTES:
+# FEEDBACK
+# *********************************************************************
+# If you run into difficulties while following the steps here,
+# please be sure to reference the LINE NUMBER of the point at which
+# had a problem, as well as any output from that step.
+# BUT (caveat)
+# if you've gone commando and been making changes & enhancements OR
+# have been trying to roll out a full app, you're more or less on your
+# own. I strongly recommend experimenting with milia first in this
+# simple format, get it working, then ADD in increasing layers of
+# complexity and difficulty. Trying to make too many changes at once
+# is a recipe for difficulty in troubleshooting.
+# *********************************************************************
+# NOTES
+# *********************************************************************
 # Although this file has a ".sh" extension, it isn't fully executable
 # as a shell script. There are just too many things you'll have to
 # to do to help things along.
@@ -580,14 +595,4 @@ private
 # run the migration
   $ rake db:migrate
 
-********* FIX  *********************
-Calling #default_scope without a block is deprecated. 
-For example instead of `default_scope where(color: 'red')`, 
-please use `default_scope { where(color: 'red') }`. 
-(Alternatively you can just redefine self.default_scope.). 
-(called from acts_as_universal at /home/daudi/.rvm/gems/ruby-2.0.0-p247@sample/bundler/gems/milia-ea2b425b95dc/lib/milia/base.rb:60)
-rake aborted!
-Invalid route name, already in use: 'new_user_session' 
-You may have defined two routes with the same name using the `:as` option, or you may be overriding a route already defined by a resource with the same naming. For the latter, you can restrict the routes created with `resources` as explained here: 
-http://guides.rubyonrails.org/routing.html#restricting-the-routes-created
 

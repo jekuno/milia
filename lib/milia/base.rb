@@ -14,7 +14,6 @@ module Milia
 # Forces all references to be limited to current_tenant rows
 # ------------------------------------------------------------------------
       def acts_as_tenant()
-        attr_protected :tenant_id
         belongs_to  :tenant
         validates_presence_of :tenant_id
 
