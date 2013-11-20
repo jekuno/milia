@@ -596,3 +596,8 @@ private
   $ rake db:migrate
 
 
+# DSA-NOTES:
+ ActionController::Parameters.action_on_unpermitted_parameters = :raise | :log
+
+
+ TODO: sign-up form needs return coupon: { coupon: }

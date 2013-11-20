@@ -6,7 +6,6 @@ module Milia
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-# TODO: options if using recaptcha
 # TODO: options if non-standard path for new signups view
 # ------------------------------------------------------------------------------
 # create -- intercept the POST create action upon new sign-up
@@ -18,10 +17,11 @@ def create
   
   sign_out_session!
 
-  if verify_recaptcha
+     # validate recaptcha first unless not enabled
+  if !Milia.user_recaptcha  ||  verify_recaptcha
 
     Tenant.transaction  do 
-      @tenant = Tenant.create_new_tenant(params)
+      @tenant = Tenant.create_new_tenant(sign_up_params_tenant, sign_up_params_coupon)
       if @tenant.errors.empty?   # tenant created
         
         initiate_tenant( @tenant )    # first time stuff for new tenant
@@ -55,7 +55,23 @@ end   # def create
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-  private
+  protected
+ 
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def sign_up_params_tenant()
+    params.require(:tenant).permit(:name)
+  end
+
+# ------------------------------------------------------------------------------
+# sign_up_params_coupon -- permit coupon parameter if used; else params
+# ------------------------------------------------------------------------------
+  def sign_up_params_coupon()
+    ( Milia.use_coupon ? 
+      params.require(:coupon).permit(:coupon)  :
+      params
+    )
+  end
 
 # ------------------------------------------------------------------------------
 # sign_out_session! -- force the devise session signout
@@ -69,32 +85,27 @@ end   # def create
     # same as in devise gem EXCEPT need to prep signup form variables
 # ------------------------------------------------------------------------------
   def devise_create
-    build_resource
+    build_resource(sign_up_params)
 
     if resource.save
+      yield resource if block_given?
       if resource.active_for_authentication?
-        set_flash_message :notice, :signed_up if is_navigational_format?
-        sign_in(resource_name, resource)
+        set_flash_message :notice, :signed_up if is_flashing_format?
+        sign_up(resource_name, resource)
         respond_with resource, :location => after_sign_up_path_for(resource)
       else
-        set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_navigational_format?
-        expire_session_data_after_sign_in!
+        set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_flashing_format?
+        expire_data_after_sign_in!
         respond_with resource, :location => after_inactive_sign_up_path_for(resource)
       end
-    else  # resource had errors ...
-      prep_devise_new_view( @tenant, resource )
+    else
+      clean_up_passwords resource
+      prep_signup_view(  @tenant, resource, params[:coupon] )   # PUNDA special addition
+      respond_with resource
     end
   end
 
-# ------------------------------------------------------------------------------
-  # prep_devise_new_view -- common code to prep for another go at the signup form
-# ------------------------------------------------------------------------------
-  def prep_devise_new_view( tenant, resource )
-    clean_up_passwords(resource)
-    prep_signup_view( tenant, resource, params[:coupon] )   # PUNDA special addition
-    respond_with_navigational(resource) { render :new }
-  end
-  
+ 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
