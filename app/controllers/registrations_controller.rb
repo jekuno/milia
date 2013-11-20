@@ -18,7 +18,7 @@ def create
   sign_out_session!
 
      # validate recaptcha first unless not enabled
-  if !Milia.user_recaptcha  ||  verify_recaptcha
+  if !::Milia.user_recaptcha  ||  verify_recaptcha
 
     Tenant.transaction  do 
       @tenant = Tenant.create_new_tenant(sign_up_params_tenant, sign_up_params_coupon)
@@ -67,7 +67,7 @@ end   # def create
 # sign_up_params_coupon -- permit coupon parameter if used; else params
 # ------------------------------------------------------------------------------
   def sign_up_params_coupon()
-    ( Milia.use_coupon ? 
+    ( ::Milia.use_coupon ? 
       params.require(:coupon).permit(:coupon)  :
       params
     )

@@ -596,8 +596,13 @@ private
   $ rake db:migrate
 
 
+Environment needs to set recaptcha public, private keys
+config/initializers/milia.rb now supported for config parameters
+
 # DSA-NOTES:
  ActionController::Parameters.action_on_unpermitted_parameters = :raise | :log
 
 
  TODO: sign-up form needs return coupon: { coupon: }
+
+
