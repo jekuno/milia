@@ -592,6 +592,10 @@ private
 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
+# EDIT: app/controllers/home_controller.rb
+# CHANGE user to tenant
+  skip_before_filter :authenticate_tenant!, :only => [ :index, :new ]
+#<<<< EDIT <<<<<<<<<<<<<<<<<
 # run the migration
   $ rake db:migrate
 
