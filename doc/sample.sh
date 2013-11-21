@@ -334,6 +334,7 @@ $ rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=ham
   config.to_prepare do
     Devise::SessionsController.layout "sign"
     Devise::RegistrationsController.layout "sign"
+    Devise::ConfirmationsController.layout "sign"
   end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
