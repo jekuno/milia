@@ -364,15 +364,19 @@ $ rails g web_app_theme:theme sign --layout-type=sign --theme="red" --engine=ham
 
 private
   
+      # Overwriting the sign_out redirect path method
   def after_sign_out_path_for(resource_or_scope)
-    scope = Devise::Mapping.find_scope!(resource_or_scope)
-    send(:"new_#{scope}_session_path")
+      # return to index page
+    root_path
+      # or return to sign-in page
+#    scope = Devise::Mapping.find_scope!(resource_or_scope)
+#    send(:"new_#{scope}_session_path")
   end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: app/controllers/home_controller.rb
 # ADD immediately after line 1 class HomeController 
-  skip_before_filter :authenticate_user!, :only => [ :index, :new ]
+  skip_before_filter :authenticate_user!, :only => [ :index ]
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # *********************************************************************
@@ -536,7 +540,11 @@ private
 
 # EDIT: config/routes.rb  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD the :controllers clause to the existing devise_for :users  :
-  devise_for :users, :controllers => { :registrations => "milia/registrations" }
+  devise_for :users, :controllers => { 
+    :registrations => "milia/registrations",
+    :sessions => "milia/sessions" 
+  }
+
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT: app/models/user.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -609,4 +617,7 @@ config/initializers/milia.rb now supported for config parameters
 
  TODO: sign-up form needs return coupon: { coupon: }
 
+ flash.clear in layout
+ changed appctlr authenticate tenant code
 
+ notes MUST say that milia expects naming of: authenticate_tenant! only
