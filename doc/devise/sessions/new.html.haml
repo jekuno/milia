@@ -6,6 +6,8 @@
       - flash.each do |type, message|
         %div{ :class => "message #{type}" }
           %p= message
+    - flash.clear  # clear contents so we won't see it again
+
     = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
       .group.wat-cf
         .left= f.label :email, :class => "label right"

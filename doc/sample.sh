@@ -543,7 +543,8 @@ private
 # ADD the :controllers clause to the existing devise_for :users  :
   devise_for :users, :controllers => { 
     :registrations => "milia/registrations",
-    :sessions => "milia/sessions" 
+    :sessions => "milia/sessions", 
+    :confirmations => "milia/confirmations" 
   }
 
 #<<<< EDIT <<<<<<<<<<<<<<<<<
