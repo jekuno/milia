@@ -46,7 +46,7 @@ def create
         
   else
     flash[:error] = "Recaptcha codes didn't match; please try again"
-    prep_signup_view( params[:tenant], params[:user], params[:coupon] )
+    prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
     render :new
   end
 
