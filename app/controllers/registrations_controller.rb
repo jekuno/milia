@@ -28,13 +28,10 @@ def create
 
         devise_create   # devise resource(user) creation; sets resource
 
-puts ">>>>>>>>>> errs: #{resource.errors.empty?}; is_ff? #{is_flashing_format?}; #{flash.inspect}  <<<<<<<<<<<"
-
         if resource.errors.empty?   #  SUCCESS!
         
             # do any needed tenant initial setup
           Tenant.tenant_signup(resource, @tenant, params[:coupon])
-
 
         else  # user creation failed; force tenant rollback
           raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
