@@ -70,13 +70,13 @@ module Milia
 # -- sets current tenant
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
+  puts ">>>>>>>>>>> AUTHENTICATE! ctlr: #{controller_name}, actn: #{action_name}  <<<<<<<<<<<<"
 
     unless authenticate_user!
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
 
       flash[:error] = "cannot sign in as #{email}; check email/password"
 
-  puts ">>>>>>>>>>> ctlr: #{controller_name}, actn: #{action_name}  <<<<<<<<<<<<"
 
       return false  # abort the before_filter chain
     end
