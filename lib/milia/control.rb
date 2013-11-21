@@ -68,7 +68,6 @@ module Milia
 # authenticate_tenant! -- authorization & tenant setup
 # -- authenticates user
 # -- sets current tenant
-# -- sets up app environment for this user
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
 
@@ -85,9 +84,6 @@ module Milia
 
     set_current_tenant   # relies on current_user being non-nil
 
-    # any application-specific environment set up goes here
-    yield if block_given? && user_signed_in?
-
     true  # allows before filter chain to continue
   end
 
@@ -97,8 +93,10 @@ module Milia
     logger.info("MARKETING - New account attempted #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:company]}")
     flash[:error] = "Sorry: new accounts not permitted at this time"
       
-    # uncomment if using Airbrake & airbrake gem
-    #  notify_airbrake( $! )  # have airbrake report this -- requires airbrake gem
+      # if using Airbrake & airbrake gem
+    if ::Milia.use_airbrake
+      notify_airbrake( $! )  # have airbrake report this -- requires airbrake gem
+    end
     redirect_back
   end
   
