@@ -1,6 +1,6 @@
 module Milia
 
-  class ConfirmationsController < Devise::ConfirmationsControllerr
+  class ConfirmationsController < Devise::ConfirmationsController
 
     skip_before_action :authenticate_tenant!, :only => [:show, :new, :create]
 
