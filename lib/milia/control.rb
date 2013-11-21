@@ -76,6 +76,8 @@ module Milia
 
       flash[:error] = "cannot sign in as #{email}; check email/password"
 
+  puts ">>>>>>>>>>> ctlr: #{controller_name}, actn: #{action_name}  <<<<<<<<<<<<"
+
       return false  # abort the before_filter chain
     end
 
