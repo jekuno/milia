@@ -78,6 +78,7 @@ capybara-*html
 
 #gem
 pkg/
+*.gem
 
 # other
 .loadpath
@@ -87,3 +88,7 @@ temp*.txt
 config/database.yml
 *.dump
 .bashrc
+
+#git
+*.keep
+*.gitkeep
