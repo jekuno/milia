@@ -86,7 +86,7 @@ module Milia
     set_current_tenant   # relies on current_user being non-nil
 
     # any application-specific environment set up goes here
-    yield if block_given?
+    yield if block_given? && user_signed_in?
 
     true  # allows before filter chain to continue
   end

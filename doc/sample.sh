@@ -621,3 +621,6 @@ config/initializers/milia.rb now supported for config parameters
  changed appctlr authenticate tenant code
 
  notes MUST say that milia expects naming of: authenticate_tenant! only
+
+# EDIT: app/controllers/home_controller.rb
+
