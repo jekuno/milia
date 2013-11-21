@@ -10,6 +10,7 @@ module Milia
         
         require File.dirname(__FILE__) + '/../../app/controllers/registrations_controller'
         require File.dirname(__FILE__) + '/../../app/controllers/sessions_controller'
+        require File.dirname(__FILE__) + '/../../app/controllers/application_controller'
     end
 
     rake_tasks do

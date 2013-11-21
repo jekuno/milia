@@ -14,6 +14,14 @@ module Milia
   mattr_accessor :use_recaptcha
   @@use_recaptcha = true
 
+  # use sign_out to root; else return to sign-in page
+  mattr_accessor :signout_to_root
+  @@signout_to_root = true
+
+  # use airbrake gem to log exceptions
+  mattr_accessor :use_airbrake
+  @@use_airbrake = false
+
   # Default way to setup milia. 
   def self.setup
     yield self
