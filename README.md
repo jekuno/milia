@@ -38,7 +38,7 @@ The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
 
 * Rails 4.0 adapted (changes to terms, strong_parameters, default_scope, etc)
 * Devise 3.2 adapted
-* All the changes I used to advise for you to put in applications_controller.rb are now automatically loaded into ActionController by milia.
+* All the changes which version 0.3.x advised to be inserted in applications_controller.rb are now automatically loaded into ActionController by milia.
 * that includes authenticate_tenant!
 * so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
 
@@ -48,7 +48,7 @@ There were numerous requests for me to provide a complete sample web application
 which uses milia and devise. I have done this.
 
 * see doc/sample.sh for complete step-by-step instructions for setting up and creating a working app.
-* the sample.sh instructions are very detailed and loaded with comments.
+* the sample.sh instructions are very detailed and loaded with comments (600 lines!).
 * the sample app uses web-theme-app to provide some pleasantly formatted views for your testing pleasure.
 * the instructions take you to two stages: one with simple devise and no milia, and finally installing milia for complete tenanting.
 * the doc/ directory also contains a devise directory for adding into the app/views/ directory. these files are pre-formatted for the pretty views.
@@ -57,14 +57,14 @@ which uses milia and devise. I have done this.
 * find it at: https://github.com/dsaronin/sample-milia-app
 
 ### WARNING: don't go all commando and try to change everything at once!
-### WARNING: don't go all perfectionist and try to bring up a fully fleshed out app at once!
+### WARNING: don't go all perfectionist and try to bring up a fully written app at once!
 
 Just follow the instructions, exactly, step-by-step. Get the basics working. Then change, adapt, and spice to taste.
 Please?! Because I'm more inclined to help you solve problems if you've started out by 
 getting the sample working exactly as described! If you've tried to go off into the jungle on your own, you are, well, on
 your own. And as they say, _"get out the way you got in!"_
 
-## converting an existing app to multi-tenanted with milia
+## converting an existing app to multi-tenanted
 
 It is doable, but you'll need to first understand how milia basically is installed. I'd still recommend 
 bringing up the sample-milia-app, getting it working, and then figuring out how to either graft it onto your app.
@@ -94,8 +94,8 @@ Kibali is primarily oriented for functioning as a before_action role authenticat
 * necessary models: user, tenant
 * necessary migrations: user, tenant, tenants_users (join table)
 
-You must understand which of your apps models will be tenanted ( _acts_as_tenant_ ) 
-and which will be universal ( _acts_as_universal ). Universal data NEVER has critical user/company
+You must understand which of your apps models will be tenanted ( <i>acts_as_tenant</i> ) 
+and which will be universal ( <i>cts_as_universal</i>). Universal data NEVER has critical user/company
 information in the table. It is usually only for system-wide constants. For example, if you've put
 too much user information in the users table, you'll need to seperate it out. by definition, the devise 
 user table MUST be universal and should only contain email, encrypted password, and devise-required data.
@@ -146,6 +146,12 @@ Or in the Gemfile:
 
 ```ruby
   gem 'milia', '~>1.0'
+```
+
+If you'll be working with any beta or leading edge version:
+
+```
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
 ```
   
 ## Getting started
