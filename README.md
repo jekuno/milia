@@ -364,7 +364,7 @@ Only designate one model in this manner.
   end  # class Tenant
 ```
 
-### Clean up any generated belongs_to tenant references in all models.
+### Clean up any generated belongs_to tenant references in all models
 
 which the generator might have generated 
 ( both <i>acts_as_tenant</i> and <i>acts_as_universal</i> will specify these ).
