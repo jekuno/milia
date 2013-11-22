@@ -76,6 +76,19 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
+## Authorized Roles
+
+Milia doesn't have any requirements re roles for users. But you will probably need
+something in your app to support different roles levels. Devise recommends cancan, but
+I have not used it and do not know how it might affect milia. In my app, I used to use
+ACL9 before it encountered version issues with Rails. Rather than debugging it, I spun
+off my own simplified version which I use now with great success. The gem I wrote is
+open sourced. It is called _kibali_ and is available at github: https://github.com/dsaronin/kibali. 
+Kibali is a simple replacement for ACL9, a role-based authentication gem. 
+I prefer the non-obstrusive nature of kibali and the clear-cut way it deliniates
+roles for actions at the start of each controller. This simplicity was also in ACL9.
+Kibali is primarily oriented for functioning as a before_action role authentication scheme for Rails controllers.
+
 ## Structure
 
 * necessary models: user, tenant
@@ -105,6 +118,20 @@ invitations (below) to bring other members into the account on the app.
 sent to them, they click on an activate or confirm link, and then they become a member of a tenanted group.
 * The invitation process involves creating both a new user (within the current_tenant) and its corresponding
 member_data records.
+* ALL models (whether tenanted or universal) are expected to have a field in the table labelled: tenant_id.
+* YOUR CODE SHOULD NEVER EVER TRY TO CHANGE OR SET THE tenant_id OF A RECORD. milia will not allow it, milia
+will check for deviance; milia will raise exceptions if it's wrong; and milia will override it to maintain integrity.
+* Tenanted records will have tenant_id set to the appropriate tenant automagically by milia.
+* Universal records will have tenant_id always set to nil, automagically by milia; and references to any
+universal table will ALWAYS expect this field to be nil.
+* Pure join tables (has_and_belongs_to_many HABTM associations) get neither designation (tenant nor universal).
+The way that rails accesses these ensures that it will validate the tenant of joined member. A pure HABTM join
+table is created with generation such as follows:
+
+```
+  rails g migration CreateModel1sModel2sJoinTable model1s model2s
+```
+
 
 
 ## Installation
@@ -125,164 +152,177 @@ Or in the Gemfile:
 
 ### Rails setup
 
-Milia expects a user session, so please set one up
+Milia expects a user session, so please set one up. Rails 4 now
+handles this with a gem, so edit your Gemfile to include:
 
 ```
-  $ rails g session_migration
-      invoke  active_record
-      create    db/migrate/20111012060818_add_sessions_table.rb
+  gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 ```
-  
+
+Then run BUNDLE install to get the new gems
+
+```
+  $ bundle install
+```
+
+Now generate the session migration
+
+``` 
+  $ rails g active_record:session_migration
+```
+
 ### Devise setup
 
 * See https://github.com/plataformatec/devise for how to set up devise.
 * The current version of milia requires that devise use a *User* model.
+
+Here are my recommendations for working with devise and milia:
+
+Start the devise generation:
+
+```
+  $ rails g devise:install
+  $ rails g devise user
+```
+
+Add the following in <i>config/routes.rb</i> to the existing devise_for :users  :
+
+```
+  devise_for :users, :controllers => { 
+    :registrations => "milia/registrations",
+    :sessions => "milia/sessions", 
+    :confirmations => "milia/confirmations" 
+  }
+```
+
+Add the appropriate line below to <i>config/environments/</i>_ 
+files <i>development.rb, production.rb, test.rb</i>_ (respectively below, editing hosts as appropriate for your app).
+Make sure you've also correctly set up the ActionMailer::Base.smtp_settings. If you're unclear as to how to 
+do that, refer to the sample-milia-app.
+
+```
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app.com', :protocol => 'https' }
+  config.action_mailer.default_url_options = { :host => "www.example.com" }
+```
+
+EDIT: <i>db/migrate/xxxxxxx_devise_create_users.rb</i>
+and uncomment the confirmable section, it will then look as follows:
+
+```
+      ## Confirmable
+      t.string   :confirmation_token
+      t.datetime :confirmed_at
+      t.datetime :confirmation_sent_at
+      t.string   :unconfirmed_email # Only if using reconfirmable
+```
+
+and uncomment the confirmation_token index line to look as follows
+
+```
+    add_index :users, :confirmation_token,   :unique => true
+```
+
+edit <i>config/initializers/devise.rb</i> 
+and change mailer_sender to be your from: email address
+
+```
+  config.mailer_sender = "my-email@simple-milia-app.com"
+```
+
+OPTIONAL (not required for milia): 
+in the same initializer file, locate and uncomment the following lines:
+
+```
+  config.pepper = '46f2....'
+  config.confirmation_keys = [ :email ]
+  config.email_regexp = /\A[^@]+@[^@]+\z/
+```
 
 ### Milia setup
 
 #### migrations
 
 *ALL* models require a tenanting field, whether they are to be universal or to
-be tenanted. So make sure the following is added to each migration
+be tenanted. So make sure the following is added to each migration:
 
-<i>db/migrate</i>
+<i>db/migrate/xxxxxxx_create_modelXYZ.rb</i>
 
-```ruby
+```
   t.references :tenant
 ```
 
-Tenanted models will also require indexes for the tenant field:
+Tenanted models will also require indexes for the tenant field.
 
-```ruby
-  add_index :TABLE, :tenant_id
+```
+  add_index :<tablename>, :tenant_id
 ```
 
-Also create a tenants_users join table:
+BUT: Do not add any <i>belongs_to  :tenant</i> statements into any of your
+models. milia will do that for all. I do recommend, however, that you add
+into your <i>app/models/tenant.rb</i> file, one line per tenanted model such
+as the following (replacing <model> with your model's name):
 
-<i>db/migrate/20111008081639_create_tenants_users.rb</i>
-
-```ruby
-  class CreateTenantsUsers < ActiveRecord::Migration
-    def change
-      create_table :tenants_users, :id => false  do |t|
-        t.references   :tenant
-        t.references   :user
-      end
-      add_index :tenants_users, :tenant_id
-      add_index :tenants_users, :user_id
-    end
-  end
+```
+  has_many  :<model>s, :dependency => destroy
 ```
 
-Here's a sample migration for the tenant table. Note that *ALL*
-universal tables require a tenant_id field which will always be nil.
+The reason for this is that if you wish to have a master destroy tenant action,
+it will also remove all related tenanted tables and records.
 
-<i>db/migrate/20111008081620_create_tenants.rb</i>
+Add also to <i>db/migrate/xxxxxxx_devise_create_users.rb</i>
+above the t.timestamps line:
 
-```ruby
-class CreateTenants < ActiveRecord::Migration
-  def change
-    create_table :tenants do |t|
-      t.references :tenant      # tenant to which belongs; nil is UNIVERSAL 
-      t.string  :cname,  :limit => 80, :null => false
-      t.string  :company, :limit => 50
-      t.timestamps
-    end
-      add_index :tenants, :cname
-      add_index :tenants, :company
-  end
-end
+```
+    t.references :tenant
+```
+
+Generate the tenant migration
+
+```
+  $ rails g model tenant tenant:references name:string:index
+```
+
+Generate the tenants_users join table migration
+
+```
+  $ rails g migration CreateTenantsUsersJoinTable tenants users
+```
+
+EDIT: <i>db/migrate/20131119092046_create_tenants_users_join_table.rb</i>
+then uncomment the first index line as follows:
+
+```
+   t.index [:tenant_id, :user_id]
 ```
 
 #### application controller
 
-add the following line AFTER the devise-required filter for authentications:
-
 <i>app/controllers/application_controller.rb</i>
+add the following line IMMEDIATELY AFTER line 4 protect_from_forgery
 
-```ruby
-  before_filter :authenticate_tenant!   # authenticate user and setup tenant
-
-# ------------------------------------------------------------------------------
-# authenticate_tenant! -- authorization & tenant setup
-# -- authenticates user
-# -- sets current tenant
-# -- sets up app environment for this user
-# ------------------------------------------------------------------------------
-  def authenticate_tenant!()
-
-    unless authenticate_user!
-      email = ( params.nil? || params[:user].nil?  ?  ""  : " as: " + params[:user][:email] )
-
-      flash[:notice] = "cannot sign you in#{email}; check email/password and try again"
-      
-      return false  # abort the before_filter chain
-    end
-
-    # user_signed_in? == true also means current_user returns valid user
-    raise SecurityError,"*** invalid sign-in  ***" unless user_signed_in?
-
-    set_current_tenant   # relies on current_user being non-nil
-    
-    # any application-specific environment set up goes here
-    
-    true  # allows before filter chain to continue
-  end
 
 ```
+  before_action :authenticate_tenant!   # authenticate user and sets up tenant
 
-
-catch any exceptions with the following (be sure to also add the designated methods!)
-
-```ruby
   rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
   rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
+
+# milia defines a default max_tenants, invalid_tenant exception handling
+# but you can override if you wish to handle directly
 ```
-
-You'll need to place prep_signup_view method in application_controller.rb; it sets up any attributes required by your signup form. below is the example from my application.
-
-```ruby
-# ------------------------------------------------------------------------------
-  # klass_option_obj -- returns a (new?) object of a given klass
-  # purpose is to handle the variety of ways to prepare for a view
-  # args:
-  #   klass -- class of object to be returned
-  #   option_obj -- any one of the following
-  #       -- nil -- will return klass.new
-  #       -- object -- will return the object itself
-  #       -- hash   -- will return klass.new( hash ) for parameters
-# ------------------------------------------------------------------------------
-  def klass_option_obj(klass, option_obj)
-    return option_obj if option_obj.instance_of?(klass)
-    option_obj ||= {}  # if nil, makes it empty hash
-    return klass.send( :new, option_obj )
-  end  
-
-# ------------------------------------------------------------------------------
-  # prep_signup_view -- prepares for the signup view
-  # args:
-  #   tenant: either existing tenant obj or params for tenant
-  #   user:   either existing user obj or params for user
-# ------------------------------------------------------------------------------
-  def prep_signup_view(tenant=nil, user=nil, coupon='')
-    @user   = klass_option_obj( User, user )
-    @tenant = klass_option_obj( Tenant, tenant )
-    @coupon = coupon
-    @eula   = Eula.get_latest.first
- end
-```
-
-My signup form has fields for user's email, organization's name (tenant model), coupon code, and current EULA version.
-
 
 #### routes
 
+<i>config/routes.rb</i>
 Add the following line into the devise_for :users block
 
-<i>config/routes.rb</i>
-
 ```ruby
-  devise_for :users, :controllers => { :registrations => "milia/registrations" }
+  devise_for :users, :controllers => { 
+    :registrations => "milia/registrations",
+    :sessions => "milia/sessions", 
+    :confirmations => "milia/confirmations" 
+  }
 ```
   
 ### Designate which model determines account
@@ -318,38 +358,24 @@ Only designate one model in this manner.
   end  # class Tenant
 ```
 
+### Clean up any generated belongs_to tenant references in all models.
+
+which the generator might have generated 
+( both <i>acts_as_tenant</i> and <i>acts_as_universal</i> will specify these ).
+
 ### Designate universal models
 
-Add the following acts_as_universal to *ALL* models which are to be universal and
-remove any superfluous
-  
-```ruby
-  belongs_to  :tenant
-```
-  
-which the generator might have generated ( acts_as_tenant will specify that ).
-
-<i>app/models/eula.rb</i>
+Add the following acts_as_universal to *ALL* models which are to be universal.
 
 ```ruby
-  class Eula < ActiveRecord::Base
-    
     acts_as_universal
-  
-  end  # class Eula
 ```
 
 ### Designate tenanted models
 
-Add the following acts_as_tenant to *ALL* models which are to be tenanted and
-remove any superfluous
+Add the following acts_as_tenant to *ALL* models which are to be tenanted.
+Example for a ficticous Post model:
   
-```ruby
-  belongs_to  :tenant
-```
-  
-which the generator might have generated ( acts_as_tenant will specify that ).
-
 <i>app/models/post.rb</i>
 
 ```ruby
@@ -359,7 +385,6 @@ which the generator might have generated ( acts_as_tenant will specify that ).
   
   end  # class Post
 ```
-
 
 ### Exceptions raised
 
@@ -386,17 +411,26 @@ immediately after the new tenant has been created).
 
 ```ruby
   def self.create_new_tenant(params)
-    
-    tenant = Tenant.new(:cname => params[:user][:email], :company => params[:tenant][:company])
+
+    tenant = Tenant.new(:name => params[:tenant][:name])
 
     if new_signups_not_permitted?(params)
-      
+
       raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
-      
+
     else 
       tenant.save    # create the tenant
     end
     return tenant
+  end
+
+  # ------------------------------------------------------------------------
+  # new_signups_not_permitted? -- returns true if no further signups allowed
+  # args: params from user input; might contain a special 'coupon' code
+  #       used to determine whether or not to allow another signup
+  # ------------------------------------------------------------------------
+  def self.new_signups_not_permitted?(params)
+    return false
   end
 ```
 
@@ -425,59 +459,73 @@ work in setting things up for a new tenant.
 #   other  -- any other parameter string from initial request
 # ------------------------------------------------------------------------
   def self.tenant_signup(user, tenant, other = nil)
-    StartupJob.queue_startup( tenant, user, other )
+      #  StartupJob.queue_startup( tenant, user, other )
+      # any special seeding required for a new organizational tenant
   end
 ```
 
 ### View for Organizer sign ups
 
-This example shows how to display a signup form together with recaptcha and eula display & acceptance.
-The exact nature of eula is not relevant to milia usage. 
-You can ignore it, if you wish.
+This example shows how to display a signup form together with recaptcha.
 It also shows usage of an optional coupon field
 for whatever reason you might need. If you're not familiar with haml, leading spaces are significant
 and are used to indicate logical blocks. Otherwise, it's kinda like erb without all the syntactical cruff.
-Leading "." indicate div class; "#" indicates a div ID.
+Leading "." indicate div class; "#" indicates a div ID. The example here is
+taken from sample-milia-app.
 
-<i>app/views/home/new.html.haml</i>
+<i>app/views/devise/registrations/new.html.haml</i>
 
 ```ruby
-.basic-form
-  = error_messages( @user )
-  = form_for(:user, :url => user_registration_path ) do |f|
-    %input{ :name => :eula_id, :value => @eula.id.to_s, :type => :hidden }
-    %fieldset
-      %h3 create a new account for your organization or group
-      
-      = f.label( :email, 'Email*', {:title => "Enter a valid email address for your user ID; this is how your account will be accessed"} )
-      = f.text_field( :email )
-      = fields_for( :tenant ) do |w|
-        = w.label( :company, 'organization*', {:title => "This is a name for your group or organization for the account."} ) 
-        = w.text_field( :company)
-      = label_tag( 'coupon', 'coupon', {:title => "optional promotional code"} )
-      = text_field_tag("coupon", @coupon.to_s, :size => 5 )
-      %br 
-      %p *required; cursor any label for help
-      %br 
+%h1 Simple Milia App
+.block#block-signup
+  %h2 New Organizational Sign up
+  .content
+    %span.description
+      %i
+        If you're a member of an existing group in our system, 
+        click the activate link in the invitation email from your organization's admin.
+        You should not sign up for a new organizational account.
+        %br
+    .flash
+      - flash.each do |type, message|
+        %div{ :class => "message #{type}" }
+          %p= message
+    - flash.clear  # clear contents so we won't see it again
 
-      #dynamic_recaptcha
-        :javascript
-          Recaptcha.create(
-          '#{ENV['RECAPTCHA_PUBLIC_KEY']}',
-          document.getElementById('dynamic_recaptcha'),
-          {
-          theme: 'clean',
-          tabindex: 0,
-          callback: Recaptcha.focus_response_field
-          })
-      = submit_tag( 'Sign up', :class => "submit modal-submit", :value => "Create account & accept terms of service" )
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
+      .group
+        = f.label :email, :class => "label"
+        = f.text_field :email, :class => "text_field"
+        %span.description Ex. test@example.com
+      .group
+        = f.label :password, :class => "label"
+        = f.password_field :password, :class => "text_field"
+        %span.description must be at least 6 characters
+      .group
+        = f.label :password_confirmation, "Re-enter Password", :class => "label"
+        = f.password_field :password_confirmation, :class => "text_field"
+        %span.description to confirm your password
 
-    %fieldset
-      = label_tag(:eula,"terms of service*",{:title => "you are agreeing to these terms of service when you sign up"} )
-      = text_area_tag(:eula, @eula.eula_text, :class => "legal", :readonly => true)
-      %br 
-      %p{:style => "display:block;padding: 1.5em 0;"}
-        = @eula.click_msg
+      .group
+        = fields_for( :tenant ) do |w|
+          = w.label( :name, 'Organization', :class => "label" ) 
+          = w.text_field( :name, :class => "text_field")
+          %span.description unique name for your group or organization for the new account
+
+        - if ::Milia.use_coupon
+          .group
+            = label_tag( 'coupon', 'Coupon code', :class => "label" )
+            = text_field_tag( "coupon[coupon]", @coupon.to_s, :size => 8, :class => "text_field" )
+            %span.description optional promotional code, if any
+
+        - if ::Milia.use_recaptcha
+          = recaptcha_tags( :display => { :theme => 'clean', :tabindex => 0 } )
+
+      .group.navform.wat-cf
+        %button.button{ :type => "submit" }
+          = image_tag "web-app-theme/icons/tick.png"
+          Sign up 
+    = render :partial => "devise/shared/links"
 
 ```
 
@@ -518,7 +566,7 @@ for each of the subordinate models in the join.
 
 ## console
 
-Note that even when running the console ($ rails console) will be run in 
+Note that even when running the console, ($ rails console) it will be run in 
 multi-tenanting mode. You will need to establish a current_user and
 setup the current_tenant, otherwise most Model DB accesses will fail.
 
@@ -546,9 +594,6 @@ change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
   (setup as below) nor any field other than the joined references; they don't have a tenant_id field;
   rails will invoke the default_scope of the appropriate joined table which does have a tenant_id field.
 
-```
-   create_table :tablename, :id => false  do |t|
-```
 
 ## Further documentation
 * Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
@@ -570,5 +615,5 @@ at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
 
 ## Copyright
 
-Copyright (c) 2011 Daudi Amani. See LICENSE.txt for further details.
+Copyright (c) 2013 Daudi Amani. See LICENSE.txt for further details.
 

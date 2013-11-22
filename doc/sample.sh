@@ -270,7 +270,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # ADD: following AFTER the final config.action_xxxxx stuff >>>>>>>>>>>>>>>>>>>>>>
 
   # devise says to define default url
-  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app', :protocol => 'https' }
+  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app.com', :protocol => 'https' }
 
   ActionMailer::Base.delivery_method = :smtp
 
