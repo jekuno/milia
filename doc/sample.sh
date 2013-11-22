@@ -585,3 +585,56 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # activate the new account, sign in, sign out, etc.
 # AFTER signing in, click invite member to invite another member to the organization
 
+
+# *********************************************************************
+# STEP 6 - adding a tenanted members table, then inviting a member
+# *********************************************************************
+
+  $ rails g resource member tenant:references user:references first_name:string last_name:string favorite_color:string
+
+# ADD to app/models/tenant.rb
+  has_many :members, dependent: :destroy
+
+# EDIT self.tenant_signup method
+  # ------------------------------------------------------------------------
+    def self.tenant_signup(user, tenant, other = nil)
+      #  StartupJob.queue_startup( tenant, user, other )
+      # any special seeding required for a new organizational tenant
+      new_member = user.create_member(
+        first_name: "First",
+        last_name:  "Admin",
+        favorite_color: "blue"
+      )
+      # assumes new_member.errors.empty? true
+    end
+
+
+
+# EDIT app/models/member.rb
+# REMOVE belongs_to :tenant
+# ADD
+  acts_as_tenant
+
+# EDIT app/views/members/new.html.haml
+
+# EDIT app/models/user.rb
+# ADD
+    has_one :member, :dependent => :destroy
+
+# EDIT app/controllers/application_controller.rb
+# ADD:
+  before_action  :prep_org_name
+
+private
+
+# org_name will be passed to layout & view
+  def prep_org_name()
+    @org_name = ( user_signed_in?  ?
+      Tenant.current_tenant.name  :
+      "Simple Milia App"
+    )
+
+  end
+
+changes to layout for @org_name
+changes to layout for invite member
