@@ -1,9 +1,9 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 3.2 applications which uses
-the devise gem for user authentication.
+Milia is a multi-tenanting gem for hosted Rails 4.0.x applications which use
+the devise gem for user authentication and registrations.
 
-## Basic concepts
+## Basic concepts for the milia multi-tenanting gem
 
 * should be transparent to the main application code
 * should be symbiotic with user authentication
@@ -29,15 +29,83 @@ The Organizer becomes the first member (user) of the organization (tenant).
 Thereafter, other members only obtain entry to the organization (tenant) 
 by invitation. New tenants are not created for every new user.
 
+## Version
+
+milia v1.0.0 is the beta version for Rails 4.0.x and is now available for usage.
+The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
+
+## What's changed?
+
+* Rails 4.0 adapted (changes to terms, strong_parameters, default_scope, etc)
+* Devise 3.2 adapted
+* All the changes I used to advise for you to put in applications_controller.rb are now automatically loaded into ActionController by milia.
+* that includes authenticate_tenant!
+* so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
+
+## Sample app and documentation
+
+There were numerous requests for me to provide a complete sample web application
+which uses milia and devise. I have done this.
+
+* see doc/sample.sh for complete step-by-step instructions for setting up and creating a working app.
+* the sample.sh instructions are very detailed and loaded with comments.
+* the sample app uses web-theme-app to provide some pleasantly formatted views for your testing pleasure.
+* the instructions take you to two stages: one with simple devise and no milia, and finally installing milia for complete tenanting.
+* the doc/ directory also contains a devise directory for adding into the app/views/ directory. these files are pre-formatted for the pretty views.
+* and doc/ directory has a sample milia-initializer.rb for adding to config/initializers if you wish to alter milia defaults.
+* the entire sample is also fully available on github, if you wish to check your work. diff can be your friend.
+* find it at: https://github.com/dsaronin/sample-milia-app
+
+### WARNING: don't go all commando and try to change everything at once!
+### WARNING: don't go all perfectionist and try to bring up a fully fleshed out app at once!
+
+Just follow the instructions, exactly, step-by-step. Get the basics working. Then change, adapt, and spice to taste.
+Please?! Because I'm more inclined to help you solve problems if you've started out by 
+getting the sample working exactly as described! If you've tried to go off into the jungle on your own, you are, well, on
+your own. And as they say, _"get out the way you got in!"_
+
+## converting an existing app to multi-tenanted with milia
+
+It is doable, but you'll need to first understand how milia basically is installed. I'd still recommend 
+bringing up the sample-milia-app, getting it working, and then figuring out how to either graft it onto your app.
+Or (recommended), grafting your app onto it. I prefer to work that way because it's based off of a pure Rails 4.0
+and devise 3.2 install.
+
+## Dependency requirements
+
+* Rails 4.0.x
+* Devise 3.2.x
+
 ## Structure
 
 * necessary models: user, tenant
 * necessary migrations: user, tenant, tenants_users (join table)
 
-## Dependency requirements
+You must understand which of your apps models will be tenanted ( _acts_as_tenant_ ) 
+and which will be universal ( _acts_as_universal ). Universal data NEVER has critical user/company
+information in the table. It is usually only for system-wide constants. For example, if you've put
+too much user information in the users table, you'll need to seperate it out. by definition, the devise 
+user table MUST be universal and should only contain email, encrypted password, and devise-required data.
+ALL OTHER USER DATA (name, phone, address, etc) should be broken out into a tenanted table (say called member_data)
+which belongs_to :user, and in the User model, has_one :member_data. Ditto for organization (account or company)
+information.
 
-* Rails 3.2 or higher
-* Devise 2.1.2 or higher
+Most of your tables (except for pure join tables, users, and tenants) SHOULD BE tenanted. You should rarely have
+universal tables, even for things you consider to be system settings. At some time in the future, your accounts
+(organizations) will want to tailor/customize this data. So might as well start off correctly by making the
+table tenanted. It costs you nothing to do so now at the beginning. It does mean that you will need to seed 
+these tables whenever a new tenant (organizational account) is created.
+
+Finally: 
+
+* tenants = organizational accounts and are created via sign up, a one-time event. this also creates the 
+first MEMBER of that account in your app who is usually the organizing admin. This person can then issue
+invitations (below) to bring other members into the account on the app.
+* members = members WITHIN a tenant and are created by invitation only; they do NOT sign up. An invitation is
+sent to them, they click on an activate or confirm link, and then they become a member of a tenanted group.
+* The invitation process involves creating both a new user (within the current_tenant) and its corresponding
+member_data records.
+
 
 ## Installation
 
@@ -50,7 +118,7 @@ Either install the gem manually:
 Or in the Gemfile:
 
 ```ruby
-  gem 'milia'
+  gem 'milia', '~>1.0'
 ```
   
 ## Getting started
