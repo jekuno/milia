@@ -600,12 +600,8 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
     def self.tenant_signup(user, tenant, other = nil)
       #  StartupJob.queue_startup( tenant, user, other )
       # any special seeding required for a new organizational tenant
-      new_member = user.create_member(
-        first_name: "First",
-        last_name:  "Admin",
-        favorite_color: "blue"
-      )
-      # assumes new_member.errors.empty? true
+
+      Member.create_org_admin(user)
     end
 
 
@@ -614,6 +610,19 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # REMOVE belongs_to :tenant
 # ADD
   acts_as_tenant
+  def self.create_org_admin(user)
+    new_member = user.create_member(
+      first_name: "First",
+      last_name:  "Admin",
+      favorite_color: "blue"
+    )
+    unless new_member.errors.empty?
+      raise ArgumentError, new_member.errors.full_messages.uniq.join(", ")
+    end
+
+    return new_member
+      
+  end
 
 # EDIT app/views/members/new.html.haml
 
@@ -638,3 +647,11 @@ private
 
 changes to layout for @org_name
 changes to layout for invite member
+members_controoller layouts
+
+
+NEED MILIA API EXPLAINED: Tenant.current_tenant, etc
+
+error_styles.sass
+
+
