@@ -30,12 +30,6 @@ def create
 
         if resource.errors.empty?   #  SUCCESS!
 
-            # if we're using milia's invite_member helpers
-          if ::Milia.use_invite_member
-              # then flag for our confirmable that we won't need to set up a password
-            resource.update_attributes( skip_confirm_change_password: true )
-          end
-        
             # do any needed tenant initial setup
           Tenant.tenant_signup(resource, @tenant, params[:coupon])
 
@@ -92,7 +86,13 @@ end   # def create
 # ------------------------------------------------------------------------------
   def devise_create
     build_resource(sign_up_params)
-
+   
+      # if we're using milia's invite_member helpers
+    if ::Milia.use_invite_member
+        # then flag for our confirmable that we won't need to set up a password
+      resource.skip_confirm_change_password  = true
+    end
+ 
     if resource.save
       yield resource if block_given?
       if resource.active_for_authentication?
