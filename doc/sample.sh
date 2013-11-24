@@ -652,6 +652,8 @@ members_controoller layouts
 
 NEED MILIA API EXPLAINED: Tenant.current_tenant, etc
 
-error_styles.sass
+web-app-themes: add to generator: error_styles.sass
 
+user migration needs skip_confirm_change_password
+nt.rb first user needs skip_confirm_change_password <- true
 

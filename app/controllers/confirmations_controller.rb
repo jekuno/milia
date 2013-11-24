@@ -1,49 +1,68 @@
+# **************************************************************************
+# The basis for most of this code is from the work-around found on the devise wiki:
+# https://github.com/plataformatec/devise/wiki/How-To:-Override-confirmations-so-users-can-pick-their-own-passwords-as-part-of-confirmation-activation
+# with selected areas commented out for usage with milia's invite_member process
+# **************************************************************************
+
 module Milia
 
   class ConfirmationsController < Devise::ConfirmationsController
 
     skip_before_action :authenticate_tenant!   #, :only => [:show, :new, :create]
 
-# from: https://github.com/plataformatec/devise/wiki/How-To:-Override-confirmations-so-users-can-pick-their-own-passwords-as-part-of-confirmation-activation
 
   # PUT /resource/confirmation
   def update
-    with_unconfirmed_confirmable do
-#      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
-        @confirmable.attempt_set_password(params[:user])
-        if @confirmable.valid?
-          do_confirm
-        else
-          do_show
-          @confirmable.errors.clear #so that we wont render :new
-        end
-#       else
-#         self.class.add_error_on(self, :email, :password_allready_set)
-#       end
+    if ::Milia.use_invite_member
+
+      with_unconfirmed_confirmable do
+  #      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
+          @confirmable.attempt_set_password(params[:user])
+          if @confirmable.skip_confirm_change_password || @confirmable.valid?
+            do_confirm
+          else
+            do_show
+            @confirmable.errors.clear #so that we wont render :new
+          end
+  #       else
+  #         self.class.add_error_on(self, :email, :password_allready_set)
+  #       end
+      end
+
+      unless @confirmable.errors.empty?
+        render :new
+      end
+
+    else  # process as normal devise handling
+      super
     end
 
-    if !@confirmable.errors.empty?
-      render :new
-    end
   end
 
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
 
-    with_unconfirmed_confirmable do
-        do_show   # always force password input & TOS acceptance
+    if ::Milia.use_invite_member
 
-#       if @confirmable.has_no_password? 
-#         do_show
-#       else
-#         do_confirm
-#       end
+      with_unconfirmed_confirmable do
+          do_show   # always force password input
 
-    end  # do
+  #       if @confirmable.has_no_password? 
+  #         do_show
+  #       else
+  #         do_confirm
+  #       end
 
-    if !@confirmable.errors.empty?
-      render :new
+      end  # do
+
+      unless @confirmable.errors.empty?
+        render :new
+      end
+
+    else  # process as normal devise handling
+      super
     end
+
   end
   
   protected
@@ -59,7 +78,6 @@ module Milia
     @confirmation_token = params[:confirmation_token]
     @requires_password = true
     self.resource = @confirmable
-    @eula  = Eula.get_latest.first
     render :show
   end
 

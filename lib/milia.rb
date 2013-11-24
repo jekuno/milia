@@ -1,6 +1,7 @@
 
 require File.dirname(__FILE__) + '/milia/base'
 require File.dirname(__FILE__) + '/milia/control'
+require File.dirname(__FILE__) + '/milia/password_generator'
 
 require File.dirname(__FILE__) + '/milia/railtie' if defined?(Rails::Railtie)
 
@@ -21,6 +22,12 @@ module Milia
   # use airbrake gem to log exceptions
   mattr_accessor :use_airbrake
   @@use_airbrake = false
+
+
+  # use invite_member for devise work-around to invite members
+  # ASSUMES User model
+  mattr_accessor :use_invite_member
+  @@use_invite_member = false
 
   # Default way to setup milia. 
   def self.setup
