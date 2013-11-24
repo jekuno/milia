@@ -1,6 +1,20 @@
 module Milia
 
-  class User < ActiveRecord::Base
+  module InviteMember
+
+# #############################################################################
+    
+    def self.included(base)
+      base.extend ClassMethods
+    end
+
+# #############################################################################
+# #############################################################################
+    module ClassMethods
+      
+    end  # module ClassMethods
+# #############################################################################
+# #############################################################################
 
 # ------------------------------------------------------------------------  
 # save_and_invite_member -- saves the new user record thus inviting member
@@ -23,9 +37,10 @@ module Milia
       return status
     end
 
-  end  # class
 
 private
+
+  require 'password_generator'
 
 # ------------------------------------------------------------------------  
 # check_or_set_password -- if password missing, generates a password
@@ -48,4 +63,8 @@ private
 
   end
 
+# #############################################################################
+  end  # module
+
+# #############################################################################
 end # module
