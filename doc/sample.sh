@@ -164,7 +164,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
   gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-1'
 
   # recaptcha is optional and configured by config.use_recaptcha in milia initializer
   # default is true; if you change it to false, comment out the line below
