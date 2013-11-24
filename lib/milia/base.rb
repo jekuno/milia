@@ -86,6 +86,7 @@ module Milia
 # of binding a user to a tenant
 # ------------------------------------------------------------------------
       def acts_as_universal_and_determines_account()
+        include ::Milia::InviteMember
         has_and_belongs_to_many :tenants
 
         acts_as_universal()
