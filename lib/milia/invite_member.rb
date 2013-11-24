@@ -40,8 +40,6 @@ module Milia
 
 private
 
-  require 'password_generator'
-
 # ------------------------------------------------------------------------  
 # check_or_set_password -- if password missing, generates a password
 # ASSUMES: Milia.use_invite_member
@@ -50,7 +48,7 @@ private
 
     if self.password.blank?
       self.password = 
-        Milia::Password.generate(
+        ::Milia::Password.generate(
           8, Password::ONE_DIGIT | Password::ONE_CASE
         )
 
