@@ -151,7 +151,7 @@ Or in the Gemfile:
 If you'll be working with any beta or leading edge version:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-1'
 ```
   
 ## Getting started
