@@ -28,7 +28,7 @@ module Milia
   # use invite_member for devise work-around to invite members
   # ASSUMES User model
   mattr_accessor :use_invite_member
-  @@use_invite_member = false
+  @@use_invite_member = true
 
   # Default way to setup milia. 
   def self.setup
