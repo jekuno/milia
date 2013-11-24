@@ -122,9 +122,14 @@ module Milia
 
 # ------------------------------------------------------------------------
 # current_tenant -- returns tenant obj for current tenant
+  # return nil if no current tenant defined
 # ------------------------------------------------------------------------
   def current_tenant()
-    return Tenant.find( Thread.current[:tenant_id] )
+    return (
+      Thread.current[:tenant_id].blank?  ?
+      nil  :
+      Tenant.find( Thread.current[:tenant_id] )
+    )
   end
     
 # ------------------------------------------------------------------------
