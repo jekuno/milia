@@ -46,6 +46,7 @@ module Milia
       end
               
       Thread.current[:tenant_id] = tenant_id
+ puts ">>>>>>>>> set_cur_tent; ten_id: #{tenant_id.to_s }\tUSI: #{user_signed_in?.to_s}"
       
       true    # before filter ok to proceed
     end
@@ -70,6 +71,7 @@ module Milia
 # -- sets current tenant
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
+    puts ">>>>>>>>> auth_tenant; session: #{( session[:tenant_id].nil? ? 'nil' : session[:tenant_id].to_s )}"
 
     unless authenticate_user!
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
