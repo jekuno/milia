@@ -17,11 +17,11 @@ module Milia
 
       with_unconfirmed_confirmable do
   #      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
-          @confirmable.attempt_set_password(params[:user])
+          @confirmable.attempt_set_password(user_params)
           if @confirmable.skip_confirm_change_password || @confirmable.valid?
-            do_confirm
+            do_confirm   # user has a password; use it to sign in
           else
-            do_show
+            do_show   # needs to create a password
             @confirmable.errors.clear #so that we wont render :new
           end
   #       else
@@ -29,7 +29,7 @@ module Milia
   #       end
       end
 
-      unless @confirmable.errors.empty?
+      unless @confirmable.errors.empty?   # here if errors
         self.resource = @confirmable
         render :new
       end
@@ -56,7 +56,7 @@ module Milia
 
       end  # do
 
-      unless @confirmable.errors.empty?
+      unless @confirmable.errors.empty?   # here if errors
         self.resource = @confirmable
         render :new
       end
@@ -68,6 +68,11 @@ module Milia
   end
   
   protected
+
+
+  def user_params()
+    params.require(:user).permit(:password, :password_confirmation, :confirmation_token)
+  end
 
   def with_unconfirmed_confirmable
     original_token = params[:confirmation_token]
