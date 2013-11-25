@@ -10,7 +10,7 @@ step-by-step tutorial on getting an app working with milia at the "newdev" branc
 you can access it from your Gemfile as follows:
 
 ```
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta'
 ```
 
 
