@@ -15,6 +15,7 @@ module Milia
   def update
     if ::Milia.use_invite_member
 
+puts ">>>>>>>>>>>>> confirmable#update - sccp: #{@confirmable.skip_confirm_change_password}\tvalid: #{ @confirmable.valid?} <<<<<<<<<<<<<<<<"
       with_unconfirmed_confirmable do
   #      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
           @confirmable.attempt_set_password(user_params)
@@ -38,6 +39,8 @@ module Milia
       super
     end
 
+    puts "######### EoU: #{@performed_render) ##########"
+
   end
 
   # GET /resource/confirmation?confirmation_token=abcdef
@@ -45,6 +48,7 @@ module Milia
 
     if ::Milia.use_invite_member
 
+puts ">>>>>>>>>>>>> confirmable#show  <<<<<<<<<<<<<<<<"
       with_unconfirmed_confirmable do
           do_show   # always force password input
 
