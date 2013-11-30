@@ -39,7 +39,7 @@ puts ">>>>>>>>>>>>> confirmable#update - sccp: #{@confirmable.skip_confirm_chang
       super
     end
 
-    puts "######### EoU: #{@performed_render) ##########"
+    puts "######### EoU: #{@performed_render} ##########"
 
   end
 
