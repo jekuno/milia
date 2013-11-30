@@ -14,12 +14,28 @@ module Milia
   # PUT /resource/confirmation
   def update
     if ::Milia.use_invite_member
+      change_or_confirm_user( true )
+    else  # process as normal devise handling
+      super
+    end
+  end
 
-puts ">>>>>>>>>>>>> confirmable#update - sccp: #{@confirmable.skip_confirm_change_password}\tvalid: #{ @confirmable.valid?} <<<<<<<<<<<<<<<<"
+  # GET /resource/confirmation?confirmation_token=abcdef
+  def show
+    if ::Milia.use_invite_member
+      change_or_confirm_user( false )
+    else  # process as normal devise handling
+      super
+    end
+  end
+  
+  protected
+
+  def change_or_confirm_user(tryset=nil)
       with_unconfirmed_confirmable do
   #      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
           @confirmable.attempt_set_password(user_params)
-          if @confirmable.skip_confirm_change_password || @confirmable.valid?
+          if ( @confirmable.skip_confirm_change_password || @confirmable.valid? )
             do_confirm   # user has a password; use it to sign in
           else
             do_show   # needs to create a password
@@ -35,44 +51,7 @@ puts ">>>>>>>>>>>>> confirmable#update - sccp: #{@confirmable.skip_confirm_chang
         render :new
       end
 
-    else  # process as normal devise handling
-      super
-    end
-
-    puts "######### EoU: #{@performed_render} ##########"
-
   end
-
-  # GET /resource/confirmation?confirmation_token=abcdef
-  def show
-
-    if ::Milia.use_invite_member
-
-puts ">>>>>>>>>>>>> confirmable#show  <<<<<<<<<<<<<<<<"
-      with_unconfirmed_confirmable do
-          do_show   # always force password input
-
-  #       if @confirmable.has_no_password? 
-  #         do_show
-  #       else
-  #         do_confirm
-  #       end
-
-      end  # do
-
-      unless @confirmable.errors.empty?   # here if errors
-        self.resource = @confirmable
-        render :new
-      end
-
-    else  # process as normal devise handling
-      super
-    end
-
-  end
-  
-  protected
-
 
   def user_params()
     params.require(:user).permit(:password, :password_confirmation, :confirmation_token)
