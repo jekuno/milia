@@ -175,7 +175,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # EDIT: app/assets/javascripts/application.js >>>>>>>>>>>>>>>>>>>>>>>>
 # comment out turbolinks in your Javascript manifest file 
 # we won't need turbolinks for this simple sample.
-  //  require turbolinks to 
+  //  require turbolinks
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # BUNDLE install all the gems
@@ -191,8 +191,6 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # Generate home page
   $ rails g controller home index
  
-# remove default Rails index page
-  $ rm public/index.html
 
 # EDIT the config/routes.rb >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ADD the root :to => "home#index" within the do..end block 
@@ -222,17 +220,10 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # Delete the default layout originally generated
   $ rm app/views/layouts/application.html.erb
 
-# CHECK-OUT: 
-# stop, restart server
-# over at the browser, refresh the page and see the theme and colors for the basic template
-# and the template page should come up
-
 # generate some sample text for the page to flesh it out
   $ rails g web_app_theme:themed home --themed-type=text --theme="red" --engine=haml
 
   $ mv app/views/home/show.html.haml app/views/home/index.html.haml
-
-# CHECK-OUT: over at the browser, refresh the page
 
 
 # STEP 4 - SIMPLE devise SET UP (pre-installing milia)
@@ -356,24 +347,14 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
     Devise::SessionsController.layout "sign"
     Devise::RegistrationsController.layout "sign"
     Devise::ConfirmationsController.layout "sign"
+    Devise::PasswordsController.layout "sign"
   end
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # if we use devise to gen the views, they'll be genned in erb and 
 # a different format from the layout style we're using.
-# instead, get the three files from simple-milia-app on github
-# and put them in similarly names paths in your app:
-# the easiest way to do that is to simply copy the entire
-# milia doc/devise directory 
-
-  # USE:  app/views/devise/sessions/new.html.haml
-  # USE:  app/views/devise/registrations/new.html.haml
-  # USE:  app/views/devise/confirmations/new.html.haml
-
-# CHECK-OUT: 
-#   http://localhost:3000/users/sign_in
-# to view the sign-in form
-# then click SIGN UP and view the sign-up form 
+# my web_app_theme has a generator to gen them automagically
+  $ rails g web_app_theme:devise
 
 # EDIT: app/controllers/application_controller.rb  >>>>>>>>>>>>>>>>>>>>>
 # NOTE: this line is only for the basic devise (no milia) version;
@@ -386,6 +367,11 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # ADD immediately after line 1 class HomeController 
   skip_before_action :authenticate_user!, :only => [ :index ]
 #<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# CHECK-OUT: 
+#   http://localhost:3000/users/sign_in
+# to view the sign-in form
+# then click SIGN UP and view the sign-up form 
 
 # *********************************************************************
 # STEP 4 - TEST devise SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
