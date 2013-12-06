@@ -31,7 +31,7 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0 is the beta version for Rails 4.0.x and is now available for usage.
+milia v1.0.0-beta-2 is the beta version for Rails 4.0.x and is now available for usage.
 please use branch: v1.0.0-beta-2 for trying it out
 The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
 
