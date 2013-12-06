@@ -504,7 +504,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   def self.create_new_tenant(tenant_params, coupon_params)
 
-    tenant = Tenant.new(:name => params[:name])
+    tenant = Tenant.new(:name => tenant_params[:name])
 
     if new_signups_not_permitted?(coupon_params)
 
@@ -621,6 +621,12 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
     end
 
 
+# EDIT app/models/user.rb >>>>>>>>>>>>>>>>>>>>
+# ADD
+    has_one :member, :dependent => :destroy
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+
 
 # EDIT app/models/member.rb
 # REMOVE belongs_to :tenant
@@ -691,12 +697,6 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
           = image_tag "web-app-theme/icons/key.png"
           Create user and invite
 #<<<< ADD  <<<<<<<<<<<<<<<<<
-#<<<< EDIT <<<<<<<<<<<<<<<<<
-
-
-# EDIT app/models/user.rb >>>>>>>>>>>>>>>>>>>>
-# ADD
-    has_one :member, :dependent => :destroy
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 # EDIT app/controllers/application_controller.rb

@@ -32,6 +32,7 @@ by invitation. New tenants are not created for every new user.
 ## Version
 
 milia v1.0.0 is the beta version for Rails 4.0.x and is now available for usage.
+please use branch: v1.0.0-beta-2 for trying it out
 The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
 
 ## What's changed?
@@ -50,14 +51,33 @@ which uses milia and devise. I have done this.
 * see doc/sample.sh for complete step-by-step instructions for setting up and creating a working app.
 * the sample.sh instructions are very detailed and loaded with comments (600 lines!).
 * the sample app uses web-theme-app to provide some pleasantly formatted views for your testing pleasure.
-* the instructions take you to two stages: one with simple devise and no milia, and finally installing milia for complete tenanting.
-* the doc/ directory also contains a devise directory for adding into the app/views/ directory. these files are pre-formatted for the pretty views.
-* and doc/ directory has a sample milia-initializer.rb for adding to config/initializers if you wish to alter milia defaults.
+* the instructions take you to three stages: 
+  - one with simple devise and no milia, 
+  - two installing milia for complete tenanting,
+  - three adding in invite_member capability
+* doc/ directory has a sample milia-initializer.rb for adding to config/initializers if you wish to alter milia defaults.
 * the entire sample is also fully available on github, if you wish to check your work. diff can be your friend.
+  this sample on github, however, will always be for the latest release or latest beta (whichever is most recent).
 * find it at: https://github.com/dsaronin/sample-milia-app
 
-### WARNING: don't go all commando and try to change everything at once!
-### WARNING: don't go all perfectionist and try to bring up a fully written app at once!
+### Available docmentation resources for milia
+
+* doc/sample.sh -- this document will ALWAYS be the most recent
+    (for example in the edge branch: "newdev")
+* github.com/milia/wiki/sample-milia-app-tutorial
+    this should be the same as the sample.sh doc for the current
+    stable release (or last beta version); but markdown formatted
+    https://github.com/dsaronin/milia/wiki/sample-milia-app-tutorial
+* milia README (this document):
+    - this will be the knowledgable programmer's digest of the essentials
+    - and thus it won't cover some of the intricacies of actually
+      implementing milia: either the tutorial or sample.sh will do that
+    - if you're a first time milia implementer, please use both the 
+      README and either of the two above documents for assistance: it will save you time.
+
+
+### WARNING: don't go commando and try to change everything at once!
+### WARNING: don't go perfectionist and try to bring up a fully written app at once!
 
 Just follow the instructions, exactly, step-by-step. Get the basics working. Then change, adapt, and spice to taste.
 Please?! Because I'm more inclined to help you solve problems if you've started out by 
@@ -75,6 +95,14 @@ and devise 3.2 install.
 
 * Rails 4.0.x
 * Devise 3.2.x
+
+## this readme is for v1.0.0-beta-2
+
+* changes in beta-2: invite_member capability
+
+* coming soon (beta-3): improved generators getting a new app started
+
+## edge branch: "newdev"
 
 ## Authorized Roles
 
@@ -151,7 +179,7 @@ Or in the Gemfile:
 If you'll be working with any beta or leading edge version:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-2'
 ```
   
 ## Getting started
@@ -194,11 +222,17 @@ Start the devise generation:
 Add the following in <i>config/routes.rb</i> to the existing devise_for :users  :
 
 ```
+  as :user do   #   *MUST* come *BEFORE* devise's definitions (below)
+    match '/user/confirmation' => 'milia/confirmations#update', :via => :put, :as => :update_user_confirmation
+  end
+
   devise_for :users, :controllers => { 
     :registrations => "milia/registrations",
+    :confirmations => "milia/confirmations",
     :sessions => "milia/sessions", 
-    :confirmations => "milia/confirmations" 
+    :passwords => "milia/passwords", 
   }
+
 ```
 
 Add the appropriate line below to <i>config/environments/</i>_ 
@@ -227,6 +261,15 @@ and uncomment the confirmation_token index line to look as follows
 
 ```
     add_index :users, :confirmation_token,   :unique => true
+```
+
+and add above the t.timestamps line:
+
+```
+      # milia member_invitable
+      t.boolean    :skip_confirm_change_password, :default => false
+
+      t.references :tenant
 ```
 
 edit <i>config/initializers/devise.rb</i> 
@@ -276,13 +319,6 @@ as the following (replacing <model> with your model's name):
 The reason for this is that if you wish to have a master destroy tenant action,
 it will also remove all related tenanted tables and records.
 
-Add also to <i>db/migrate/xxxxxxx_devise_create_users.rb</i>
-above the t.timestamps line:
-
-```
-    t.references :tenant
-```
-
 Generate the tenant migration
 
 ```
@@ -318,19 +354,6 @@ add the following line IMMEDIATELY AFTER line 4 protect_from_forgery
 # but you can override if you wish to handle directly
 ```
 
-#### routes
-
-<i>config/routes.rb</i>
-Add the following line into the devise_for :users block
-
-```ruby
-  devise_for :users, :controllers => { 
-    :registrations => "milia/registrations",
-    :sessions => "milia/sessions", 
-    :confirmations => "milia/confirmations" 
-  }
-```
-  
 ### Designate which model determines account
 
 Add the following acts_as_... to designate which model will be used as the key
@@ -404,7 +427,7 @@ Example for a ficticous Post model:
 #### Milia expects a tenant pre-processing & setup hook:
 
 ```ruby
-  Tenant.create_new_tenant(params)   # see sample code below
+  Tenant.create_new_tenant(tenant_params, coupon_params)   # see sample code below
 ```
   
 where the sign-up params are passed, the new tenant must be validated, created,
@@ -416,11 +439,11 @@ immediately after the new tenant has been created).
 <i>app/models/tenant.rb</i>
 
 ```ruby
-  def self.create_new_tenant(params)
+  def self.create_new_tenant(tenant_params, coupon_params)
 
-    tenant = Tenant.new(:name => params[:tenant][:name])
+    tenant = Tenant.new(:name => tenant_params[:name])
 
-    if new_signups_not_permitted?(params)
+    if new_signups_not_permitted?(coupon_params)
 
       raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
 
@@ -467,6 +490,8 @@ work in setting things up for a new tenant.
   def self.tenant_signup(user, tenant, other = nil)
       #  StartupJob.queue_startup( tenant, user, other )
       # any special seeding required for a new organizational tenant
+
+      Member.create_org_admin(user)  # sample if using Member as tenanted member information model
   end
 ```
 
@@ -570,6 +595,16 @@ for each of the subordinate models in the join.
     Comment.joins(stuff).where( where_restrict_tenants(Post, Author) ).all
 ```
 
+## no tenant authorization required controller actions: root_path
+
+Any controller actions, such as the root_path page, will need to skip the tenant & user authorizations.
+For example in <i>app/controllers/home_controller.rb </i> place the following near the top of the controller:
+
+```ruby
+  skip_before_action :authenticate_tenant!, :only => [ :index ]
+```
+
+
 ## console
 
 Note that even when running the console, ($ rails console) it will be run in 
@@ -588,6 +623,174 @@ load when I start the console. This does the following:
 
 change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
 ```
+
+## inviting additional user/members
+
+To keep this discussion simple, we'll give the example of using class Member < Activerecord::Base
+which will be a tenanted table for keeping information regarding all the members in a given
+organization. The name "Member" is not a requirement of milia. But this is how you would set up an
+invite_member capability. It is in this event, that you will require the line in the Tenant
+post-processing hook <i>tenant_signup</i> <pre>Member.create_org_admin(user)</pre> which also
+creates the Member record for the initial admin on the account.
+
+```
+  $ rails g resource member tenant:references user:references first_name:string last_name:string favorite_color:string
+```
+
+ADD to <i>app/models/tenant.rb</i>
+```ruby
+  has_many :members, dependent: :destroy
+```
+
+ADD to <i>app/models/user.rb</i>
+```ruby
+    has_one :member, :dependent => :destroy
+```
+
+
+EDIT <i>app/models/member.rb</i>
+REMOVE belongs_to :tenant
+ADD
+```ruby
+  acts_as_tenant
+
+  DEFAULT_ADMIN = {
+    first_name: "Admin",
+    last_name:  "Please edit me"
+  }
+
+  def self.create_new_member(user, params)
+    # add any other initialization for a new member
+    return user.create_member( params )
+  end
+
+  def self.create_org_admin(user)
+    new_member = create_new_member(user, DEFAULT_ADMIN)
+    unless new_member.errors.empty?
+      raise ArgumentError, new_member.errors.full_messages.uniq.join(", ")
+    end
+
+    return new_member
+      
+  end
+```
+
+CREATE a form for inputting new member information for an invite
+(below is a sample only)
+<i>app/views/members/new.html.haml</i>
+```ruby
+%h1 Simple Milia App
+.block#block-signup
+  %h2 Invite a new member into #{@org_name}
+  .content.login
+    .flash
+      - flash.each do |type, message|
+        %div{ :class => "message #{type}" }
+          %p= message
+    - flash.clear  # clear contents so we won't see it again
+
+    = form_for(@member, :html => { :class => "form login" }) do |f|
+      - unless @member.errors.empty? && @user.errors.empty?
+        #errorExplanation.group
+          %ul
+            = @member.errors.full_messages.uniq.inject(''){|str, msg| (str << "<li> #{msg}") }.html_safe
+            = @user.errors.full_messages.uniq.inject(''){|str, msg| (str << "<li> #{msg}") }.html_safe
+
+      = fields_for( :user ) do |w|
+        .group
+          = w.label :email, :class => "label "
+          = w.text_field :email, :class => "text_field"
+          %span.description Ex. test@example.com; must be unique
+
+      .group
+        = f.label :first_name, :class => "label "
+        = f.text_field :first_name, :class => "text_field"
+
+      .group
+        = f.label :last_name, :class => "label "
+        = f.text_field :last_name, :class => "text_field"
+
+      .group
+        = f.label :favorite_color, :class => "label "
+        = f.text_field :favorite_color, :class => "text_field"
+        %span.description What is your favorite color?
+
+      .group.navform.wat-cf
+        %button.button{ :type => "submit" }
+          = image_tag "web-app-theme/icons/key.png"
+          Create user and invite
+```
+
+## authorized tenanted user landing page:
+
+You will need a members-only landing page for after someone successfully signs into your app.
+Here is what I typically do:
+
+```ruby
+# REPLACE the empty def index ... end with following ADD:
+# this will give you improved handling for letting user know
+# what is expected. If you want to have a welcome page for
+# signed in users, uncomment the redirect_to line, etc.
+  def index
+    if user_signed_in?
+
+        # was there a previous error msg carry over? make sure it shows in flasher
+      flash[:notice] = flash[:error] unless flash[:error].blank?
+      redirect_to(  welcome_path()  )
+
+    else
+
+      if flash[:notice].blank?
+        flash[:notice] = "sign in if your organization has an account"
+      end
+
+    end   # if logged in .. else first time
+
+  end
+
+  def welcome
+  end
+
+```
+
+## Milia API
+
+### From controller-levels:
+
+```ruby
+  set_current_tenant( tenant_id )
+  #  raise InvalidTenantAccess unless tenant_id is one of the current_user valid tenants
+```
+
+set_current_tenant can be used to change the current_tenanted (for example, if a member
+can belong to multiple tenants and wants to switch between them). See example else in this
+README. NOTE: you will normally NEVER use this. Milia does this automatically during
+authorize_tenant! so you never should at the beginning of a session.
+
+### From model-levels:
+```ruby
+  Tenant.current_tenant -- returns tenant object for the current tenant; nil if none
+
+  Tenant.current_tenant_id -- returns tenant_id for the current tenant; nil if none
+```
+
+If you need to gain access to tenant object itself (say to get the name of the tenant),
+then use these accessor methods.
+
+### From background, rake, or console-level (CAUTION):
+
+From background jobs (only at the start of the task); 
+tenant can either be a tenant object or an integer tenant_id; anything else will raise
+exception.  set_current_tenant -- is model-level ability to set the current tenant
+NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
+the models ... it is only useful and safe WHEN performed at the start
+of a background job (DelayedJob#perform) or at start of rails console, or a rake task.
+
+```ruby
+  Tenant.set_current_tenant( tenant )
+    raise ArgumentError, "invalid tenant object or id"
+```
+
 
 ## Cautions
 

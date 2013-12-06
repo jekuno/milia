@@ -26,5 +26,9 @@ Milia.setup do |config|
   # attempting the signup (in case you wish to contact them)
   config.use_airbrake = false
 
+# use invite_member for devise work-around to invite members
+# ASSUMES User model
+  config.use_invite_member = true
+
 
 end
