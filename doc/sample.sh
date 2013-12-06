@@ -592,7 +592,6 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
   http://localhost:3000/
 # click sign up to sign up a new account, get confirmation email (or view in log)
 # activate the new account, sign in, sign out, etc.
-# AFTER signing in, click invite member to invite another member to the organization
 
 
 # *********************************************************************
@@ -600,7 +599,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # *********************************************************************
 # remove any users, and tenants created above in STEP 5
 # start the rails console
-  $ rail c
+  $ rails c
     > User.all.each{|x| x.destroy}
     > Tenant.all.each{|x| x.destroy}
     > exit
@@ -775,6 +774,14 @@ private
 #<<<< ADD  <<<<<<<<<<<<<<<<<
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
+
+# run the migration
+  $ rake db:migrate
+
+# CHECK-OUT: check things out at browser before proceeding
+# stop/restart foreman
+# you will have to first sign-up, confirm, then you can invite_member
+# sign-out, confirm new member, etc
 
 # MILIA API EXPLAINED: Tenant.current_tenant, etc
 
