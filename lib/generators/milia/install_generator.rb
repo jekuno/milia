@@ -1,10 +1,18 @@
-class InstallGenerator < Rails::Generators::Base
-  desc "Installs milia"
+require 'rails/generators/base'
 
-  source_root File.expand_path("../templates", __FILE__)
-  
-  def copy_initializer_file
-    copy_file 'initializer.rb', 'config/initializers/milia.rb'
-  end
+module Milia
+  module Generators
 
-end
+    class InstallGenerator < Rails::Generators::Base
+      desc "Creates a milia initializer"
+
+      source_root File.expand_path("../templates", __FILE__)
+      
+      def copy_initializer
+        copy_file 'initializer.rb', 'config/initializers/milia.rb'
+      end
+
+    end  # class InstallGen
+
+  end # module Gen
+end # module Milia
