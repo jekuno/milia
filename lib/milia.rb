@@ -7,9 +7,6 @@ require File.dirname(__FILE__) + '/milia/invite_member'
 require File.dirname(__FILE__) + '/milia/railtie' if defined?(Rails::Railtie)
 
 module Milia
-  class Engine < Rails::Engine
-
-  end
 
   # expecting params[:coupon] for sign-ups
   mattr_accessor :use_coupon

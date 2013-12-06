@@ -1,5 +1,5 @@
-class InitializerGenerator < Rails::Generators::Base
-  desc "Creates a milia initializer file in config/initializers"
+class InstallGenerator < Rails::Generators::Base
+  desc "Installs milia"
 
   source_root File.expand_path("../templates", __FILE__)
   
