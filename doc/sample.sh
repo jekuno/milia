@@ -15,6 +15,20 @@
 #   https://github.com/dsaronin/sample-milia-app
 #
 # *********************************************************************
+# RESOURCES
+# *********************************************************************
+# doc/sample.sh -- this document will ALWAYS be the most recent
+#   (for example in the edge branch: "newdev")
+# github.com/milia/wiki/sample-milia-app-tutorial
+#   this should be the same as the sample.sh doc for the current
+#   stable release (or last beta version); but markdown formatted
+#   https://github.com/dsaronin/milia/wiki/sample-milia-app-tutorial
+# milia README:
+#   this will be the knowledgable programmer's digest of the essentials
+#   and thus it won't cover some of the intricacies of actually
+#   implementing milia: either the tutorial or sample.sh will do that
+#
+# *********************************************************************
 # FEEDBACK
 # *********************************************************************
 # If you run into difficulties while following the steps here,
@@ -650,8 +664,8 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
       - unless @member.errors.empty? && @user.errors.empty?
         #errorExplanation.group
           %ul
-            = @member.errors.full_messages.uniq.inject(''){|str, msg| str << "<li> #{msg}"}.html_safe
-            = @user.errors.full_messages.uniq.inject(''){|str, msg| str << "<li> #{msg}"}.html_safe
+            = @member.errors.full_messages.uniq.inject(''){|str, msg| (str << "<li> #{msg}") }.html_safe
+            = @user.errors.full_messages.uniq.inject(''){|str, msg| (str << "<li> #{msg}") }.html_safe
 
       = fields_for( :user ) do |w|
         .group
@@ -762,5 +776,26 @@ private
 #<<<< EDIT <<<<<<<<<<<<<<<<<
 
 
-# TODO: NEED MILIA API EXPLAINED: Tenant.current_tenant, etc
+# MILIA API EXPLAINED: Tenant.current_tenant, etc
+
+# from controller-level:
+
+  set_current_tenant( tenant_id )
+    raise InvalidTenantAccess unless tenant_id is one of the current_user valid tenants
+
+# from model-level:
+  Tenant.current_tenant -- return tenant object for the current tenant; nil if none
+
+  Tenant.current_tenant_id -- returns tenant_id for the current tenant; nil if none
+
+# from background job s (only at the start of the task); 
+# tenant can either be a tenant object or an integer tenant_id; anything else will raise
+# exception
+# set_current_tenant -- model-level ability to set the current tenant
+# NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
+# the models ... it is only useful and safe WHEN performed at the start
+# of a background job (DelayedJob#perform)
+
+  Tenant.set_current_tenant( tenant )
+    raise ArgumentError, "invalid tenant object or id"
 
