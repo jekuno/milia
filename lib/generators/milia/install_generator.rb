@@ -35,10 +35,10 @@ module Milia
          gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
          run "bundle install"
 
-         generate "controller" "home index"
+         generate "controller", "home index"
          generate "active_record:session_migration"
-         generate "model" "tenant tenant:references name:string:index"
-         generate "migration" "CreateTenantsUsersJoinTable tenants users"
+         generate "model", "tenant tenant:references name:string:index"
+         generate "migration", "CreateTenantsUsersJoinTable tenants users"
 
          inject_into_file "config/routes.rb", after: "# root 'welcome#index'\n" do 
            snippet_routes_root_path
@@ -49,7 +49,7 @@ module Milia
            snippet_app_ctlr_header
          end
 
-         inject_into_class( "app/controllers/home_controller.rb", HomeController do 
+         inject_into_class "app/controllers/home_controller.rb", HomeController do 
             snippet_home_ctlr_header
          end
 
@@ -60,22 +60,49 @@ module Milia
            snippet_routes_devise
          end
 
-         inject_into_class "app/models/user.rb",
-           User do 
+         inject_into_class "app/models/user.rb", User do 
            snippet_model_user_determines_account
          end
 
-        snippet_model_tenant_determines_tenant
-        DELETE:  belongs_to  :tenant
+         gsub_file "app/models/tenant.rb", /belongs_to:\s+:tenant/, ''
+
+         inject_into_class "app/models/tenant.rb", Tenant do 
+            snippet_model_tenant_determines_tenant
+         end
 
        end  # skip block?
      end
 
      def setup_milia_member
        unless true
-         generate "member" "tenant:references user:references first_name:string last_name:string"
-         snippet_add_member_call_to_tenant_signup
-       end
+         generate "member", "tenant:references user:references first_name:string last_name:string"
+
+         inject_into_file "app/models/tenant.rb",
+           after: "acts_as_universal_and_determines_tenant\n" do 
+              snippet_add_assoc_to_tenant
+         end
+
+         uncomment_lines "app/models/tenant.rb", "create_org_admin"
+
+         inject_into_file "app/models/user.rb",
+           after: "acts_as_universal_and_determines_account\n" do 
+             snippet_add_member_assoc_to_user
+         end
+
+         gsub_file "app/models/member.rb", /belongs_to:\s+:tenant/, ''
+
+         inject_into_class "app/models/member.rb", Member do 
+            snippet_fill_out_member
+         end
+
+         directory File.expand_path('../../../../../app/views/members', __FILE__), "app/views/"
+
+         inject_into_class "app/controllers/members_controller.rb", MembersController do 
+            snippet_fill_member_ctlr
+         end
+
+
+       end  # skip any member expansion
      end
 
 # -------------------------------------------------------------
@@ -87,7 +114,7 @@ private
   
 # -------------------------------------------------------------
 # -------------------------------------------------------------
-  def find_or_fail(filename )
+  def find_or_fail( filename )
     user_file = Dir.glob(filename).first
     if user_file.blank? 
       say_status("error", "file: '#{filename}' not found", :red)
@@ -196,21 +223,12 @@ private
       def self.tenant_signup(user, tenant, other = nil)
         #  StartupJob.queue_startup( tenant, user, other )
         # any special seeding required for a new organizational tenant
+        #
+        # Member.create_org_admin(user)
+        #
       end
 
     RUBY7
-  end
-
-  def snippet_
-    <<-'RUBY8'
-      has_many :members, dependent: :destroy
-    RUBY8
-  end
-
-  def snippet_add_member_call_to_tenant_signup
-    <<-'RUBY9'
-      Member.create_org_admin(user)
-    RUBY9
   end
 
   def snippet_add_member_assoc_to_user
@@ -226,8 +244,7 @@ private
 
       DEFAULT_ADMIN = {
         first_name: "Admin",
-        last_name:  "Please edit me",
-        favorite_color: "blue"
+        last_name:  "Please edit me"
       }
 
       def self.create_new_member(user, params)
@@ -277,7 +294,7 @@ private
       private
 
       def member_params()
-        params.require(:member).permit(:first_name, :last_name, :favorite_color)
+        params.require(:member).permit(:first_name, :last_name)
       end
 
       def user_params()
@@ -286,6 +303,14 @@ private
 
     RUBY12
   end
+
+
+  def snippet_add_assoc_to_tenant
+    <<-'RUBY13'
+      has_many :members, dependent: :destroy
+    RUBY13
+  end
+
 
 
 # *************************************************************

@@ -1,0 +1,33 @@
+.block#block-signup
+  %h2 Invite a new member
+  .content.login
+    .flash
+      - flash.each do |type, message|
+        %div{ :class => "message #{type}" }
+          %p= message
+    - flash.clear  # clear contents so we won't see it again
+
+    = form_for(@member, :html => { :class => "form login" }) do |f|
+      - unless @member.errors.empty? && @user.errors.empty?
+        #errorExplanation.group
+          %ul
+            = @member.errors.full_messages.uniq.inject(''){|str, msg| str << "<li> #{msg}"}.html_safe
+            = @user.errors.full_messages.uniq.inject(''){|str, msg| str << "<li> #{msg}"}.html_safe
+
+      = fields_for( :user ) do |w|
+        .group
+          = w.label :email, :class => "label "
+          = w.text_field :email, :class => "text_field"
+          %span.description Ex. test@example.com; must be unique
+
+      .group
+        = f.label :first_name, :class => "label "
+        = f.text_field :first_name, :class => "text_field"
+
+      .group
+        = f.label :last_name, :class => "label "
+        = f.text_field :last_name, :class => "text_field"
+
+      .group.navform.wat-cf
+        %button.button{ :type => "submit" }
+          Create user and invite
