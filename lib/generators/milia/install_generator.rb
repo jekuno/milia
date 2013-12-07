@@ -73,11 +73,8 @@ module Milia
 
      def setup_milia_member
        unless true
-
-        generate "member" "tenant:references user:references first_name:string last_name:string"
-        snippet_add_member_call_to_tenant_signup
-
-
+         generate "member" "tenant:references user:references first_name:string last_name:string"
+         snippet_add_member_call_to_tenant_signup
        end
      end
 
