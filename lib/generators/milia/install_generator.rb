@@ -5,12 +5,45 @@ module Milia
 # *************************************************************
     
     class InstallGenerator < Rails::Generators::Base
-      desc "Creates a milia initializer"
+      desc "Full installation of milia with devise"
 
       source_root File.expand_path("../templates", __FILE__)
-      
-      def copy_initializer
-        copy_file 'initializer.rb', 'config/initializers/milia.rb'
+  
+      class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
+      class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
+      class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
+       
+
+# -------------------------------------------------------------
+# -------------------------------------------------------------
+# -------------------------------------------------------------
+# -------------------------------------------------------------
+  def initialize_template_variables()
+    @skip_recaptcha = options.skip_recaptcha
+    @skip_invite_member = options.skip_invite_member
+    @use_airbrake = options.use_airbrake
+  end
+
+# -------------------------------------------------------------
+# -------------------------------------------------------------
+      def setup_initial_stuff
+
+        template 'initializer.rb', 'config/initializers/milia.rb'
+
+        # the run('bundle install') didn't work; don't know why
+        #
+#          unless options.skip_recaptcha
+#            gem 'recaptcha', :require => "recaptcha/rails"
+#          end
+#          if options.use_airbrake
+#            gem 'airbrake'
+#          end
+
+#          gem 'activerecord-session_store', git: 'rails/activerecord-session_store'
+
+#          inside(Dir.pwd) do
+#            run('bundle install')
+#          end
       end
 
 # -------------------------------------------------------------
@@ -31,10 +64,8 @@ module Milia
 # -------------------------------------------------------------
 # -------------------------------------------------------------
      def setup_milia
-       unless true
-         gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-         run "bundle install"
 
+       unless true 
          generate "controller", "home index"
          generate "active_record:session_migration"
          generate "model", "tenant tenant:references name:string:index"
@@ -74,7 +105,8 @@ module Milia
      end
 
      def setup_milia_member
-       unless true
+
+       unless true && options.skip_inivite_member
          generate "member", "tenant:references user:references first_name:string last_name:string"
 
          inject_into_file "app/models/tenant.rb",
@@ -107,11 +139,10 @@ module Milia
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
+# -------------------------------------------------------------
 
-# -------------------------------------------------------------
-# -------------------------------------------------------------
 private
-  
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def find_or_fail( filename )
