@@ -38,7 +38,7 @@ module Milia
            gem 'airbrake'
          end
 
-         gem 'activerecord-session_store', git: 'rails/activerecord-session_store'
+         gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
          
          run_bundle
       end
@@ -62,15 +62,14 @@ module Milia
 # -------------------------------------------------------------
      def setup_milia
 
-       unless true 
+       unless false    # future skip block?? 
+
+         route  snippet_routes_root_path
+
          generate "controller", "home index"
          generate "active_record:session_migration"
          generate "model", "tenant tenant:references name:string:index"
          generate "migration", "CreateTenantsUsersJoinTable tenants users"
-
-         inject_into_file "config/routes.rb", after: "# root 'welcome#index'\n" do 
-           snippet_routes_root_path
-         end
 
          inject_into_file "app/controllers/application_controller.rb",
            after: "protect_from_forgery with: :exception\n" do 
@@ -82,13 +81,14 @@ module Milia
          end
 
          join_file = find_or_fail("db/migrate/[0-9]*_create_tenants_users_join_table.rb")
-         uncomment_lines join_file, "t.index [:tenant_id, :user_id]" 
+         uncomment_lines join_file, "[:tenant_id, :user_id]" 
 
          gsub_file "config/routes.rb", "devise_for :users"  do 
            snippet_routes_devise
          end
 
-         inject_into_class "app/models/user.rb", User do 
+         inject_into_file "app/models/user.rb",
+           after: ":recoverable, :rememberable, :trackable, :validatable\n" do 
            snippet_model_user_determines_account
          end
 
@@ -103,8 +103,8 @@ module Milia
 
      def setup_milia_member
 
-       unless true && options.skip_inivite_member
-         generate "member", "tenant:references user:references first_name:string last_name:string"
+       unless true # options.skip_inivite_member
+         generate "resource", "member tenant:references user:references first_name:string last_name:string"
 
          inject_into_file "app/models/tenant.rb",
            after: "acts_as_universal_and_determines_tenant\n" do 
@@ -168,41 +168,41 @@ private
 
  def snippet_routes_root_path
    <<-'RUBY2'
-     root :to => "home#index"
+ root :to => "home#index"
    RUBY2
  end
 
  def snippet_app_ctlr_header
     <<-'RUBY3'
-      before_action :authenticate_tenant!
-      
-         ##    milia defines a default max_tenants, invalid_tenant exception handling
-         ##    but you can override these if you wish to handle directly
-      rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
-      rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
+  before_action :authenticate_tenant!
+  
+     ##    milia defines a default max_tenants, invalid_tenant exception handling
+     ##    but you can override these if you wish to handle directly
+  rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
+  rescue_from ::Milia::Control::InvalidTenantAccess, :with => :invalid_tenant
 
     RUBY3
  end
 
  def snippet_home_ctlr_header
    <<-'RUBY4'
-    skip_before_action :authenticate_tenant!, :only => [ :index ]
+  skip_before_action :authenticate_tenant!, :only => [ :index ]
 
    RUBY4
  end
 
  def snippet_routes_devise
     <<-'RUBY5'
-      as :user do   #   *MUST* come *BEFORE* devise's definitions (below)
-        match '/user/confirmation' => 'milia/confirmations#update', :via => :put, :as => :update_user_confirmation
-      end
+  as :user do   #   *MUST* come *BEFORE* devise's definitions (below)
+    match '/user/confirmation' => 'milia/confirmations#update', :via => :put, :as => :update_user_confirmation
+  end
 
-      devise_for :users, :controllers => { 
-        :registrations => "milia/registrations",
-        :confirmations => "milia/confirmations",
-        :sessions => "milia/sessions", 
-        :passwords => "milia/passwords", 
-      }
+  devise_for :users, :controllers => { 
+    :registrations => "milia/registrations",
+    :confirmations => "milia/confirmations",
+    :sessions => "milia/sessions", 
+    :passwords => "milia/passwords", 
+  }
     RUBY5
   end
 
