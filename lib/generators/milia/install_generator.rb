@@ -13,7 +13,6 @@ module Milia
       class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
        
-
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -32,18 +31,16 @@ module Milia
 
         # the run('bundle install') didn't work; don't know why
         #
-#          unless options.skip_recaptcha
-#            gem 'recaptcha', :require => "recaptcha/rails"
-#          end
-#          if options.use_airbrake
-#            gem 'airbrake'
-#          end
+         unless options.skip_recaptcha
+           gem 'recaptcha', :require => "recaptcha/rails"
+         end
+         if options.use_airbrake
+           gem 'airbrake'
+         end
 
-#          gem 'activerecord-session_store', git: 'rails/activerecord-session_store'
-
-#          inside(Dir.pwd) do
-#            run('bundle install')
-#          end
+         gem 'activerecord-session_store', git: 'rails/activerecord-session_store'
+         
+         run_bundle
       end
 
 # -------------------------------------------------------------
@@ -345,6 +342,36 @@ private
 
 
 # *************************************************************
+
+protected
+
+      def bundle_command(command)
+        say_status :run, "bundle #{command}"
+
+        # We are going to shell out rather than invoking Bundler::CLI.new(command)
+        # because `rails new` loads the Thor gem and on the other hand bundler uses
+        # its own vendored Thor, which could be a different version. Running both
+        # things in the same process is a recipe for a night with paracetamol.
+        #
+        # We use backticks and #print here instead of vanilla #system because it
+        # is easier to silence stdout in the existing test suite this way. The
+        # end-user gets the bundler commands called anyway, so no big deal.
+        #
+        # We unset temporary bundler variables to load proper bundler and Gemfile.
+        #
+        # Thanks to James Tucker for the Gem tricks involved in this call.
+        _bundle_command = Gem.bin_path('bundler', 'bundle')
+
+        require 'bundler'
+        Bundler.with_clean_env do
+          print `"#{Gem.ruby}" "#{_bundle_command}" #{command}`
+        end
+      end
+
+      def run_bundle
+        bundle_command('install') unless options[:skip_gemfile] || options[:skip_bundle] || options[:pretend]
+      end
+
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
