@@ -12,6 +12,7 @@ module Milia
       class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
       class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
+      class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
        
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -137,12 +138,40 @@ module Milia
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
+  def setup_environments
+
+    unless options.skip_env_email_setup
+      
+      environment nil, env: :development do 
+        snippet_env_dev
+      end  # do dev environment
+
+      environment nil, env: :production do 
+        snippet_env_prod
+      end  # do production environment
+
+      environment nil, env: :test do 
+        snippet_env_test
+      end  # do test environment
+
+      environment  do 
+        snippet_config_application
+      end  # do config_application
+
+    end
+  end
+
+
+# -------------------------------------------------------------
+# -------------------------------------------------------------
   def wrapup()
     alert_color = :red
-    say("-----------------------------------------------", alert_color)
+    say("-------------------------------------------------------------------------", alert_color)
     say("-   milia installation complete", alert_color)
+    say("-   please edit your email, domain, password in config/environments/*", alert_color)
+    say("-   please edit devise config/initializers/devise.rb", alert_color)
     say("-   please run migrations: $ rake db:migrate", alert_color)
-    say("-----------------------------------------------", alert_color)
+    say("-------------------------------------------------------------------------", alert_color)
   end
 
 # -------------------------------------------------------------
@@ -311,6 +340,7 @@ RUBY6
   def snippet_fill_member_ctlr
     <<-'RUBY12'
 
+  # uncomment to ensure common layout for forms
   # layout  "sign", :only => [:new, :edit, :create]
 
   def new()
@@ -353,6 +383,72 @@ RUBY6
   has_many :members, dependent: :destroy
     RUBY13
   end
+
+ def snippet_env_dev
+<<-'RUBY20'
+ 
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  # set up for email sending even in dev mode
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = false
+
+  config.action_mailer.delivery_method = :smtp
+  
+  ActionMailer::Base.smtp_settings = {
+    :address => "smtp.gmail.com",
+    :port => "587",
+    :authentication => :plain,
+    :user_name => "my-email@my-domain.com",
+    :password => "my-password",
+    :enable_starttls_auto => true
+  }
+RUBY20
+ end
+
+ def snippet_env_prod
+<<-'RUBY21'
+ 
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app.com', :protocol => 'https' }
+
+  ActionMailer::Base.delivery_method = :smtp
+
+  ActionMailer::Base.smtp_settings = {
+    :address        => 'smtp.sendgrid.net',
+    :port           => '587',
+    :authentication => :plain,
+    :user_name      => ENV['SENDGRID_USERNAME'],
+    :password       => ENV['SENDGRID_PASSWORD'],
+    :domain         => 'heroku.com'
+  }
+RUBY21
+ end
+
+
+ def snippet_env_test
+<<-'RUBY22'
+ 
+  # devise says to define default url
+  config.action_mailer.default_url_options = { :host => "www.example.com" }
+RUBY22
+ end
+
+
+ def snippet_config_application
+<<-'RUBY23'
+ 
+# uncomment to ensure a common layout for devise forms
+#   config.to_prepare do
+#     Devise::SessionsController.layout "sign"
+#     Devise::RegistrationsController.layout "sign"
+#     Devise::ConfirmationsController.layout "sign"
+#     Devise::PasswordsController.layout "sign"
+#   end
+RUBY23
+ end
+
 
 
 
