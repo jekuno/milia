@@ -4,136 +4,18 @@ module Milia
   module Generators
 # *************************************************************
     
-    class InstallGenerator < Rails::Generators::Base
-      desc "Full installation of milia with devise"
+    class TempGenerator < Rails::Generators::Base
+      desc "Tempstallation of milia with devise"
 
       source_root File.expand_path("../templates", __FILE__)
   
-      class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
-      class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
-      class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
-       
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 # -------------------------------------------------------------
-  def initialize_template_variables()
-    @skip_recaptcha = options.skip_recaptcha
-    @skip_invite_member = options.skip_invite_member
-    @use_airbrake = options.use_airbrake
-  end
-
-# -------------------------------------------------------------
-# the run('bundle install') didn't work; don't know why
-# -------------------------------------------------------------
-      def setup_initial_stuff
-
-        template 'initializer.rb', 'config/initializers/milia.rb'
-
-         unless options.skip_recaptcha
-           gem 'recaptcha', :require => "recaptcha/rails"
-         end
-         if options.use_airbrake
-           gem 'airbrake'
-         end
-
-         gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-         
-         run_bundle
-      end
-
 # -------------------------------------------------------------
 # -------------------------------------------------------------
-      def setup_devise
-        generate "devise:install"
-        generate "devise", "user"
-        gsub_file "app/models/user.rb", /,\s*$/, ", :confirmable,"
-
-        migrate_user_file = find_or_fail("db/migrate/[0-9]*_devise_create_users.rb")
-
-        uncomment_lines( migrate_user_file, /confirm/ )
-        inject_into_file migrate_user_file, after: "# t.datetime :locked_at\n" do
-          snippet_db_migrate_user
-        end
-      end
-
 # -------------------------------------------------------------
-# -------------------------------------------------------------
-     def setup_milia
-
-       unless false    # future skip block?? 
-
-         route  snippet_routes_root_path
-
-         generate "controller", "home index"
-         generate "active_record:session_migration"
-         generate "model", "tenant tenant:references name:string:index"
-         generate "migration", "CreateTenantsUsersJoinTable tenants users"
-
-         inject_into_file "app/controllers/application_controller.rb",
-           after: "protect_from_forgery with: :exception\n" do 
-           snippet_app_ctlr_header
-         end
-
-         inject_into_class "app/controllers/home_controller.rb", HomeController do 
-            snippet_home_ctlr_header
-         end
-
-         join_file = find_or_fail("db/migrate/[0-9]*_create_tenants_users_join_table.rb")
-         uncomment_lines join_file, ":tenant_id, :user_id" 
-
-         gsub_file "config/routes.rb", "devise_for :users"  do 
-           snippet_routes_devise
-         end
-
-         inject_into_file "app/models/user.rb",
-           after: ":recoverable, :rememberable, :trackable, :validatable\n" do 
-           snippet_model_user_determines_account
-         end
-
-         gsub_file "app/models/tenant.rb", /belongs_to \:tenant/, ' '
-
-         inject_into_class "app/models/tenant.rb", Tenant do 
-            snippet_model_tenant_determines_tenant
-         end
-
-       end  # skip block?
-     end
-
-     def setup_milia_member
-
-       unless options.skip_inivite_member
-
-         generate "resource", "member tenant:references user:references first_name:string last_name:string"
-
-         inject_into_file "app/models/tenant.rb",
-           after: "acts_as_universal_and_determines_tenant\n" do 
-              snippet_add_assoc_to_tenant
-         end
-
-         uncomment_lines "app/models/tenant.rb", "create_org_admin"
-
-         inject_into_file "app/models/user.rb",
-           after: "acts_as_universal_and_determines_account\n" do 
-             snippet_add_member_assoc_to_user
-         end
-
-         gsub_file "app/models/member.rb", /belongs_to \:tenant/, ' '
-
-         inject_into_file "app/models/member.rb",
-           after: "belongs_to :user\n" do 
-            snippet_fill_out_member
-         end
-
-         inject_into_class "app/controllers/members_controller.rb", MembersController do 
-            snippet_fill_member_ctlr
-         end
-
-         directory File.expand_path('../../../../app/views/members', __FILE__), "app/views/"
-
-
-       end  # skip any member expansion
-     end
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -145,6 +27,8 @@ module Milia
     say("-----------------------------------------------", alert_color)
   end
 
+# -------------------------------------------------------------
+# -------------------------------------------------------------
 # -------------------------------------------------------------
 
 private
@@ -221,7 +105,7 @@ RUBY5
   def snippet_model_user_determines_account
 <<-'RUBY6'
 
-  acts_as_universal_and_determines_account
+   acts_as_universal_and_determines_account
 
 RUBY6
   end
@@ -229,7 +113,7 @@ RUBY6
   def snippet_model_tenant_determines_tenant
     <<-'RUBY7'
 
-   acts_as_universal_and_determines_tenant
+    acts_as_universal_and_determines_tenant
 
     def self.create_new_tenant(tenant_params, coupon_params)
 
@@ -311,38 +195,38 @@ RUBY6
   def snippet_fill_member_ctlr
     <<-'RUBY12'
 
-  # layout  "sign", :only => [:new, :edit, :create]
+      layout  "sign", :only => [:new, :edit, :create]
 
-  def new()
-    @member = Member.new()
-    @user   = User.new()
-  end
+      def new()
+        @member = Member.new()
+        @user   = User.new()
+      end
 
-  def create()
-    @user   = User.new( user_params )
+      def create()
+        @user   = User.new( user_params )
 
-    # ok to create user, member
-    if @user.save_and_invite_member() && @user.create_member( member_params )
-      flash[:notice] = "New member added and invitation email sent to #{@user.email}."
-      redirect_to root_path
-    else
-      flash[:error] = "errors occurred!"
-      @member = Member.new( member_params ) # only used if need to revisit form
-      render :new
-    end
+        # ok to create user, member
+        if @user.save_and_invite_member() && @user.create_member( member_params )
+          flash[:notice] = "New member added and invitation email sent to #{@user.email}."
+          redirect_to root_path
+        else
+          flash[:error] = "errors occurred!"
+          @member = Member.new( member_params ) # only used if need to revisit form
+          render :new
+        end
 
-  end
+      end
 
 
-  private
+      private
 
-  def member_params()
-    params.require(:member).permit(:first_name, :last_name)
-  end
+      def member_params()
+        params.require(:member).permit(:first_name, :last_name)
+      end
 
-  def user_params()
-    params.require(:user).permit(:email, :password, :password_confirmation)
-  end
+      def user_params()
+        params.require(:user).permit(:email, :password, :password_confirmation)
+      end
 
     RUBY12
   end
@@ -350,7 +234,7 @@ RUBY6
 
   def snippet_add_assoc_to_tenant
     <<-'RUBY13'
-  has_many :members, dependent: :destroy
+      has_many :members, dependent: :destroy
     RUBY13
   end
 
