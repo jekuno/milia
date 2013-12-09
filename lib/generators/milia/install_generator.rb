@@ -130,7 +130,7 @@ module Milia
             snippet_fill_member_ctlr
          end
 
-         directory File.expand_path('../../../../app/views/members', __FILE__), "app/views/"
+         directory File.expand_path('../../../../app/views/members', __FILE__), "app/views/members"
 
 
        end  # skip any member expansion
