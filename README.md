@@ -219,10 +219,10 @@ model and so this is where all the information for a member should be kept.
   $ cd projectspace   # if not there already
 
   $ rails new sample-milia-app
-  $ echo "sample" > sample-milia-app/.ruby-gemset
+  $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
   $ echo "2.0.0" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
-  $ rvm gemset create sample
+  $ rvm gemset create sample-milia-app
 ```
 
 Change .gitignore to match your development environment.
@@ -277,6 +277,8 @@ information in the following places:
 #### open your browser to http://localhost:3000
 
 And that's all you have to do!
+
+---------------------------------------------------------------------
 
 ## API Reference Manual
 
