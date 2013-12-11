@@ -13,6 +13,7 @@ module Milia
       class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
       class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
+      class_option :org_email, :type => :string, :default => "my-email@my-domain.com", :desc => 'define the organizational email from address'
        
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -60,6 +61,9 @@ module Milia
         inject_into_file migrate_user_file, after: "# t.datetime :locked_at\n" do
           snippet_db_migrate_user
         end
+
+        gsub_file 'config/initializers/devise.rb', /(config.mailer_sender = )'.+'/, "\1 #{options.org_email}"
+
       end
 
 # -------------------------------------------------------------
@@ -107,7 +111,7 @@ module Milia
 
      def setup_milia_member
 
-       unless options.skip_inivite_member
+       unless options.skip_invite_member
 
          generate "resource", "member tenant:references user:references first_name:string last_name:string"
 
@@ -389,7 +393,7 @@ RUBY6
   end
 
  def snippet_env_dev
-<<-'RUBY20'
+<<-RUBY20
  
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
@@ -404,8 +408,8 @@ RUBY6
     :address => "smtp.gmail.com",
     :port => "587",
     :authentication => :plain,
-    :user_name => "my-email@my-domain.com",
-    :password => "my-password",
+    :user_name => #{options.org_email},
+    :password => ENV["SMTP_ENTRY"],
     :enable_starttls_auto => true
   }
 RUBY20

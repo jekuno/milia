@@ -101,6 +101,7 @@
 # I put them in .bashrc
 export PORT=3000
 export RACK_ENV=development
+export SMTP_ENTRY=<my smtp password>
 # OPTIONAL: recaptcha keys
 export RECAPTCHA_PUBLIC_KEY=6LeYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKpT
 export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
@@ -136,19 +137,18 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # *********************************************************************
 # STEP 2 - INSTALL milia (and automatically, devise), and app framework
 # *********************************************************************
-  $ rails g milia:install 
+  $ rails g milia:install --org_email='<your smtp email for dev work>'
   $ rails g web_app_theme:milia
-
-# create the database
-  $ rake db:create
-  $ rake db:migrate
 
 # to be able to receive the confirmation & activation emails,
 # you will need to complete entering in your email and smtp
 # information in the following places:
 #   config/environments/development.rb
 #   config/environments/production.rb
-#   config/initializers/devise.rb
+
+# create the database
+  $ rake db:create
+  $ rake db:migrate
 
 # test by starting server:
   $ foreman start
