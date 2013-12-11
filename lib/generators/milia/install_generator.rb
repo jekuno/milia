@@ -62,7 +62,7 @@ module Milia
           snippet_db_migrate_user
         end
 
-        gsub_file 'config/initializers/devise.rb', /(config.mailer_sender = )'.+'/, "\1 #{options.org_email}"
+        gsub_file 'config/initializers/devise.rb', /config.mailer_sender = '.+'/, "config.mailer_sender = '#{options.org_email}'"
 
       end
 
