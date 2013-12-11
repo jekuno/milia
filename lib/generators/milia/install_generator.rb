@@ -408,7 +408,7 @@ RUBY6
     :address => "smtp.gmail.com",
     :port => "587",
     :authentication => :plain,
-    :user_name => #{options.org_email},
+    :user_name => \"#{options.org_email}\",
     :password => ENV["SMTP_ENTRY"],
     :enable_starttls_auto => true
   }
@@ -447,13 +447,13 @@ RUBY22
  def snippet_config_application
 <<-'RUBY23'
  
-# uncomment to ensure a common layout for devise forms
-#   config.to_prepare do   # Devise
-#     Devise::SessionsController.layout "sign"
-#     Devise::RegistrationsController.layout "sign"
-#     Devise::ConfirmationsController.layout "sign"
-#     Devise::PasswordsController.layout "sign"
-#   end   # Devise
+    # uncomment to ensure a common layout for devise forms
+    #   config.to_prepare do   # Devise
+    #     Devise::SessionsController.layout "sign"
+    #     Devise::RegistrationsController.layout "sign"
+    #     Devise::ConfirmationsController.layout "sign"
+    #     Devise::PasswordsController.layout "sign"
+    #   end   # Devise
 RUBY23
  end
 
