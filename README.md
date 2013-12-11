@@ -31,9 +31,9 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0-beta-2 is the beta version for Rails 4.0.x and is now available for usage.
-please use branch: v1.0.0-beta-2 for trying it out
-The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
+milia v1.0.0-beta-3 is the beta version for Rails 4.0.x and is now available for usage.
+please use branch: v1.0.0-beta-3 for trying it out
+The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3'.
 
 ## What's changed?
 
@@ -42,20 +42,21 @@ The last previous version for Rails 3.2.x can be found in the git branch 'v0.3'
 * All the changes which version 0.3.x advised to be inserted in applications_controller.rb are now automatically loaded into ActionController by milia.
 * that includes authenticate_tenant!
 * so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
+* generators for easy install of basic rails/milia/devise
 
 ## Sample app and documentation
 
 There were numerous requests for me to provide a complete sample web application
 which uses milia and devise. I have done this.
 
-* see doc/sample.sh for complete step-by-step instructions for setting up and creating a working app.
-* the sample.sh instructions are very detailed and loaded with comments (600 lines!).
+* see doc/sample.sh for easy generator usage for setting up and creating a working app.
 * the sample app uses web-theme-app to provide some pleasantly formatted views for your testing pleasure.
-* the instructions take you to three stages: 
-  - one with simple devise and no milia, 
-  - two installing milia for complete tenanting,
-  - three adding in invite_member capability
-* doc/ directory has a sample milia-initializer.rb for adding to config/initializers if you wish to alter milia defaults.
+* see doc/manual_sample.sh for complete step-by-step instructions for manually setting up and creating a working app.
+* if you want to know exactly everything the generators are doing, see the manual_sample.sh
+  - instructions are very detailed and loaded with comments (600 lines!).
+  - Stage one: with simple devise and no milia, 
+  - Stage two: installing milia for complete tenanting,
+  - Stage three: adding in invite_member capability
 * the entire sample is also fully available on github, if you wish to check your work. diff can be your friend.
   this sample on github, however, will always be for the latest release or latest beta (whichever is most recent).
 * find it at: https://github.com/dsaronin/sample-milia-app
@@ -64,8 +65,10 @@ which uses milia and devise. I have done this.
 
 * doc/sample.sh -- this document will ALWAYS be the most recent
     (for example in the edge branch: "newdev")
+* doc/manual_sample.sh -- non-generator-based instructions for manually editing files.
+    (this may no longer be the most recent since further work will focus on the generators)
 * github.com/milia/wiki/sample-milia-app-tutorial
-    this should be the same as the sample.sh doc for the current
+    this should be the same as the manual_sample.sh doc for the current
     stable release (or last beta version); but markdown formatted
     https://github.com/dsaronin/milia/wiki/sample-milia-app-tutorial
 * milia README (this document):
@@ -96,11 +99,11 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-2
+## this readme is for v1.0.0-beta-3
 
 * changes in beta-2: invite_member capability
 
-* coming soon (beta-3): improved generators getting a new app started
+* changes in beta-3: improved generators getting a new app started
 
 ## edge branch: "newdev"
 
@@ -179,27 +182,119 @@ Or in the Gemfile:
 If you'll be working with any beta or leading edge version:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-2'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-3'
 ```
   
 ## Getting started
 
+### Environment setup
+
+I put these in .bashrc for an Ubuntu system.
+
+```
+export PORT=3000
+export RACK_ENV=development
+export SMTP_ENTRY=<my smtp password>
+# OPTIONAL: recaptcha keys
+export RECAPTCHA_PUBLIC_KEY=6LeYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKpT
+export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
+```
+
 ### Rails setup
 
-Milia expects a user session, so please set one up. Rails 4 now
-handles this with a gem, so edit your Gemfile to include:
+This example shows getting starting a new rails project in an rvm environment and using
+git (github) as the SCM, and expecting to use heroku (eventually) as the PaaS 
+(Platform as a Service) provider. Note: foreman is available when you set up the
+heroku toolbelt.
+
+This example will set everything up for milia AND devise (you won't need to do devise).
+It assumes you won't use airbrake, you will use recaptcha for new account sign-ups,
+and you will use invite_member capability. Skeleton user, tenant, and member models
+will be created. Before you run db:migrate, you can add any additional fields to the
+tenant and member models. User model really is primarily only used by devise, and so
+you shouldn't add anything to this model as it's a universal model. Member is a tenanted
+model and so this is where all the information for a member should be kept.
+
+```ruby
+  $ cd projectspace   # if not there already
+
+  $ rails new sample-milia-app
+  $ echo "sample" > sample-milia-app/.ruby-gemset
+  $ echo "2.0.0" > sample-milia-app/.ruby-version
+  $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
+  $ rvm gemset create sample
+```
+
+Change .gitignore to match your development environment.
+I just copy my standard .gitignore from another project
+but you can copy mine from sample-milia-app on github.
+
+```
+  $ cd sample-milia-app
+  $ cp ../<an existing project>/.gitignore .
+
+  $ git init
+  $ git add --all .
+  $ git commit -am 'initial commit'
+  $ git remote add origin git@github.com:<git-user>/sample-milia-app.git
+  $ git push -u origin master
+```
+
+### milia and devise setup
+
+The generator has an option to specify an email address to be used for sending emails for 
+confirmation and account activation.
+
+```
+  $ rails g milia:install --org_email='<your smtp email for dev work>'
+```
+
+The generator set up basic information for
+being able to send the confirmation & activation emails.
+But, you might need to complete entering in your email and smtp
+information in the following places:
+
+*   _config/environments/development.rb_
+*   _config/environments/production.rb_
+
+#### complete generating the sample application
+
+```
+  $ rails g web_app_theme:milia
+```
+
+#### create the database
+```
+  $ rake db:create
+  $ rake db:migrate
+```
+
+#### test by starting server:
+```
+  $ foreman start
+```
+
+#### open your browser to http://localhost:3000
+
+And that's all you have to do!
+
+## API Reference Manual
+
+#### information and expectations
+
+**The above generator did everthing that's required. This section
+will explain why the generator did what it did. You won't need
+to do any of these steps unless you decide to customize or adapt.**
+
+#### User session required
+
+Rails 4 now handles this with a gem:
 
 ```
   gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 ```
 
-Then run BUNDLE install to get the new gems
-
-```
-  $ bundle install
-```
-
-Now generate the session migration
+#### Generate a session migration
 
 ``` 
   $ rails g active_record:session_migration
@@ -209,10 +304,6 @@ Now generate the session migration
 
 * See https://github.com/plataformatec/devise for how to set up devise.
 * The current version of milia requires that devise use a *User* model.
-
-Here are my recommendations for working with devise and milia:
-
-Start the devise generation:
 
 ```
   $ rails g devise:install
