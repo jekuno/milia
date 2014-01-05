@@ -14,8 +14,10 @@ module Milia
 # CALLBACK: Tenant.tenant_signup      -- after completing user account
 # ------------------------------------------------------------------------------
 def create
-  
+
   sign_out_session!
+  build_resource(sign_up_params) # added by dave
+  prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon ) # added by dave
 
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
@@ -23,7 +25,7 @@ def create
     Tenant.transaction  do 
       @tenant = Tenant.create_new_tenant(sign_up_params_tenant, sign_up_params_coupon)
       if @tenant.errors.empty?   # tenant created
-        
+
         initiate_tenant( @tenant )    # first time stuff for new tenant
 
         devise_create   # devise resource(user) creation; sets resource
@@ -38,15 +40,18 @@ def create
         end  # if..then..else for valid user creation
 
       else
-        prep_signup_view( @tenant, params[:user] , params[:coupon])
+    resource.valid?
+        #prep_signup_view( @tenant, resource, sign_up_params_coupon ) # removed by dave
         render :new
       end # if .. then .. else no tenant errors
 
     end  #  wrap tenant/user creation in a transaction
-        
+
   else
     flash[:error] = "Recaptcha codes didn't match; please try again"
-    prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
+    resource.valid?
+    @tenant.valid?
+    #prep_signup_view( @tenant, resource, sign_up_params_coupon ) # removed by dave
     render :new
   end
 
