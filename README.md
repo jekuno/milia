@@ -246,6 +246,19 @@ but you can copy mine from sample-milia-app on github.
 
 ### milia and devise setup
 
+Note: devise is required before running the milia installation below. Do the following:
+
+1. In your Gemfile, add:
+```
+  gem 'devise', '~>3.2'
+```
+
+2. Then run:
+```
+   $ bundle install
+```
+
+
 The generator has an option to specify an email address to be used for sending emails for 
 confirmation and account activation.
 
@@ -262,6 +275,11 @@ information in the following places:
 *   _config/environments/production.rb_
 
 #### complete generating the sample application
+
+Running the generator below will completeley install milia, devise, and a sample app. You will not
+need to run the "milia:install" given above. You'll need to do the following:
+
+1. Gemfile:
 
 ```
   $ rails g web_app_theme:milia
