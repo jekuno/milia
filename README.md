@@ -297,7 +297,7 @@ to the Gemfile, before running the installer.
 You can directly import these into your Gemfile
 by getting them from <i>doc/gemfile_addition.txt.</i>
 After adding this addition to the Gemfile, please make sure the correct
-milia branch is being designated.
+milia branch is being designated (it sometimes points to edge branch).
 
 ```
    $ vim Gemfile
