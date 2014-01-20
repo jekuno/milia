@@ -44,10 +44,6 @@ module Milia
            gem 'airbrake'
          end
 
-#          gsub_file 'app/assets/javascripts/application.js',
-#                    '//= require turbolinks',
-#                    '//  require turbolinks'
-
          gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
          
          run_bundle
