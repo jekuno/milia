@@ -135,7 +135,58 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
   $ git push -u origin master
 
 # *********************************************************************
-# STEP 2 - INSTALL milia (and automatically, devise), and app framework
+# STEP 2 - SET UP GEMFILE, BUNDLE INSTALL GEMS
+# *********************************************************************
+
+# EDIT Gemfile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  $ vim Gemfile
+
+# First, comment OUT the turbolinks gem
+  # gem 'turbolinks'
+
+# then, enable rubyracer in Gemfile by de-commenting
+  gem 'therubyracer', platforms: :ruby
+
+# finally, ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
+
+  ruby "2.0.0"   # heroku likes this at the head, as line 2
+
+  # =========================================================
+  # sample-milia-app specific stuff
+  # =========================================================
+  # Bundle the extra gems:
+  gem 'haml-rails'   
+  gem 'html2haml', :git => 'git://github.com/haml/html2haml.git'  # "2.0.0.beta.2", 
+
+  # stuff that heroku likes to have
+  gem 'thin'
+  gem "SystemTimer", :require => "system_timer", :platforms => :ruby_18
+  gem "rack-timeout"
+  gem 'rails_12factor'
+
+  # airbrake is optional and configured by config.use_airbrake in milia initializer
+  # default is false; if you change it to true, uncomment out the line below
+  # gem 'airbrake'   # uncomment this if you will use airbrake for exception notifications
+
+  gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
+  gem 'devise', '~>3.2'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-2'
+
+#<<<< ADD <<<<<<<<<<<<<<<<<
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# EDIT: app/assets/javascripts/application.js >>>>>>>>>>>>>>>>>>>>>>>>
+# comment out turbolinks in your Javascript manifest file 
+# we won't need turbolinks for this simple sample.
+  //  require turbolinks
+#<<<< EDIT <<<<<<<<<<<<<<<<<
+
+# BUNDLE install all the gems
+  $ bundle install
+
+
+# *********************************************************************
+# STEP 3 - INSTALL milia (and automatically, devise), and app framework
 # *********************************************************************
   $ rails g milia:install --org_email='<your smtp email for dev work>'
   $ rails g web_app_theme:milia
@@ -154,7 +205,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
   $ foreman start
 
 # *********************************************************************
-# STEP 3 - TEST SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
+# STEP 4 - TEST SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
 # *********************************************************************
 # CHECK-OUT: at your browser:
   http://localhost:3000/

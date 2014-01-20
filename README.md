@@ -31,8 +31,8 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0-beta-3 is the beta version for Rails 4.0.x and is now available for usage on
-branch: v1.0.0-beta-3.
+milia v1.0.0-beta-4 is the beta version for Rails 4.0.x and is now available for usage on
+branch: v1.0.0-beta-4.
 
 Still pending to be done: the unit tests have not been revised yet for v1.0.0.
 
@@ -47,6 +47,7 @@ it is essentially obsolete. Go with the beta.
 * that includes authenticate_tenant!
 * so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
 * generators for easy install of basic rails/milia/devise
+* revised README instructions
 
 ## Sample app and documentation
 
@@ -71,6 +72,8 @@ which uses milia and devise. I have done this.
     (for example in the edge branch: "newdev")
 * doc/manual_sample.sh -- non-generator-based instructions for manually editing files.
     (this may no longer be the most recent since further work will focus on the generators)
+* doc/gemfile_addition.txt -- the additions to Gemfile needed for setting up the sample-milia-app
+    
 * github.com/milia/wiki/sample-milia-app-tutorial
     this should be the same as the manual_sample.sh doc for the current
     stable release (or last beta version); but markdown formatted
@@ -103,11 +106,15 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-3
+## this readme is for v1.0.0-beta-4
 
-* changes in beta-2: invite_member capability
+* changes in beta-4: 
+  corrections to README for Gemfile requirements
+  generator tests for requirements
 
 * changes in beta-3: improved generators getting a new app started
+
+* changes in beta-2: invite_member capability
 
 ## edge branch: "newdev"
 
@@ -169,27 +176,62 @@ table is created with generation such as follows:
 
 
 
-## Installation
+## Milia Basic Installation
 
-Either install the gem manually:
+### Getting started for the Bare minimum setup
+
+This is the mininum necessary for using milia with a Rails application. If you're new to Rails
+(or Devise and Milia), then I'd recommend you skip this section and instead follow the instructions
+(below) for Creating and Installing a Rails/Milia/Devise Sample Application. In any case, do NOT
+do both installations.
+
+If you'll be using the recaptcha option, then milia will generate expecting the following
+environment variables (put them in .bashrc, with the correct keys):
 
 ```
-  $ gem install milia
+export RECAPTCHA_PUBLIC_KEY=6LeYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKpT
+export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 ```
 
-Or in the Gemfile:
+### Steps for Bare minimum
+Add to your Gemfile:
 
 ```ruby
+  gem 'devise', '~>3.2'
   gem 'milia', '~>1.0'
 ```
 
-If you'll be working with any beta or leading edge version:
+If you'll be working with any beta or leading edge version, specify as follows:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-3'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-4'
 ```
+
+Then,
+```
+  $ bundle install
+  $ rails g milia:install --org_email='<your smtp email for dev work>'
+```
+
+Note: The milia generator has an option to specify an email address to be used for sending emails for 
+confirmation and account activation. Also note that the milia generator runs two
+devise generators.
+
+Make any changes required to the generated migrations, then:
+```
+  $ rake db:create
+  $ rake db:migrate
+```
+
   
-## Getting started
+## Creating and Installing a Rails/Milia/Devise Sample Application
+
+### Getting started for the sample application
+
+Multi-tenanting, much like user authentication, exists within the large scheme of
+an application. I recommend first creating and installing the following complete, but simple,
+reference Rails application so that you can validate a working setup on your
+system, and have a reference point for making changes to your own application.
 
 ### Environment setup
 
@@ -209,7 +251,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 This example shows getting starting a new rails project in an rvm environment and using
 git (github) as the SCM, and expecting to use heroku (eventually) as the PaaS 
 (Platform as a Service) provider. Note: foreman is available when you set up the
-heroku toolbelt.
+heroku toolbelt (see doc/sample.sh for more details).
 
 This example will set everything up for milia AND devise (you won't need to do devise).
 It assumes you won't use airbrake, you will use recaptcha for new account sign-ups,
@@ -246,25 +288,32 @@ but you can copy mine from sample-milia-app on github.
 
 ### milia and devise setup
 
-Note: devise is required before running the milia installation below. Do the following:
+This sample web application depends on my updates to the web-app-theme, as
+well as several other gems for the application, which need to be added 
+to the Gemfile, before running the installer.  
+You can directly import these into your Gemfile
+by getting them from <i>doc/gemfile_addition.txt.</i>
 
-1. In your Gemfile, add:
 ```
-  gem 'devise', '~>3.2'
-```
-
-2. Then run:
-```
+   $ vim Gemfile
+     G
+     :r <path to milia gem>/doc/gemfile_addition.txt
+     ZZ
    $ bundle install
 ```
 
+#### complete generating the sample application
 
-The generator has an option to specify an email address to be used for sending emails for 
-confirmation and account activation.
+Running the generator below will completely install milia, devise, and a sample app. You will not
+need to run the "milia:install" given above. You'll need to do the following:
 
 ```
   $ rails g milia:install --org_email='<your smtp email for dev work>'
+  $ rails g web_app_theme:milia
 ```
+
+NOTE: The above generator has an option to specify an email address to 
+be used for sending emails for confirmation and account activation.
 
 The generator set up basic information for
 being able to send the confirmation & activation emails.
@@ -274,18 +323,7 @@ information in the following places:
 *   _config/environments/development.rb_
 *   _config/environments/production.rb_
 
-#### complete generating the sample application
-
-Running the generator below will completeley install milia, devise, and a sample app. You will not
-need to run the "milia:install" given above. You'll need to do the following:
-
-1. Gemfile:
-
-```
-  $ rails g web_app_theme:milia
-```
-
-#### create the database
+#### create the database and migration
 ```
   $ rake db:create
   $ rake db:migrate

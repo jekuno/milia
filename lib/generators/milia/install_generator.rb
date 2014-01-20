@@ -17,6 +17,14 @@ module Milia
        
 # -------------------------------------------------------------
 # -------------------------------------------------------------
+  def check_requirements()
+    gem_find_or_fail(
+      [
+        %w(Devise, devise),
+      ]
+    )
+  end
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def initialize_template_variables()
@@ -27,6 +35,7 @@ module Milia
 
 # -------------------------------------------------------------
 # the run('bundle install') didn't work; don't know why
+  # replaced it with the "run_bundle" method below
 # -------------------------------------------------------------
       def setup_initial_stuff
 
@@ -39,9 +48,9 @@ module Milia
            gem 'airbrake'
          end
 
-         gsub_file 'app/assets/javascripts/application.js',
-                   '//= require turbolinks',
-                   '//  require turbolinks'
+#          gsub_file 'app/assets/javascripts/application.js',
+#                    '//= require turbolinks',
+#                    '//  require turbolinks'
 
          gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
          
@@ -491,10 +500,47 @@ protected
         bundle_command('install') unless options[:skip_gemfile] || options[:skip_bundle] || options[:pretend]
       end
 
+# -------------------------------------------------------------
+# -------------------------------------------------------------
+  def gem_find_or_fail( list )
+    need_fail = false
+    alert_color = :red
+    list.each do |const, gem_name|
+      unless Milia.const_defined?( const )
+        say_status("error", 
+            "class: '#{const}' not found; gemfile: #{gem_name} is required", 
+            alert_color)
+        need_fail = true
+      end # unless missing
+    end # each constant to be checked
 
+    if need_fail
+      say("-------------------------------------------------------------------------", alert_color)
+      say("-   add required gems to Gemfile; then run bundle install", alert_color)
+      say("-   then retry rails g milia:install", alert_color)
+      say("-------------------------------------------------------------------------", alert_color)
+      raise Thor::Error, "************  terminating generator due to missing requirements!  *************" 
+    end  # need to fail
+    
+  end
+ 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
-  
+  def file_find_or_fail( filename )
+    user_file = Dir.glob(filename).first
+    if user_file.blank? 
+      alert_color = :red
+      say("-------------------------------------------------------------------------", alert_color)
+      say_status("error", "file: '#{filename}' not found", alert_color)
+      say("-   first run  $ rails g milia:install", alert_color)
+      say("-   then retry $ rails g web_app_theme:milia", alert_color)
+      say("-------------------------------------------------------------------------", alert_color)
+ 
+      raise Thor::Error, "************  terminating generator due to file error!  *************" 
+    end
+    return user_file
+  end
+   
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 
