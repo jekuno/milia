@@ -52,7 +52,9 @@ it is essentially obsolete. Go with the beta.
 ## Sample app and documentation
 
 There were numerous requests for me to provide a complete sample web application
-which uses milia and devise. I have done this.
+which uses milia and devise. I have done this. This README will have a brief section
+on creating and installing the sample application. Further details about this process
+can be found via the sources listed below:
 
 * see doc/sample.sh for easy generator usage for setting up and creating a working app.
 * the sample app uses web-theme-app to provide some pleasantly formatted views for your testing pleasure.
@@ -89,7 +91,8 @@ which uses milia and devise. I have done this.
 ### WARNING: don't go commando and try to change everything at once!
 ### WARNING: don't go perfectionist and try to bring up a fully written app at once!
 
-Just follow the instructions, exactly, step-by-step. Get the basics working. Then change, adapt, and spice to taste.
+Just follow the instructions for creating the sample, exactly, step-by-step. 
+Get the basics working. Then change, adapt, and spice to taste.
 Please?! Because I'm more inclined to help you solve problems if you've started out by 
 getting the sample working exactly as described! If you've tried to go off into the jungle on your own, you are, well, on
 your own. And as they say, _"get out the way you got in!"_
