@@ -18,11 +18,7 @@ module Milia
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def check_requirements()
-    gem_find_or_fail(
-      [
-        %w(Devise, devise),
-      ]
-    )
+    gem_find_or_fail( %w(devise) )
   end
 
 # -------------------------------------------------------------
@@ -505,11 +501,14 @@ protected
   def gem_find_or_fail( list )
     need_fail = false
     alert_color = :red
-    list.each do |const, gem_name|
-      unless Milia.const_defined?( const )
-        say_status("error", 
-            "class: '#{const}' not found; gemfile: #{gem_name} is required", 
-            alert_color)
+    list.each do |gem_name|
+      gem_msg = `bundle list #{gem_name}`
+      if /Could not find gem/i =~ gem_msg
+        say_status(
+            "error", 
+            "gemfile not found: #{gem_name} is required", 
+            alert_color
+        )
         need_fail = true
       end # unless missing
     end # each constant to be checked
