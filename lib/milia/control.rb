@@ -94,6 +94,11 @@ module Milia
 
     set_current_tenant   # relies on current_user being non-nil
 
+      # successful tenant authentication; do any callback
+    if self.respond_to?( :callback_authenticate_tenant, true )
+      self.send( :callback_authenticate_tenant )
+    end
+
     true  # allows before filter chain to continue
   end
 

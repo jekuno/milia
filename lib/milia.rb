@@ -30,6 +30,7 @@ module Milia
   mattr_accessor :use_invite_member
   @@use_invite_member = true
 
+
   # undocumented feature, debugging trace, default is off
   mattr_accessor :trace_on
   @@trace_on = false
