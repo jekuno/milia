@@ -80,6 +80,7 @@ module Milia
     unless authenticate_user!
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
+puts "\nFAILED AUTH >>>>>>>"
       return false  # abort the before_filter chain
     end
 
@@ -95,6 +96,7 @@ module Milia
     set_current_tenant   # relies on current_user being non-nil
 
       # successful tenant authentication; do any callback
+puts "\nKLASS >>>>> #{self.class}\t#{self.class.ancestors.include?(ApplicationController)}\t#{self.respond_to?( :callback_authenticate_tenant, true )}"
     if self.respond_to?( :callback_authenticate_tenant, true )
       self.send( :callback_authenticate_tenant )
     end
