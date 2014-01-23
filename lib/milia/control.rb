@@ -27,6 +27,7 @@ module Milia
 # EXCEPTIONS -- InvalidTenantAccess
 # ------------------------------------------------------------------------------
     def set_current_tenant( tenant_id = nil )
+
       if user_signed_in?
         
         @_my_tenants ||= current_user.tenants  # gets all possible tenants for user
@@ -46,7 +47,12 @@ module Milia
       end
               
       Thread.current[:tenant_id] = tenant_id
- # TRACE: puts ">>>>>>>>> set_cur_tent; ten_id: #{tenant_id.to_s }\tUSI: #{user_signed_in?.to_s}"
+
+      if ::Milia.trace_on
+        tid = ( tenant_id.nil? ? '%' : tenant_id.to_s )
+        uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
+        puts "MILIA >>>>> set_current_tenant tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}"
+      end # trace check
       
       true    # before filter ok to proceed
     end
