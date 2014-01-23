@@ -71,13 +71,17 @@ module Milia
 # -- sets current tenant
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
-    # TRACE: puts ">>>>>>>>> auth_tenant; session: #{( session[:tenant_id].nil? ? 'nil' : session[:tenant_id].to_s )}"
-
     unless authenticate_user!
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
       return false  # abort the before_filter chain
     end
+
+    if ::Milia.trace_on
+      tid = ( session[:tenant_id].nil? ? '%' : session[:tenant_id].to_s )
+      uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
+      puts "MILIA >>>>> auth_tenant! tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}"
+    end # trace check
 
     # user_signed_in? == true also means current_user returns valid user
     raise SecurityError,"*** invalid sign-in  ***" unless user_signed_in?
