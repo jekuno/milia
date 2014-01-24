@@ -34,8 +34,12 @@ module Milia
   def change_or_confirm_user(tryset=nil)
       with_unconfirmed_confirmable do
   #      if @confirmable.has_no_password?   # milea creates a dummy password when accounts are created
-          @confirmable.attempt_set_password(user_params) if tryset
-          if ( @confirmable.skip_confirm_change_password || @confirmable.valid? )
+        @confirmable.attempt_set_password(user_params) if tryset
+        is_valid = @confirmable.valid?
+        logger.debug(
+          "MILIA >>>>> [confirm] #{(tryset ? 'update' : 'show')}\tskip: #{@confirmable.skip_confirm_change_password}\tvalid: #{is_valid}"
+        ) unless logger.nil?
+          if ( @confirmable.skip_confirm_change_password && is_valid )
             do_confirm   # user has a password; use it to sign in
           else
             do_show   # needs to create a password
