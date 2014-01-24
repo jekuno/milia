@@ -33,10 +33,10 @@ module Milia
 # ------------------------------------------------------------------------------
   def trace_tenanting( fm_msg )
     if ::Milia.trace_on
-      tid = ( tenant_id.nil? ? '%' : tenant_id.to_s )
+      tid = ( session[:tenant_id].nil? ? "%/#{Thread.current[:tenant_id]}" : session[:tenant_id].to_s )
       uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
       logger.debug( 
-         "MILIA >>>>> [#{fm_msg}] tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}" 
+         "MILIA >>>>> [#{fm_msg}] stid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}" 
       ) unless logger.nil?
     end # trace check
   end
