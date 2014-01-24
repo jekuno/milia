@@ -21,6 +21,27 @@ module Milia
   private
 
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def __milia_change_tenant( tid )
+    old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
+    new_id = ( tid.nil? ? '%' : tid.to_s )
+    Thread.current[:tenant_id] = tid
+    logger.debug("MILIA >>>>> [change tenant] new: #{new_id}\told:#{old_id}") unless logger.nil?
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def trace_tenanting( fm_msg )
+    if ::Milia.trace_on
+      tid = ( tenant_id.nil? ? '%' : tenant_id.to_s )
+      uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
+      logger.debug( 
+         "MILIA >>>>> [#{fm_msg}] tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}" 
+      ) unless logger.nil?
+    end # trace check
+  end
+
+# ------------------------------------------------------------------------------
 # set_current_tenant -- sets the tenant id for the current invocation (thread)
 # args
 #   tenant_id -- integer id of the tenant; nil if get from current user
@@ -45,15 +66,10 @@ module Milia
       else   # user not signed in yet...
         tenant_id = 0  if tenant_id.nil?   # an impossible tenant_id
       end
-              
-      Thread.current[:tenant_id] = tenant_id
 
-      if ::Milia.trace_on
-        tid = ( tenant_id.nil? ? '%' : tenant_id.to_s )
-        uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
-        puts "MILIA >>>>> set_current_tenant tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}"
-      end # trace check
-      
+      __milia_change_tenant( tenant_id )        
+      trace_tenanting( "set_current_tenant" )
+
       true    # before filter ok to proceed
     end
     
@@ -65,7 +81,7 @@ module Milia
 #   tenant -- tenant obj of the new tenant
 # ------------------------------------------------------------------------------
   def initiate_tenant( tenant )
-    Thread.current[:tenant_id] = tenant.id
+      __milia_change_tenant( tenant.id )        
   end
   
 # ------------------------------------------------------------------------------
@@ -80,24 +96,20 @@ module Milia
     unless authenticate_user!
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
-puts "\nFAILED AUTH >>>>>>>"
+      logger.info("MILIA >>>>> [failed auth user] ") unless.logger.nil?
       return false  # abort the before_filter chain
     end
 
-    if ::Milia.trace_on
-      tid = ( session[:tenant_id].nil? ? '%' : session[:tenant_id].to_s )
-      uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
-      puts "MILIA >>>>> auth_tenant! tid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}"
-    end # trace check
+    trace_tenanting( "authenticate_tenant!" )
 
     # user_signed_in? == true also means current_user returns valid user
-    raise SecurityError,"*** invalid sign-in  ***" unless user_signed_in?
+    raise SecurityError,"*** invalid user_signed_in  ***" unless user_signed_in?
 
     set_current_tenant   # relies on current_user being non-nil
 
       # successful tenant authentication; do any callback
-puts "\nKLASS >>>>> #{self.class}\t#{self.class.ancestors.include?(ApplicationController)}\t#{self.respond_to?( :callback_authenticate_tenant, true )}"
     if self.respond_to?( :callback_authenticate_tenant, true )
+      logger.debug("MILIA >>>>> [auth_tenant callback]")
       self.send( :callback_authenticate_tenant )
     end
 
@@ -107,7 +119,10 @@ puts "\nKLASS >>>>> #{self.class}\t#{self.class.ancestors.include?(ApplicationCo
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
   def max_tenants()
-    logger.info("MARKETING - New account attempted #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:company]}")
+    logger.info(
+      "MILIA >>>>> [max tenant signups] #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:company]}"
+    ) unless logger.nil?
+
     flash[:error] = "Sorry: new accounts not permitted at this time"
       
       # if using Airbrake & airbrake gem

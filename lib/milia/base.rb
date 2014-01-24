@@ -155,7 +155,10 @@ module Milia
         raise ArgumentError, "invalid tenant object or id"
     end  # case
     
+    old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
     Thread.current[:tenant_id] = tenant_id
+    logger.debug("MILIA >>>>> [Tenant#change_tenant] new: #{tenant_id}\told:#{old_id}") unless logger.nil?
+
   end
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
