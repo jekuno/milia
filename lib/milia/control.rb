@@ -26,7 +26,7 @@ module Milia
     old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
     new_id = ( tid.nil? ? '%' : tid.to_s )
     Thread.current[:tenant_id] = tid
-    logger.debug("MILIA >>>>> [change tenant] new: #{new_id}\told:#{old_id}") unless logger.nil?
+    logger.debug("MILIA >>>>> [change tenant] new: #{new_id}\told: #{old_id}") unless logger.nil?
   end
 
 # ------------------------------------------------------------------------------
