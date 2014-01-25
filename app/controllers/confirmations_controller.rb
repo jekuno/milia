@@ -6,6 +6,7 @@ module Milia
   class ConfirmationsController < Devise::ConfirmationsController
 
     skip_before_action :authenticate_tenant! 
+    before_action      :set_confirmable, :only => [ :update, :show ]
 
 
   # PUT /resource/confirmation
@@ -43,7 +44,7 @@ module Milia
       log_action( "devise pass-thru" )
       super  # this will redirect 
     else
-      log_action( "show password set form" )
+      log_action( "password set form" )
       prep_do_show()  # prep for the form
     end
     # else fall thru to show template which is form to set a password
@@ -51,6 +52,12 @@ module Milia
   end
   
   protected
+
+  def set_confirmable()
+    original_token = params[:confirmation_token]
+    confirmation_token = Devise.token_generator.digest(User, :confirmation_token, original_token)
+    @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, confirmation_token)
+  end
 
   def user_params()
     params.require(:user).permit(:password, :password_confirmation, :confirmation_token)
