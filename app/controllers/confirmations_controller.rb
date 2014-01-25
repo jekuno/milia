@@ -23,7 +23,7 @@ module Milia
         log_action( "invitee confirmed" )
         set_flash_message(:notice, :confirmed) if is_flashing_format?
           # sign in automatically
-        sign_in_and_redirect(resource_name, @confirmable)
+        sign_in_tenanted_and_redirect(resource_name, @confirmable)
         
       else
         log_action( "invitee confirmation failed" )
@@ -74,6 +74,21 @@ module Milia
       "MILIA >>>>> [confirm user] #{action} - #{@confirmable.email}"
     ) unless logger.nil?
   end
+  
+  # MILIA: adaptation of Devise method for multitenanting
+      # Sign in a user and tries to redirect first to the stored location and
+      # then to the url specified by after_sign_in_path_for. It accepts the same
+      # parameters as the sign_in method.
+      def sign_in_tenanted_and_redirect(resource_or_scope, *args)
+        options  = args.extract_options!
+        scope    = Devise::Mapping.find_scope!(resource_or_scope)
+        resource = args.last || resource_or_scope
+        sign_in(scope, resource, options)
+        authenticate_tenant!
+        redirect_to after_sign_in_path_for(resource)
+      end
+
+
 
   end  # class
 end # module
