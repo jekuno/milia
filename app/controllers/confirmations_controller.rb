@@ -84,7 +84,8 @@ module Milia
         scope    = Devise::Mapping.find_scope!(resource_or_scope)
         resource = args.last || resource_or_scope
         sign_in(scope, resource, options)
-        authenticate_tenant!
+        trace_tenanting( "SIT&R" )
+        set_current_tenant
         redirect_to after_sign_in_path_for(resource)
       end
 
