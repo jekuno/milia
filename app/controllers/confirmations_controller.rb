@@ -23,7 +23,7 @@ module Milia
         log_action( "invitee confirmed" )
         set_flash_message(:notice, :confirmed) if is_flashing_format?
           # sign in automatically
-        sign_in_tenanted_and_redirect(@confirmable)
+        sign_in_tenanted_and_redirect(resource)
         
       else
         log_action( "invitee confirmation failed" )
@@ -40,7 +40,10 @@ module Milia
   # GET /resource/confirmation?confirmation_token=abcdef
   # entered on new sign-ups and invite-members
   def show
-    unless ::Milia.use_invite_member && !@confirmable.skip_confirm_change_password
+    unless ( ::Milia.use_invite_member && 
+           !@confirmable.skip_confirm_change_password  ) ||
+           @confirmable.new_record?
+
       log_action( "devise pass-thru" )
       super  # this will redirect 
     else
@@ -76,9 +79,7 @@ module Milia
   end
   
   # MILIA: adaptation of Devise method for multitenanting
-      # Sign in a user and tries to redirect first to the stored location and
-      # then to the url specified by after_sign_in_path_for. It accepts the same
-      # parameters as the sign_in method.
+      # Sign in a user and tries to redirect 
       def sign_in_tenanted_and_redirect(resource)
         sign_in( resource )
         trace_tenanting( "SIT&R" )
