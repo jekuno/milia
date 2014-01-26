@@ -40,9 +40,9 @@ module Milia
   # GET /resource/confirmation?confirmation_token=abcdef
   # entered on new sign-ups and invite-members
   def show
-    unless ( ::Milia.use_invite_member && 
-           !@confirmable.skip_confirm_change_password  ) ||
-           @confirmable.new_record?
+    if @confirmable.new_record?  ||
+       !::Milia.use_invite_member || 
+       @confirmable.skip_confirm_change_password
 
       log_action( "devise pass-thru" )
       super  # this will redirect 
