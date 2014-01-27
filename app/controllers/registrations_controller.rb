@@ -117,7 +117,7 @@ end   # def create
     else
       clean_up_passwords resource
       log_action( "devise: signup user failure", resource )
-      # prep_signup_view(  @tenant, resource, params[:coupon] )   
+      prep_signup_view(  @tenant, resource, params[:coupon] )   
       respond_with resource
     end
   end
