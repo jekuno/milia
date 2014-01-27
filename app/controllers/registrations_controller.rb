@@ -38,14 +38,13 @@ def create
           Tenant.tenant_signup(resource, @tenant, params[:coupon])
 
         else  # user creation failed; force tenant rollback
-          resource.valid?
           log_action( "signup user create failed", resource )
           raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
         end  # if..then..else for valid user creation
 
       else
         resource.valid?
-        log_action( "tenant create failed", resource )
+        log_action( "tenant create failed", @tenant )
         render :new
       end # if .. then .. else no tenant errors
 
