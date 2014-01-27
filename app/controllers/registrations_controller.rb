@@ -20,7 +20,6 @@ def create
   build_resource(sign_up_params) 
   prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
 
-
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
 
@@ -34,15 +33,19 @@ def create
 
         if resource.errors.empty?   #  SUCCESS!
 
+          logger_action( "signup user/tenant success", resource )
             # do any needed tenant initial setup
           Tenant.tenant_signup(resource, @tenant, params[:coupon])
 
         else  # user creation failed; force tenant rollback
+          resource.valid?
+          logger_action( "signup user create failed", resource )
           raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
         end  # if..then..else for valid user creation
 
       else
         resource.valid?
+        logger_action( "tenant create failed", resource )
         render :new
       end # if .. then .. else no tenant errors
 
@@ -53,6 +56,7 @@ def create
        # all validation errors are passed when the sign_up form is re-rendered
     resource.valid?
     @tenant.valid?
+    logger_action( "recaptcha failed", resource )
     render :new
   end
 
@@ -101,6 +105,7 @@ end   # def create
  
     if resource.save
       yield resource if block_given?
+      logger_action( "devise: signup user success", resource )
       if resource.active_for_authentication?
         set_flash_message :notice, :signed_up if is_flashing_format?
         sign_up(resource_name, resource)
@@ -112,7 +117,8 @@ end   # def create
       end
     else
       clean_up_passwords resource
-      prep_signup_view(  @tenant, resource, params[:coupon] )   # PUNDA special addition
+      logger_action( "devise: signup user failure", resource )
+      # prep_signup_view(  @tenant, resource, params[:coupon] )   
       respond_with resource
     end
   end
@@ -133,6 +139,13 @@ end   # def create
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+  def log_action( action, resource=nil )
+    err_msg = ( resource.nil? ? '' : resource.errors.full_messages.uniq.join(", ") )
+    logger.debug(
+      "MILIA >>>>> [register user/org] #{action} - #{err_msg}"
+    ) unless logger.nil?
+  end
+ 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
  
