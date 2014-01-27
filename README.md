@@ -1,7 +1,8 @@
 # milia
 
 Milia is a multi-tenanting gem for hosted Rails 4.0.x applications which use
-the devise gem for user authentication and registrations.
+the devise gem for user authentication and registrations. Milia comes with 
+tailoring for common use cases needing multi-tenanting with user authentication.
 
 ## Basic concepts for the milia multi-tenanting gem
 
@@ -47,6 +48,9 @@ it is essentially obsolete. Go with the beta.
 * that includes authenticate_tenant!
 * so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
 * generators for easy install of basic rails/milia/devise
+* callback after successful authenticate_tenant!
+* debug & info logging and trace for troubleshooting
+* improved invite_member support
 * revised README instructions
 
 ## Sample app and documentation
@@ -109,7 +113,9 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-4
+## this readme is for v1.0.0-beta-5
+
+* changes in beta-5: logging, callback, bug fixes
 
 * changes in beta-4: 
   corrections to README for Gemfile requirements
@@ -580,6 +586,23 @@ Example for a ficticous Post model:
   Milia::Control::MaxTenantExceeded
 ```
 
+### post authenticate_tenant! callback [optional]
+
+In some applications, you will want to set up commonly used
+variables used throughout your application, after a user and a 
+tenant have been established. This is optional and if the
+callback is missing, nothing will happen.
+
+<i>app/controllers/application_controller.rb</i>
+
+```ruby
+  def callback_authenticate_tenant
+    # set_environment or whatever else you need for each valid session
+  end
+```
+
+
+
 ### Tenant pre-processing hooks
 
 #### Milia expects a tenant pre-processing & setup hook:
@@ -760,6 +783,87 @@ For example in <i>app/controllers/home_controller.rb </i> place the following ne
 
 ```ruby
   skip_before_action :authenticate_tenant!, :only => [ :index ]
+```
+
+## using tokens for authentication
+
+My app has certain actions which require a token for authentication, instead of a user
+sign-in. These use cases include an icalendar feed for a particular user's assignments
+or a generic icalendar feed for all of an organization's events. The tokens are NOT
+a general replacement for user sign-in for all actions, but merely to enable a simple
+restful API for certain specific actions. This section will explain how to incorporate
+token authentication together with milia/devise. Please note that the application
+assigns to each user an authentication token for this use, as well as creates a 
+generic "guest" for the organization itself for accessing the organization-wide action.
+
+The general scheme is to have a prepend_before_action authenticate_by_token! specified 
+only for those actions allowed. This action determines the "user" required to proceed
+with the action, signs in that user via devise, then falls through to the normal
+before_action authenticate_tenant! action which establishes the current_tenant.
+
+Below are some examples of this (typically the token is passed as the id parameter):
+
+<i>app/controllers/application_controller</i>
+```ruby
+# ------------------------------------------------------------------------------
+# NOTE: be sure to use prepend_before_action authenticate_by_token!
+# so that this will occur BEFORE authenticate_tenant!
+# ------------------------------------------------------------------------------
+# Notice we are passing store false, so the user is not
+# actually stored in the session and a token is needed for every request. 
+# ------------------------------------------------------------------------------
+  def authenticate_by_token!
+      # special case for designated actions only
+    if ( controller_name == "feeder" && 
+         ( user = User.find_user_by_user_feed( params ) )
+       )  ||
+       ( controller_name == "questions" && ['signup_form', 'finish_signup'].include?(action_name) && 
+         ( user = User.find_user_by_user_feed( params ) )
+       ) 
+       
+        # create a special session after authorizing a user
+      reset_session
+      sign_in(user, store: false)  # devise's way to signin the user
+      # now continue with tenant authorization & set up
+      true  # ok to continue  processing
+       
+    else
+      act_path = controller_name.to_s + '/' + action_name.to_s
+      logger.info("SECURITY - access denied #{Time.now.to_s(:db)} - auth: #{params[:userfeed] }\tuid:#{(user.nil? ? 'n/f' : user.id.to_s)}\tRequest: " + act_path)
+      render( :nothing => true, :status => :forbidden) #  redirect_back   # go back to where you were
+      nil   # abort further processing
+    end
+
+  end
+
+```
+<i>app/controllers/feeder_controller</i>
+```ruby
+  prepend_before_action  :authenticate_by_token!      # special authtentication by html token
+```
+
+<i>app/models/user.rb</i>
+```ruby
+# ------------------------------------------------------------------------
+# find_user_by_user_feed -- returns a user based on auth code from params
+# ------------------------------------------------------------------------
+  def self.find_user_by_user_feed( params )
+      # can get auth by either :userfeed or :id
+    key = ( params[:userfeed].blank? ? params[:id]  :  params[:userfeed] )
+    return nil if key.blank?  # neither key present; invalid
+    return User.where( :authentication_token => key ).first  # find by the key; nil if invalid
+  end
+  
+    def make_authentication_token
+      self.authentication_token = generate_unique_authentication_token
+    end
+
+  def generate_unique_authentication_token
+    loop do
+      token = AuthKey.make_token   # this can be anything to generate a random large token
+      break token unless User.where(authentication_token: token).first
+    end
+  end
 ```
 
 
