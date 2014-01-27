@@ -16,6 +16,10 @@ module Milia
 def create
   
   sign_out_session!
+     # next two lines prep signup view parameters
+  build_resource(sign_up_params) 
+  prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
+
 
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
@@ -38,7 +42,7 @@ def create
         end  # if..then..else for valid user creation
 
       else
-        prep_signup_view( @tenant, params[:user] , params[:coupon])
+        resource.valid?
         render :new
       end # if .. then .. else no tenant errors
 
@@ -46,7 +50,9 @@ def create
         
   else
     flash[:error] = "Recaptcha codes didn't match; please try again"
-    prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
+       # all validation errors are passed when the sign_up form is re-rendered
+    resource.valid?
+    @tenant.valid?
     render :new
   end
 
