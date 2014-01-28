@@ -171,10 +171,10 @@ module Milia
   # My signup form has fields for user's email, 
   # organization's name (tenant model), coupon code, 
 # ------------------------------------------------------------------------------
-  def prep_signup_view(tenant=nil, user=nil, coupon='')
+  def prep_signup_view(tenant=nil, user=nil, coupon={coupon:''})
     @user   = klass_option_obj( User, user )
     @tenant = klass_option_obj( Tenant, tenant )
-    @coupon = coupon if ::Milia.use_coupon
+    @coupon = coupon #  if ::Milia.use_coupon
  end
 
 # ------------------------------------------------------------------------------
