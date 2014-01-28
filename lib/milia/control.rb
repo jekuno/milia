@@ -22,11 +22,19 @@ module Milia
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-  def __milia_change_tenant( tid )
+  def __milia_change_tenant!( tid )
     old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
     new_id = ( tid.nil? ? '%' : tid.to_s )
     Thread.current[:tenant_id] = tid
+    session[:tenant_id] = tid  # remember it going forward
     logger.debug("MILIA >>>>> [change tenant] new: #{new_id}\told: #{old_id}") unless logger.nil?
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def __milia_reset_tenant!( )
+    __milia_change_tenant!( nil )
+    logger.debug("MILIA >>>>> [reset tenant] ") unless logger.nil?
   end
 
 # ------------------------------------------------------------------------------
@@ -60,14 +68,12 @@ module Milia
         else   # validate the specified tenant_id before setup
           raise InvalidTenantAccess unless @_my_tenants.any?{|tu| tu.id == tenant_id}
         end
-        
-        session[:tenant_id] = tenant_id  # remember it going forward
 
       else   # user not signed in yet...
-        tenant_id = 0  if tenant_id.nil?   # an impossible tenant_id
+        tenant_id = nil   # an impossible tenant_id
       end
 
-      __milia_change_tenant( tenant_id )        
+      __milia_change_tenant!( tenant_id )        
       trace_tenanting( "set_current_tenant" )
 
       true    # before filter ok to proceed
@@ -81,7 +87,7 @@ module Milia
 #   tenant -- tenant obj of the new tenant
 # ------------------------------------------------------------------------------
   def initiate_tenant( tenant )
-      __milia_change_tenant( tenant.id )        
+      __milia_change_tenant!( tenant.id )        
   end
   
 # ------------------------------------------------------------------------------

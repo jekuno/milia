@@ -126,11 +126,18 @@ module Milia
   # return nil if no current tenant defined
 # ------------------------------------------------------------------------
   def current_tenant()
-    return (
-      Thread.current[:tenant_id].blank?  ?
-      nil  :
-      Tenant.find( Thread.current[:tenant_id] )
-    )
+    begin
+      tenant = (
+        Thread.current[:tenant_id].blank?  ?
+        nil  :
+        Tenant.find( Thread.current[:tenant_id] )
+      )
+
+      return tenant
+
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end   
   end
     
 # ------------------------------------------------------------------------
