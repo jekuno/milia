@@ -304,11 +304,18 @@ You can directly import these into your Gemfile
 by getting them from <i>doc/gemfile_addition.txt.</i>
 After adding this addition to the Gemfile, please make sure the correct
 milia branch is being designated (it sometimes points to edge branch).
+For Rails, you'll also need to specify a JavaScript runtime. I use
+"therubyracer" by uncommenting that line in the Gemfile. I personally
+do not use "turbolinks" so I comment it out in the Gemfile. If you
+also do that, be sure to remove the reference to turbolinks in
+<i>app/assets/javascripts/application.js</i>.
+
 
 ```
    $ vim Gemfile
      G
      :r <path to milia gem>/doc/gemfile_addition.txt
+     <uncomment therubyracer gem line; comment out turbolinks>
      ZZ
    $ bundle install
 ```
