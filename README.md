@@ -3,14 +3,14 @@
 Milia is a multi-tenanting gem for hosted Rails 3.2 applications which uses
 the devise gem for user authentication.
 
-### news flash: milia v1.0.0-beta-4 for rails 4.0/devise 3.2 now available
+### news flash: milia v1.0.0-beta-5 for rails 4.0/devise 3.2 now available
 
 Find it and the drastically revised README, as well as a complete
-step-by-step tutorial on getting an app working with milia at the "v1.0.0-beta-4" branch.
+step-by-step tutorial on getting an app working with milia at the "v1.0.0-beta-5" branch.
 you can access it from your Gemfile as follows:
 
 ```
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-4'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-5'
 ```
 
 
