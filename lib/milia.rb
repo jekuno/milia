@@ -34,8 +34,8 @@ module Milia
   # allows an app to expand the permitted attribute list
   @@whitelist_tenant_params = []
 
-  def self.whitelist_tenant_params= (list)
-    raise ArgumentError unless !list.nil? && list.kind_of Array
+  def self.whitelist_tenant_params=(list)
+    raise ArgumentError unless !list.nil? && list.kind_of?( Array )
     @@whitelist_tenant_params = list
   end
 
@@ -47,8 +47,8 @@ module Milia
   # allows an app to expand the permitted attribute list
   @@whitelist_coupon_params = []
 
-  def self.whitelist_coupon_params= (list)
-    raise ArgumentError unless !list.nil? && list.kind_of Array
+  def self.whitelist_coupon_params=(list)
+    raise ArgumentError unless !list.nil? && list.kind_of?( Array )
     @@whitelist_coupon_params = list
   end
 
