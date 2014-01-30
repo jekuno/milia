@@ -24,17 +24,43 @@ module Milia
   mattr_accessor :use_airbrake
   @@use_airbrake = false
 
-
   # use invite_member for devise work-around to invite members
   # ASSUMES User model
   mattr_accessor :use_invite_member
   @@use_invite_member = true
 
 
+  # whitelist tenant params list
+  # allows an app to expand the permitted attribute list
+  @@whitelist_tenant_params = []
+
+  def self.whitelist_tenant_params= (list)
+    raise ArgumentError unless !list.nil? && list.kind_of Array
+    @@whitelist_tenant_params = list
+  end
+
+  def self.whitelist_tenant_params()
+    return @@whitelist_tenant_params << :name
+  end
+
+  # whitelist coupon params list
+  # allows an app to expand the permitted attribute list
+  @@whitelist_coupon_params = []
+
+  def self.whitelist_coupon_params= (list)
+    raise ArgumentError unless !list.nil? && list.kind_of Array
+    @@whitelist_coupon_params = list
+  end
+
+  def self.whitelist_coupon_params()
+    return @@whitelist_coupon_params << :coupon
+  end
+
+
+
   # undocumented feature, debugging trace, default is off
   mattr_accessor :trace_on
   @@trace_on = false
-
 
   # Default way to setup milia. 
   def self.setup

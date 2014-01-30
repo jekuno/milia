@@ -64,12 +64,12 @@ end   # def create
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-  private
+  protected
  
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
   def sign_up_params_tenant()
-    params.require(:tenant).permit(:name)
+    params.require(:tenant).permit( ::Milia.whitelist_tenant_params )
   end
 
 # ------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ end   # def create
 # ------------------------------------------------------------------------------
   def sign_up_params_coupon()
     ( ::Milia.use_coupon ? 
-      params.require(:coupon).permit(:coupon)  :
+      params.require(:coupon).permit( ::Milia.whitelist_coupon_params )  :
       params
     )
   end
