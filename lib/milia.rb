@@ -30,8 +30,29 @@ module Milia
   @@use_invite_member = true
 
 
-  # whitelist tenant params list
+  # whitelist user params list
   # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:name]
+  # config.whitelist_user_params = []
+  @@whitelist_user_params = []
+
+  def self.whitelist_user_params=(list)
+    raise ArgumentError unless !list.nil? && list.kind_of?( Array )
+    @@whitelist_user_params = list
+  end
+
+  def self.whitelist_user_params()
+    return [:email, :password, :password_confirmation] + 
+           @@whitelist_user_params
+  end
+
+
+  # whitelist user params list
+  # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:name]
+  # config.whitelist_user_params = []
   @@whitelist_tenant_params = []
 
   def self.whitelist_tenant_params=(list)
@@ -45,6 +66,9 @@ module Milia
 
   # whitelist coupon params list
   # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:name]
+  # config.whitelist_user_params = []
   @@whitelist_coupon_params = []
 
   def self.whitelist_coupon_params=(list)

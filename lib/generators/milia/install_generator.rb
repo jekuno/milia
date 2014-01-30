@@ -269,7 +269,7 @@ RUBY6
 
    acts_as_universal_and_determines_tenant
 
-    def self.create_new_tenant(tenant_params, coupon_params)
+    def self.create_new_tenant(tenant_params, user_params, coupon_params)
 
       tenant = Tenant.new(:name => tenant_params[:name])
 

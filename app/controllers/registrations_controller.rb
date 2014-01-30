@@ -17,14 +17,17 @@ def create
   
   sign_out_session!
      # next two lines prep signup view parameters
-  build_resource(sign_up_params) 
-  prep_signup_view( sign_up_params_tenant, sign_up_params, sign_up_params_coupon )
+  prep_signup_view( sign_up_params_tenant, sign_up_params_user, sign_up_params_coupon )
 
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
 
     Tenant.transaction  do 
-      @tenant = Tenant.create_new_tenant(sign_up_params_tenant, sign_up_params_coupon)
+      @tenant = Tenant.create_new_tenant(
+        sign_up_params_tenant, 
+        sign_up_params_user, 
+        sign_up_params_coupon
+      )
       if @tenant.errors.empty?   # tenant created
         
         initiate_tenant( @tenant )    # first time stuff for new tenant
@@ -70,6 +73,12 @@ end   # def create
 # ------------------------------------------------------------------------------
   def sign_up_params_tenant()
     params.require(:tenant).permit( ::Milia.whitelist_tenant_params )
+  end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def sign_up_params_user()
+    params.require(:user).permit( ::Milia.whitelist_user_params )
   end
 
 # ------------------------------------------------------------------------------
