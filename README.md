@@ -32,8 +32,8 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0-beta-5 is the beta version for Rails 4.0.x and is now available for usage on
-branch: v1.0.0-beta-5.
+milia v1.0.0-beta-6 is the beta version for Rails 4.0.x and is now available for usage on
+branch: v1.0.0-beta-6.
 
 Still pending to be done: the unit tests have not been revised yet for v1.0.0.
 
@@ -113,7 +113,10 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-5
+## this readme is for v1.0.0-beta-6
+
+* changes in beta-6: user_params added to Tenant.create_new_tenant;
+  ability to add additional whitelist parameters during config
 
 * changes in beta-5: logging, callback, bug fixes
 
@@ -620,7 +623,7 @@ immediately after the new tenant has been created).
 <i>app/models/tenant.rb</i>
 
 ```ruby
-  def self.create_new_tenant(tenant_params, coupon_params)
+  def self.create_new_tenant(tenant_params, user_params, coupon_params)
 
     tenant = Tenant.new(:name => tenant_params[:name])
 
@@ -884,6 +887,41 @@ load when I start the console. This does the following:
     end
 
 change_tenant(1,1)   # or whatever is an appropriate starting user, tenant
+```
+
+## Whitelisting additional parameters for tenant/user/coupon
+
+During the Tenant.create_new_tenant part of the sign-up process, three
+sets of whitelisted parameters are passed to the method: The parameters
+for tenant, user, and coupon. But some applications might require more or
+other parameters than the ones expected by milia. Sometimes the application
+might need to add some parameters of its own, such a EULA version number,
+additions to an activation message, or a unique name for the tenant itself.
+
+Milia has a mechanism to add additional parameters to be whitelisted. 
+In <i>config/initializers/milia.rb</i> you can add a list of symbols for
+the additional parameters to each of a config setting for any of the
+three (tenant, user, or coupon). The example below shows how.
+
+```ruby
+  # whitelist user params list
+  # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:name]
+  config.whitelist_user_params = [:eula_id, :message]
+
+  # whitelist tenant params list
+  # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:name]
+  config.whitelist_tenant_params = [:company, :cname]
+
+  # whitelist coupon params list
+  # allows an app to expand the permitted attribute list
+  # specify each attribute as a symbol
+  # example: [:coupon]
+  config.whitelist_coupon_params = [:vendor]
+
 ```
 
 ## inviting additional user/members
