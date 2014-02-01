@@ -14,31 +14,32 @@ module Milia
 # CALLBACK: Tenant.tenant_signup      -- after completing user account
 # ------------------------------------------------------------------------------
 def create
+    # have a working copy of the params in case Tenant callbacks
+    # make any changes
+  tenant_params = sign_up_params_tenant
+  user_params   = sign_up_params_user
+  coupon_params = sign_up_params_coupon
   
   sign_out_session!
      # next two lines prep signup view parameters
-  prep_signup_view( sign_up_params_tenant, sign_up_params_user, sign_up_params_coupon )
+  prep_signup_view( tenant_params, user_params, coupon_params )
 
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
 
     Tenant.transaction  do 
-      @tenant = Tenant.create_new_tenant(
-        sign_up_params_tenant, 
-        sign_up_params_user, 
-        sign_up_params_coupon
-      )
+      @tenant = Tenant.create_new_tenant( tenant_params, user_params, coupon_params)
       if @tenant.errors.empty?   # tenant created
         
         initiate_tenant( @tenant )    # first time stuff for new tenant
 
-        devise_create   # devise resource(user) creation; sets resource
+        devise_create( user_params )   # devise resource(user) creation; sets resource
 
         if resource.errors.empty?   #  SUCCESS!
 
           log_action( "signup user/tenant success", resource )
             # do any needed tenant initial setup
-          Tenant.tenant_signup(resource, @tenant, params[:coupon])
+          Tenant.tenant_signup(resource, @tenant, coupon_params)
 
         else  # user creation failed; force tenant rollback
           log_action( "signup user create failed", resource )
@@ -108,15 +109,14 @@ end   # def create
 # devise_create -- duplicate of Devise::RegistrationsController
     # same as in devise gem EXCEPT need to prep signup form variables
 # ------------------------------------------------------------------------------
-  def devise_create
+  def devise_create( user_params )
 
 puts "\n*******************************************************"
-puts sign_up_params.inspect
-puts params[:user].inspect
+puts user_params.inspect
 puts "*******************************************************\n"
 
 
-    build_resource(sign_up_params)
+    build_resource(user_params)
    
       # if we're using milia's invite_member helpers
     if ::Milia.use_invite_member
