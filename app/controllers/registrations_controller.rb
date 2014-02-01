@@ -4,8 +4,6 @@ module Milia
 
   skip_before_action :authenticate_tenant!, :only => [:new, :create, :cancel]
   
-  before_filter :configure_permitted_parameters   # , if: :devise_controller?
-
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # TODO: options if non-standard path for new signups view
@@ -35,8 +33,7 @@ def create
         initiate_tenant( @tenant )    # first time stuff for new tenant
 
         devise_create   # devise resource(user) creation; sets resource
-
-        if resource.errors.empty?   #  SUCCESS!
+ resource.errors.empty?   #  SUCCESS!
 
           log_action( "signup user/tenant success", resource )
             # do any needed tenant initial setup
@@ -111,6 +108,12 @@ end   # def create
     # same as in devise gem EXCEPT need to prep signup form variables
 # ------------------------------------------------------------------------------
   def devise_create
+
+puts "\n*******************************************************"
+puts sign_up_params.inspect
+puts params[:user].inspect
+puts "*******************************************************\n"
+
     build_resource(sign_up_params)
    
       # if we're using milia's invite_member helpers
