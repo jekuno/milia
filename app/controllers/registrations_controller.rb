@@ -3,7 +3,7 @@ module Milia
   class RegistrationsController < Devise::RegistrationsController
 
   skip_before_action :authenticate_tenant!, :only => [:new, :create, :cancel]
-  
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # TODO: options if non-standard path for new signups view
@@ -33,7 +33,8 @@ def create
         initiate_tenant( @tenant )    # first time stuff for new tenant
 
         devise_create   # devise resource(user) creation; sets resource
- resource.errors.empty?   #  SUCCESS!
+
+        if resource.errors.empty?   #  SUCCESS!
 
           log_action( "signup user/tenant success", resource )
             # do any needed tenant initial setup
@@ -113,6 +114,7 @@ puts "\n*******************************************************"
 puts sign_up_params.inspect
 puts params[:user].inspect
 puts "*******************************************************\n"
+
 
     build_resource(sign_up_params)
    
