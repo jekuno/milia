@@ -3,6 +3,8 @@ module Milia
   class RegistrationsController < Devise::RegistrationsController
 
   skip_before_action :authenticate_tenant!, :only => [:new, :create, :cancel]
+  
+  before_filter :configure_permitted_parameters   # , if: :devise_controller?
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -68,6 +70,12 @@ end   # def create
 # ------------------------------------------------------------------------------
 
   protected
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) + ::Milia.whitelist_user_params
+  end
  
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
