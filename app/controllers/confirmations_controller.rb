@@ -46,6 +46,9 @@ module Milia
 
       log_action( "devise pass-thru" )
       super  # this will redirect 
+      if @confirmable.skip_confirm_change_password
+        sign_in_tenanted_and_redirect(resource)
+      end
     else
       log_action( "password set form" )
       prep_do_show()  # prep for the form
