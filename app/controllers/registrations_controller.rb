@@ -111,11 +111,6 @@ end   # def create
 # ------------------------------------------------------------------------------
   def devise_create( user_params )
 
-puts "\n*******************************************************"
-puts user_params.inspect
-puts "*******************************************************\n"
-
-
     build_resource(user_params)
    
       # if we're using milia's invite_member helpers
