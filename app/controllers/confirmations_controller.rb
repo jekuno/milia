@@ -91,7 +91,7 @@ module Milia
 
       # Sign in a user and tries to redirect 
       def sign_in_tenanted_and_redirect(resource)
-        sign_in_teananted(resource)
+        sign_in_tenanted(resource)
         redirect_to after_sign_in_path_for(resource)
       end
 
