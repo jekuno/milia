@@ -9,7 +9,7 @@ FactoryGirl.define do |binding|
     
     # current_tenant -- create or work within a default tenant
     def current_tenant()
-      Thread.current[:tenant_id] ||= Factory(:tenant).id
+      Thread.current[:tenant_id] ||= create(:tenant).id
     end
     
     # new_tenant -- switch over to a new tenant to be the default tenant

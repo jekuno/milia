@@ -60,7 +60,6 @@ end
   gem 'rails_12factor'
 
   gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
 
   # airbrake is optional and configured by config.use_airbrake in milia initializer
   # default is false; if you change it to true, uncomment out the line below
@@ -72,3 +71,12 @@ end
 
 gem "recaptcha", require: "recaptcha/rails"
 gem "activerecord-session_store", github: "rails/activerecord-session_store"
+
+group :test do
+  gem "factory_girl_rails"   #   , "~> 1.2"
+  gem "shoulda"   #   , "3.5.0"
+  gem "shoulda-matchers"   #   , "~>2.1.0"
+  gem "shoulda-context"   #   , "~>1.1.2"
+end
+
+gem 'milia', :path => "../../milia"
