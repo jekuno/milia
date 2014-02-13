@@ -116,7 +116,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   $ cd projectspace   # if not there already
 
-  $ rails new sample-milia-app
+  $ rails new sample-milia-app --skip-bundle
   $ echo "sample" > sample-milia-app/.ruby-gemset
   $ echo "2.0.0" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
