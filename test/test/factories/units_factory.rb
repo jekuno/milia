@@ -14,7 +14,7 @@ FactoryGirl.define do |binding|
     
     # new_tenant -- switch over to a new tenant to be the default tenant
     def new_tenant()
-      Thread.current[:tenant_id] = Factory(:tenant).id
+      Thread.current[:tenant_id] = create(:tenant).id
     end
 
     USERNAMES = %w(demarcus deshaun jemell jermaine jabari kwashaun musa nigel kissamu yona brenden terell treven tyrese adonys)
@@ -58,7 +58,7 @@ FactoryGirl.define do |binding|
   factory :team do |f|
     f.tenant_id  binding.current_tenant
     f.sequence( :name ) { |n| "team_#{n}" }
-    f.after_create {|team| f.team_assets = 3.times{ Factory(:team_asset, :team => team) } }
+    f.after_create {|team| f.team_assets = 3.times{ create(:team_asset, :team => team) } }
   end  # team
   
   factory :team_asset do |f|

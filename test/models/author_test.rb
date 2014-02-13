@@ -6,7 +6,7 @@ class AuthorTest < ActiveSupport::TestCase
     
     setup do
       setup_world()
-      @author = Factory( :author )  # stock object for validation testing
+      @author = create( :author )  # stock object for validation testing
     end
 
 # validate multi-tenanting structure
