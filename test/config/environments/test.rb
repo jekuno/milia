@@ -34,6 +34,8 @@ Miliatest::Application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  
+  config.active_record.logger = nil
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr

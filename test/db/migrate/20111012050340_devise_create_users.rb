@@ -33,6 +33,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       # milia member_invitable
       t.boolean    :skip_confirm_change_password, :default => false
       t.references :tenant
+      t.string     :authentication_token, index: true
 
 
       t.timestamps

@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20111013050837) do
     t.string   "unconfirmed_email"
     t.boolean  "skip_confirm_change_password", default: false
     t.integer  "tenant_id"
+    t.string   "authentication_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
