@@ -73,7 +73,6 @@ gem "recaptcha", require: "recaptcha/rails"
 gem "activerecord-session_store", github: "rails/activerecord-session_store"
 
 group :test do
-  gem "factory_girl_rails"   #   , "~> 1.2"
   gem "shoulda"   #   , "3.5.0"
   gem "shoulda-matchers"   #   , "~>2.1.0"
   gem "shoulda-context"   #   , "~>1.1.2"
