@@ -4,6 +4,18 @@ This documents the unit testing for Milia: structure of models, things
 being tested, and work-arounds used. The reason for this document is
 to aid future upgrade efforts.
 
+## fixture vs factories?
+
+Milia v0.3 used factory_girl to generate test fixtures, but there
+were difficulties dealing with both the dynamic nature of creating
+objects which had to have an existing current_tenant established. In
+between v0.3 and v1.0, factory_girl upgraded significantly and meant
+all the test code would have to be reworked.
+
+Rather than relearning FactoryGirl and the extensive changes to
+make it work, I've decided to just use static fixtures as being
+the easiest way to have the test data fixtures.
+
 ## Model structure
 
 ### Required by Milia/Devise

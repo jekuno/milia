@@ -1,0 +1,33 @@
+
+quentin:
+  id:                      1
+  email:                   quentin@example.com
+  encrypted_password:      "$2a$10$aiN/4aMQ/VlsIK8Y1GdJq.SPCcNmS3s5d7rgm7y7.VVLoVYmRf0Re" # 'MonkeyMocha'
+  created_at:              <%= 5.days.ago.to_s :db  %>
+  confirmation_token:           
+  confirmed_at:            <%= 5.days.ago.to_s :db  %>
+  confirmation_sent_at:    <%= 5.days.ago.to_s :db  %>
+  authentication_token:    1b6453892473a467d07372d45eb05abc20316470
+  reset_password_token:    "BJDxuZzBanQKrATjrDeP" 
+  reset_password_sent_at:  <%= 1.hours.ago.to_s :db %>
+      
+# raw_confirmation_token for below: BJDxuZzBanQKrATjrDeP
+# demarcus is unconfirmed here
+demarcus:
+  id:                      2
+  email:                   demarcus@example.com
+  encrypted_password:      "$2a$10$aiN/4aMQ/VlsIK8Y1GdJq.SPCcNmS3s5d7rgm7y7.VVLoVYmRf0Re" # 'MonkeyMocha'
+  created_at:              <%= 1.days.ago.to_s :db %>
+  confirmation_token:      '31da0519d68761dab9b6cb160a918227035baffd56498873bd5eb74b4e00a8ed'
+  authentication_token:    1b6453892473a467d07372d45eb05abc2031647a
+
+jermaine:
+  id:                      3
+  email:                   jermaine@example.com
+  encrypted_password:      "$2a$10$aiN/4aMQ/VlsIK8Y1GdJq.SPCcNmS3s5d7rgm7y7.VVLoVYmRf0Re" # 'MonkeyMocha'
+  created_at:              <%= 5.days.ago.to_s :db  %>
+  confirmation_token:           
+  confirmed_at:            <%= 5.days.ago.to_s :db  %>
+  confirmation_sent_at:    <%= 5.days.ago.to_s :db  %>
+  authentication_token:    1b6453892473a467d07372d45eb05abc2031647b
+ 
