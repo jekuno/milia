@@ -8,29 +8,24 @@ class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
 
 # -----------------------------------------------------------------------------
-# class-level stuff for handling multitenanting setups
+# any class-level stuff for special handling
 # -----------------------------------------------------------------------------
   class << self
     
-    def set_tenant( tenant )
-      Thread.current[:tenant_id]  = tenant.id
-    end
-    
-    def current_tenant()
-      return Thread.current[:tenant_id]
-    end
-    
-    def reset_tenant()
-       Thread.current[:tenant_id]  = nil   # starting point; no tenant
-    end
-    
-    def void_tenant()
-       Thread.current[:tenant_id]  = 0   # an impossible tenant
-    end
-    
   end  #  anon class
+    
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+  #
+  # Note: You'll currently still have to declare fixtures explicitly in integration tests
+  # -- they do not yet inherit this setting
+  fixtures :all
   
   # Add more helper methods to be used by all tests here...
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 end   #  class ActiveSupport::TestCase
 
