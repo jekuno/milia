@@ -1,0 +1,35 @@
+quentin_1:
+  tenant_id: 1
+  user_id:   1
+  first_name: Quentin
+  last_name:  Brown
+  created_at:              <%= 5.days.ago.to_s :db  %>
+
+quentin_2:
+  tenant_id: 2
+  user_id:   1
+  first_name: Quentin2
+  last_name:  Brown2
+  created_at:              <%= 5.days.ago.to_s :db  %>
+
+demarcus_2:
+  tenant_id: 2
+  user_id:   2
+  first_name: Admin
+  last_name:  Please edit me
+  created_at:              <%= 1.days.ago.to_s :db %>
+
+jermaine_2:
+  tenant_id: 2
+  user_id:   3
+  first_name: Jermaine2
+  last_name:  Potts2
+  created_at:              <%= 5.days.ago.to_s :db  %>
+
+jermaine_3:
+  tenant_id: 3
+  user_id:   3
+  first_name: Jermaine
+  last_name:  Potts
+  created_at:              <%= 5.days.ago.to_s :db  %>
+
