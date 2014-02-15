@@ -2,7 +2,14 @@ class Tenant < ActiveRecord::Base
   acts_as_universal_and_determines_tenant
 
   has_many :members, dependent: :destroy
+  has_many :posts, dependent: :destroy
+  has_many :zines, dependent: :destroy
+  has_many :teams, dependent: :destroy
+  has_many :team_assets, dependent: :destroy
 
+  # ------------------------------------------------------------------------
+  # ------------------------------------------------------------------------
+  # ------------------------------------------------------------------------
     def self.create_new_tenant(tenant_params, user_params, coupon_params)
 
       tenant = Tenant.new(:name => tenant_params[:name])
