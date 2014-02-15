@@ -9,7 +9,8 @@ class UserTest < ActiveSupport::TestCase
       @user = users(:quentin)
     end
 
-    should have_many( :members )
+    should have_one( :member )
+    should have_many( :tenanted_members )
     should_not allow_value("wild blue").for(:email)
     
     should have_db_column(:tenant_id)

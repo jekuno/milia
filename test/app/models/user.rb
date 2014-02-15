@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :members, :dependent => :destroy
+  has_one  :member, :dependent => :destroy
+  has_many :tenanted_members, :dependent => :destroy,
+           :class_name => "Member", :foreign_key => 'user_id'
 
 
 end
