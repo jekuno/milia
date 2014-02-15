@@ -69,6 +69,13 @@ class UserTest < ActiveSupport::TestCase
       assert !user.errors.empty?
     end   # should do
 
+    should 'save and invite member - success' do
+      user = User.new(email: "limesublime@example.com")
+      assert user.save_and_invite_member
+      assert user.errors.empty?
+    end   # should do
+
+
 
 
 
