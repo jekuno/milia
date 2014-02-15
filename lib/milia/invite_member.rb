@@ -64,9 +64,6 @@ module Milia
       return status
     end
 
-
-private
-
 # ------------------------------------------------------------------------  
 # check_or_set_password -- if password missing, generates a password
 # ASSUMES: Milia.use_invite_member
