@@ -52,7 +52,7 @@ module Milia
     def save_and_invite_member(  )
       if (
           self.email.blank?  ||
-          User.first(conditions: [ "lower(email) = ?", self.email.downcase ])
+          User.where([ "lower(email) = ?", self.email.downcase ]).first
         )
         self.errors.add(:email,"must be present and unique")
         status = nil
