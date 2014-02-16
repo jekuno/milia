@@ -53,7 +53,6 @@ module Milia
 # Forces all reference to the universal tenant (nil)
 # ------------------------------------------------------------------------
       def acts_as_universal()
-        # attr_protected :tenant_id   # A/R does DB access for this, causes heroku assets:precompile to fail!
         belongs_to  :tenant
 
         default_scope { where( "#{table_name}.tenant_id IS NULL" ) }

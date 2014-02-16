@@ -175,8 +175,54 @@ RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
          "InvalidTenantAccess if tenants dont match"){
          target.update_attributes( :first_name => "duck walk" )
       }
+     end  # should do
+
+    should 'raise exception if tenanted tid not nil - destroy' do
+      target = members(:quentin_1)
+      assert_no_difference('Member.count') do
+        assert_raise(::Milia::Control::InvalidTenantAccess) {
+          target.tenant_id = 3
+          target.destroy
+        }
+      end  # no diff do
     end  # should do
+        
+# #############################################################################
+# ####  acts_as_universal injected methods  #############
+# #############################################################################
+    should 'always force universal tenant id to nil' do 
+        # setup new world
+      tenant = Tenant.create_new_tenant( 
+            {name:   "Mangoland", tenant_id: 1}, 
+            {email:  "billybob@bob.com"}, 
+            {coupon: "FreeTrial"}
+      )
+      assert tenant.errors.empty?
+      assert_nil  tenant.tenant_id
+    end  # should do
+ 
+ 
+    should 'raise exception if tid not nil - save' do
+      tenant = tenants(:tenant_1)
+      assert_raise(::Milia::Control::InvalidTenantAccess) {
+        tenant.update_attributes( tenant_id: 3, name: 'wild blue2' )
+      }
+
+    end  # should do
+ 
+    should 'raise exception if tid not nil - destroy' do
+      tenant = tenants(:tenant_1)
+      assert_no_difference('Tenant.count') do
+        assert_raise(::Milia::Control::InvalidTenantAccess) {
+          tenant.tenant_id = 3
+          tenant.destroy
+        }
+      end  # no diff do
+    end  # should do
+ 
+# #############################################################################
 
   end  # context
-
+ 
+# #############################################################################
 end  # class test
