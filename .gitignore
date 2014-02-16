@@ -1,8 +1,8 @@
 #####################################################################################
 # Rails
 .bundle
-*.sqlite3
-*.sqlite3-journal
+test/db/*.sqlite3
+test/db/*.sqlite3-journal
 log/
 tmp/
 *.log
