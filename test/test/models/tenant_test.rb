@@ -28,6 +28,7 @@ class TenantTest < ActiveSupport::TestCase
     should have_many( :team_assets )
     should have_many( :teams )
     should have_many( :members )
+    should have_and_belong_to_many( :users )
 
 # ------------------------------------------------------------------------
 # validate tenant creation callbacks, validators
