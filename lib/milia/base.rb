@@ -90,6 +90,17 @@ module Milia
         has_and_belongs_to_many :tenants
 
         acts_as_universal()
+
+           # validate that a tenant exists prior to a user creation
+        before_create do |new_user|
+          if Thread.current[:tenant_id].blank? ||
+             !Thread.current[:tenant_id].kind_of?(Integer) ||
+             Thread.current[:tenant_id].zero?
+
+            raise ::Milia::Control::InvalidTenantAccess,"no existing valid current tenant" 
+
+          end
+        end  # before create callback do
         
           # before create, tie user with current tenant
           # return true if ok to proceed; false if break callback chain

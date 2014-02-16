@@ -1,16 +1,26 @@
 require 'test_helper'
-
+ 
+# #############################################################################
+# Note: this tests not only the methods in models/tenant.rb but
+# also all of the milia-injected methods from base.rb
+# #############################################################################
+ 
 class TenantTest < ActiveSupport::TestCase
 
 
   context "a tenant" do
-    
+
+# ------------------------------------------------------------------------
     setup do
       @tenant =tenants( :tenant_1 )
       Tenant.set_current_tenant( @tenant.id )
     end
 
+# #############################################################################
+# #############################################################################
+# ------------------------------------------------------------------------
 # validate multi-tenanting structure
+# ------------------------------------------------------------------------
     should have_db_column(:tenant_id)
     should have_db_column(:name)
     should have_many( :posts )
@@ -19,7 +29,9 @@ class TenantTest < ActiveSupport::TestCase
     should have_many( :teams )
     should have_many( :members )
 
+# ------------------------------------------------------------------------
 # validate tenant creation callbacks, validators
+# ------------------------------------------------------------------------
     should 'have a new_signups_not_permitted' do
       assert Tenant.respond_to? :new_signups_not_permitted?
       assert !Tenant.new_signups_not_permitted?( {} )
@@ -73,6 +85,10 @@ class TenantTest < ActiveSupport::TestCase
        
     end  # should do
         
+# #############################################################################
+# ####  acts_as_universal_and_determines_tenant injected methods  #############
+# #############################################################################
+        
     should 'current_tenant_id - non nil' do
       tid = Tenant.current_tenant_id
       assert_kind_of  Integer,tid
@@ -105,19 +121,60 @@ class TenantTest < ActiveSupport::TestCase
     end  # should do
          
     should 'set current tenant - tenant obj' do
-
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+      Tenant.set_current_tenant( tenants( :tenant_3 ) )
+      assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
     end  # should do
          
-        
-#     should "exception if tenant is different" do
-#       ActiveSupport::TestCase.reset_tenant
-#       
-#       assert_raise(::Milia::Control::InvalidTenantAccess,
-#          "InvalidTenantAccess if tenants dont match"){
-#          @post.update_attributes( :content => "duck walk" )
-#       }
-#     end    
+    should 'set current tenant - tenant id' do
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+      Tenant.set_current_tenant( tenants( :tenant_3 ).id )
+      assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
+    end  # should do
+         
+    should 'NOT set current tenant - invalid arg' do
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+      assert_raise(ArgumentError) { 
+        Tenant.set_current_tenant( '2' )
+      }
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+    end  # should do
+
+RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
+    should 'prepare a restrict tenant snippet' do
+      assert_equal RESTRICT_SNIPPET, Tenant.where_restrict_tenant( Post, Zine )
+    end  # should do
+
+    should 'clear tenant.users when tenant destroyed' do
+      target = tenants(:tenant_2)
+      Tenant.set_current_tenant( target )
+      quentin = users(:quentin)
+      assert_equal 2,quentin.tenants.count
+
+      assert_difference( "Tenant.count", -1 ) do
+        target.destroy
+      end 
+
+      quentin.reload
+      assert_equal 1,quentin.tenants.count
  
+    end  # should do
+        
+        
+# #############################################################################
+# ####  acts_as_tenant injected methods  #############
+# #############################################################################
+        
+    should "raise exception if tenant is different" do
+      target = members(:quentin_1)
+         # now force tenant to invalid
+      Tenant.set_current_tenant( 0 )
+      
+      assert_raise(::Milia::Control::InvalidTenantAccess,
+         "InvalidTenantAccess if tenants dont match"){
+         target.update_attributes( :first_name => "duck walk" )
+      }
+    end  # should do
 
   end  # context
 
