@@ -54,6 +54,10 @@ class PostTest < ActiveSupport::TestCase
       assert_equal  posts(:post_plum_2_1_b).team, teams(:team_2_b)
     end  # should do
     
+    should 'match a posts zine with tenant' do
+      Tenant.set_current_tenant( tenants( :tenant_2 ).id )
+      assert_equal  2,posts(:post_plum_2_1_b).zine.tenant_id
+    end  # should do
     
   end   # context post
 
