@@ -3,7 +3,8 @@ Miliatest::Application.routes.draw do
   resources :members
 
   get "home/index"
-   root :to => "home#index"
+  get "home/show"
+  root :to => "home#index"
 
     
   # *MUST* come *BEFORE* devise's definitions (below)
