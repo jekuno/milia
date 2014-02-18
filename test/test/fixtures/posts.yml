@@ -1,0 +1,96 @@
+post_apple_1_1_a:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_a
+
+post_peach_1_1_a:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_a
+
+post_plum_1_1_b:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_b
+
+post_apricot_1_1_b:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_b
+
+post_pear_1_1_c:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_c
+
+post_cherry_1_1_c:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_c
+
+post_berry_1_1_c:
+  tenant_id: 1
+  member: quentin_1
+  zine: zine_1_c
+
+# ------------------------------------
+
+post_apple_2_1_a:
+  tenant_id: 2
+  member: quentin_2
+  zine: zine_2_a
+
+post_berry_2_1_a:
+  tenant_id: 2
+  member: demarcus_2
+  zine: zine_2_a
+
+post_peach_2_1_a:
+  tenant_id: 2
+  member: demarcus_2
+  zine: zine_2_a
+
+post_plum_2_1_b:
+  tenant_id: 2
+  member: quentin_2
+  zine: zine_2_b
+
+post_apricot_2_1_b:
+  tenant_id: 2
+  member: jermaine_2
+  zine: zine_2_b
+
+# ------------------------------------
+
+post_apple_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+post_peach_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+post_plum_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+post_apricot_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+post_pear_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+post_cherry_3_1_a:
+  tenant_id: 3
+  member: jermaine_3
+  zine: zine_3_a
+
+
+

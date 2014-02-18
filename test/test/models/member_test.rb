@@ -15,7 +15,8 @@ class MemberTest < ActiveSupport::TestCase
       assert  Thread.current[:tenant_id]
     end
     should "match the current tenant" do
-      assert_equal  @member.tenant_id, Thread.current[:tenant_id]
+      a_member = Member.first
+      assert_equal  a_member.tenant_id, Thread.current[:tenant_id]
     end
 
 # validate the model

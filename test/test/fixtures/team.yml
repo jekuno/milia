@@ -1,0 +1,17 @@
+team_1_a:
+  tenant_id: 1
+  name: team_1_a
+
+team_2_a:
+  tenant_id: 2
+  name: team_2_a
+
+team_2_b:
+  tenant_id: 2
+  name: team_2_b
+
+team_3_a:
+  tenant_id: 3
+  name: team_3_a
+
+

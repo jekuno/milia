@@ -1,0 +1,30 @@
+ta_1_q_a:
+  tenant_id: 1
+  member: quentin_1
+  team: team_1_a
+
+ta_2_q_a:
+  tenant_id: 2
+  member: quentin_2
+  team: team_2_a
+
+ta_2_q_b:
+  tenant_id: 2
+  member: quentin_2
+  team: team_2_b
+
+ta_2_d_a:
+  tenant_id: 2
+  member: demarcus_2
+  team: team_2_a
+
+ta_2_j_b:
+  tenant_id: 2
+  member: jermaine_2
+  team: team_2_b
+
+ta_3_j_a:
+  tenant_id: 3
+  member: jermaine_3
+  team: team_3_a
+
