@@ -19,37 +19,40 @@ class PostTest < ActiveSupport::TestCase
 # validate the model
     should belong_to( :member )
     should belong_to( :zine )
+    should have_one(:team).through(:zine)
 
 # model-specific tests
-   should "get all posts within mangoland" do
-     assert_equal (@max_users * @max_teams) + 1, Post.count
+   should "get all posts within tenant" do
+     assert_equal 7, Post.count
    end
   
-   should "get only member posts in mangoland" do
-     x = Member.all.detect{|a| !a.user.nil? }  # pick an member
-     assert x
-     assert_equal 1, x.posts.size
+   should "get only member posts in tenant" do
+     Tenant.set_current_tenant( tenants( :tenant_2 ).id )
+
+     x = members(:quentin_2)
+     assert_equal 2, x.posts.size
    end
-
-    should "not get any non-world user posts in mangoland" do
-       x = User.all.last  # should be from islesmile
-       assert   x.posts.size.zero?
-    end
   
-    should "see jemell in two tenants with dif posts" do
-       assert_equal   1, @target.posts.size
-       assert         %w(wild_blue passion_pink mellow_yellow).include?( @target.posts.first.content.sub(/_\d+/,"") )
+    should "see jermaine in two tenants with dif posts" do
+      jermaine = users( :jermaine )
+     Tenant.set_current_tenant( tenants( :tenant_2 ).id )
+       assert_equal   1, jermaine.member.posts.size
 
-       assert_equal   2, @target.posts.size
-       assert         @target.posts.all?{ |p| 
-          %w(wild_blue passion_pink mellow_yellow).include?( p.content.sub(/_\d+/,"") )
-       }
+     Tenant.set_current_tenant( tenants( :tenant_3 ).id )
+       jermaine.reload
+       assert_equal   6, jermaine.member.posts.size
     end
 
-    should "zoom get all team posts" do
-      list = Post.get_team_posts( Member.first.teams.first.id ).all
-      assert_equal  3,list.size
+    should "get all team posts" do
+     Tenant.set_current_tenant( tenants( :tenant_2 ).id )
+     team = teams( :team_2_b )
+     assert_equal  2, team.posts.size
     end
+
+    should 'match team in a post' do
+     Tenant.set_current_tenant( tenants( :tenant_2 ).id )
+      assert_equal  posts(:post_plum_2_1_b).team, teams(:team_2_b)
+    end  # should do
     
     
   end   # context post

@@ -65,6 +65,10 @@ class MemberTest < ActiveSupport::TestCase
       assert_equal  user.member,member
     end  # should do
 
+    should "not get any non-world member" do
+       x = users(:demarcus)
+       assert   x.member.nil?
+    end
     
   end   # context member
   
