@@ -51,6 +51,39 @@ class HomeControllerTest < ActionController::TestCase
     assert_equal 2,Tenant.current_tenant_id
   end  # should do
 
+  should 'redirect back' do
+       # alter the code to invoke redirect_back
+    @controller.class.module_eval(
+      %q{
+        def index()
+          redirect_back
+        end
+      }
+    )
+
+       # now test it
+    get :index
+    assert_response :redirect
+    assert_redirected_to  root_url()
+
+  end  # should do
+
+  should 'prep signup view' do
+    assert_nil  @controller.instance_eval( "@tenant" )
+    @controller.prep_signup_view( 
+        { name: 'Mangoland' }, 
+        {email: 'billybob@bob.com', password: 'monkeymocha', password_confirmation: 'monkeymocha'} 
+    )
+    assert_equal 'Mangoland', @controller.instance_eval( "@tenant" ).name
+  end  # should do
+
+  should 'raise max_tenants exception' do
+    @controller.instance_eval( 
+      %q{
+        raise ::Milia::Control::MaxTenantExceeded
+      }
+    )
+  end  # should do
 
   end  # context
 
