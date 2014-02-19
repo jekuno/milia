@@ -98,7 +98,7 @@ GEM
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     orm_adapter (0.5.0)
-    polyglot (0.3.3)
+    polyglot (0.3.4)
     puma (2.7.1)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)

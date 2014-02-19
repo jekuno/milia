@@ -28,11 +28,29 @@ class HomeControllerTest < ActionController::TestCase
 
   should 'reset tenant' do
     assert Tenant.current_tenant_id
-    @controller = ApplicationController.new
-    @controller.instance_eval{ __milia_reset_tenant! }   # invoke the private method
+    @controller.__milia_reset_tenant!   # invoke the private method
     assert_nil Tenant.current_tenant_id
 
   end  # should do
+
+  should 'change tenant' do
+    assert_equal 1,Tenant.current_tenant_id
+    @controller.__milia_change_tenant!(2)   # invoke the private method
+    assert_equal 2,Tenant.current_tenant_id
+  end  # should do
+
+  should 'trace tenanting' do
+    ::Milia.trace_on = true
+    @controller.trace_tenanting( "wild blue" )
+    ::Milia.trace_on = false
+    @controller.trace_tenanting( "duck walk" )
+  end  # should do
+
+  should 'initiate tenant' do
+    @controller.initiate_tenant( tenants(:tenant_2) )
+    assert_equal 2,Tenant.current_tenant_id
+  end  # should do
+
 
   end  # context
 
