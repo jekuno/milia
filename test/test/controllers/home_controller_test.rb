@@ -77,12 +77,21 @@ class HomeControllerTest < ActionController::TestCase
     assert_equal 'Mangoland', @controller.instance_eval( "@tenant" ).name
   end  # should do
 
-  should 'raise max_tenants exception' do
-    @controller.instance_eval( 
+  should 'handle max_tenants exception' do
+       # alter the code to invoke redirect_back
+    @controller.class.module_eval(
       %q{
-        raise ::Milia::Control::MaxTenantExceeded
+        def index()
+          max_tenants
+        end
       }
     )
+
+       # now test it
+    get :index, { user: { email: 'billybob@bob.com' }, tenant: {name: 'Mangoland'} }
+    assert_response :redirect
+    assert_redirected_to  root_url()
+
   end  # should do
 
   end  # context

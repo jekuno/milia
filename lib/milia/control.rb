@@ -126,7 +126,7 @@ module Milia
 # ------------------------------------------------------------------------------
   def max_tenants()
     logger.info(
-      "MILIA >>>>> [max tenant signups] #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:company]}"
+      "MILIA >>>>> [max tenant signups] #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:name]}"
     ) unless logger.nil?
 
     flash[:error] = "Sorry: new accounts not permitted at this time"
