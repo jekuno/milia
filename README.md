@@ -10,7 +10,8 @@ tailoring for common use cases needing multi-tenanting with user authentication.
 * should be symbiotic with user authentication
 * should raise exceptions upon attempted illegal access
 * should force tenanting (not allow sloppy access to all tenant records)
-* should allow application flexibility upon new tenant sign-up, usage of eula information, etc
+* should allow application flexibility upon new tenant sign-up, 
+  usage of eula information, etc
 * should be as non-invasive (as possible) to Rails code
 * row-based tenanting is used
 * default_scope is used to enforce tenanting
@@ -32,8 +33,8 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0-beta-6 is the beta version for Rails 4.0.x and is now available for usage on
-branch: v1.0.0-beta-6.
+milia v1.0.0-beta-7 is the beta version for Rails 4.0.x and is now available for usage on
+branch: v1.0.0-beta-7.
 
 Still pending to be done: the unit tests have not been revised yet for v1.0.0.
 
@@ -113,7 +114,10 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-6
+## this readme is for v1.0.0-beta-7
+* changes in beta-7: model & controller testing is almost complete; 
+  minor bug fixed;  mixed-in controller methods are now public, not
+  private.
 
 * changes in beta-6: user_params added to Tenant.create_new_tenant;
   ability to add additional whitelist parameters during config
@@ -186,7 +190,19 @@ table is created with generation such as follows:
   rails g migration CreateModel1sModel2sJoinTable model1s model2s
 ```
 
+## Installation
 
+This README describes two different ways to install:
+* a bare minimum manual setup which requires many minor tweaks;
+  those tweaks will be described in a later section.
+* use of a milia generator to install itself and automate those
+  tweaks for most use cases (recommended method)
+
+Later sections of the README will enumerate:
+* how to create a simple working sample rails/devise/milia application
+* all the expected tweaks which the generator performed automatically
+* advice on advanced usage of milia (from rake tasks, console)
+* specifics about the milia API
 
 ## Milia Basic Installation
 
@@ -216,7 +232,7 @@ Add to your Gemfile:
 If you'll be working with any beta or leading edge version, specify as follows:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-4'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-7'
 ```
 
 Then,
