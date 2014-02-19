@@ -133,11 +133,11 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   $ cd projectspace   # if not there already
 
-  $ rails new sample-milia-app
-  $ echo "sample" > sample-milia-app/.ruby-gemset
+  $ rails new sample-milia-app  --skip-bundle
+  $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
   $ echo "2.0.0" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
-  $ rvm gemset create sample
+  $ rvm gemset create sample-milia-app
   $ cd sample-milia-app
   $ git init
   $ git add --all .
@@ -186,7 +186,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
   gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-2'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-7'
 
   # recaptcha is optional and configured by config.use_recaptcha in milia initializer
   # default is true; if you change it to false, comment out the line below

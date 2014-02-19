@@ -117,10 +117,10 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
   $ cd projectspace   # if not there already
 
   $ rails new sample-milia-app --skip-bundle
-  $ echo "sample" > sample-milia-app/.ruby-gemset
+  $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
   $ echo "2.0.0" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
-  $ rvm gemset create sample
+  $ rvm gemset create sample-milia-app
   $ cd sample-milia-app
 
 # change .gitignore to match your development environment
@@ -170,7 +170,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
   gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-2'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-7'
 
 #<<<< ADD <<<<<<<<<<<<<<<<<
 #<<<< EDIT <<<<<<<<<<<<<<<<<
