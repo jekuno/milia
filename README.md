@@ -216,7 +216,7 @@ Add to your Gemfile:
 If you'll be working with any beta or leading edge version, specify as follows:
 
 ```
-   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-4'
+   gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-6'
 ```
 
 Then,
