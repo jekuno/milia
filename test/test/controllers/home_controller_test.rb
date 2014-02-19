@@ -94,6 +94,40 @@ class HomeControllerTest < ActionController::TestCase
 
   end  # should do
 
+
+  should 'set current tenant - user not signed in' do
+    assert  @controller.set_current_tenant( 2 )
+    assert_nil  Tenant.current_tenant_id
+  end  # should do
+
+
+  should 'set current tenant - user signed in; tid not nil; valid for user' do
+    sign_in( users( :quentin ) )
+    assert  @controller.set_current_tenant( 2 )
+    assert_equal  2,Tenant.current_tenant_id
+  end  # should do
+
+  should 'set current tenant - user signed in; tid not nil; invalid for user' do
+    sign_in( users( :quentin ) )
+    assert_raise(Milia::Control::InvalidTenantAccess){
+      @controller.set_current_tenant( 3 )
+    }
+    assert_equal  1,Tenant.current_tenant_id   # should be unchanged
+  end  # should do
+
+
+  should 'authenticate tenant - 1' do
+
+    @controller.set_current_tenant( )
+    sign_in( users( :quentin ) )
+    @controller.authenticate_tenant!
+    assert_response :success
+    assert_equal  1,Tenant.current_tenant_id
+
+  end  # should do
+
+
+
   end  # context
 
 end  # end class test
