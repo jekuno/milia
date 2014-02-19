@@ -247,7 +247,7 @@ model and so this is where all the information for a member should be kept.
   $ rails new sample-milia-app --skip-bundle
   $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
   $ echo "2.0.0" > sample-milia-app/.ruby-version
-  $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
+  $ echo "web: bundle exec thin start -R config.ru -p \$PORT -e \$RACK_ENV" > sample-milia-app/Procfile
   $ rvm gemset create sample-milia-app
 ```
 
