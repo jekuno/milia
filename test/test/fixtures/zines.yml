@@ -1,0 +1,25 @@
+zine_1_a:
+  tenant_id: 1
+  team: team_1_a
+
+zine_1_b:
+  tenant_id: 1
+  team: team_1_a
+
+zine_1_c:
+  tenant_id: 1
+  team: team_1_a
+
+zine_2_a:
+  tenant_id: 2
+  team: team_2_a
+
+zine_2_b:
+  tenant_id: 2
+  team: team_2_b
+
+zine_3_a:
+  tenant_id: 3
+  team: team_3_a
+
+

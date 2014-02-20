@@ -14,7 +14,6 @@ module Milia
 # Forces all references to be limited to current_tenant rows
 # ------------------------------------------------------------------------
       def acts_as_tenant()
-        attr_protected :tenant_id
         belongs_to  :tenant
         validates_presence_of :tenant_id
 
@@ -54,10 +53,9 @@ module Milia
 # Forces all reference to the universal tenant (nil)
 # ------------------------------------------------------------------------
       def acts_as_universal()
-        # attr_protected :tenant_id   # A/R does DB access for this, causes heroku assets:precompile to fail!
         belongs_to  :tenant
 
-        default_scope where( "#{table_name}.tenant_id IS NULL" )
+        default_scope { where( "#{table_name}.tenant_id IS NULL" ) }
 
       # ..........................callback enforcers............................
         before_save do |obj|   # force tenant_id to be universal
@@ -87,9 +85,21 @@ module Milia
 # of binding a user to a tenant
 # ------------------------------------------------------------------------
       def acts_as_universal_and_determines_account()
+        include ::Milia::InviteMember
         has_and_belongs_to_many :tenants
 
         acts_as_universal()
+
+           # validate that a tenant exists prior to a user creation
+        before_create do |new_user|
+          if Thread.current[:tenant_id].blank? ||
+             !Thread.current[:tenant_id].kind_of?(Integer) ||
+             Thread.current[:tenant_id].zero?
+
+            raise ::Milia::Control::InvalidTenantAccess,"no existing valid current tenant" 
+
+          end
+        end  # before create callback do
         
           # before create, tie user with current tenant
           # return true if ok to proceed; false if break callback chain
@@ -123,9 +133,21 @@ module Milia
 
 # ------------------------------------------------------------------------
 # current_tenant -- returns tenant obj for current tenant
+  # return nil if no current tenant defined
 # ------------------------------------------------------------------------
   def current_tenant()
-    return Tenant.find( Thread.current[:tenant_id] )
+    begin
+      tenant = (
+        Thread.current[:tenant_id].blank?  ?
+        nil  :
+        Tenant.find( Thread.current[:tenant_id] )
+      )
+
+      return tenant
+
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end   
   end
     
 # ------------------------------------------------------------------------
@@ -150,7 +172,10 @@ module Milia
         raise ArgumentError, "invalid tenant object or id"
     end  # case
     
+    old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
     Thread.current[:tenant_id] = tenant_id
+    logger.debug("MILIA >>>>> [Tenant#change_tenant] new: #{tenant_id}\told:#{old_id}") unless logger.nil?
+
   end
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------

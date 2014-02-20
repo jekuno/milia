@@ -1,8 +1,8 @@
 #####################################################################################
 # Rails
 .bundle
-db/*.sqlite3
-db/*.sqlite3-journal
+test/db/*.sqlite3
+test/db/*.sqlite3-journal
 log/
 tmp/
 *.log
@@ -78,6 +78,7 @@ capybara-*html
 
 #gem
 pkg/
+*.gem
 
 # other
 .loadpath
@@ -87,3 +88,7 @@ temp*.txt
 config/database.yml
 *.dump
 .bashrc
+
+#git
+*.keep
+*.gitkeep
