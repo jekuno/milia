@@ -37,15 +37,10 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0-beta-7 is the beta version for Rails 4.0.x and is now available for usage on
-branch: v1.0.0-beta-7.
-
-* Completed: models & controllers tests
-* Still pending to be done: rake task for tests, tests for devise overrides
-
+milia v1.0.0 is the release version for Rails 4.0.x and is now available for usage.
 
 The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
-it is essentially obsolete. Go with the beta.
+it is essentially obsolete. Go with v1.0.x
 
 ## What's changed?
 
@@ -113,7 +108,7 @@ and devise 3.2 install.
 * Rails 4.0.x
 * Devise 3.2.x
 
-## this readme is for v1.0.0-beta-7
+## this readme is for v1.0.0  (fka v1.0.0-beta-7)
 * changes in beta-7: model & controller testing is almost complete; 
   minor bug fixed;  mixed-in controller methods are now public, not
   private.
@@ -132,6 +127,8 @@ and devise 3.2 install.
 * changes in beta-2: invite_member capability
 
 ### edge branch: "newdev"
+
+If I'm actively developing, this can be in a state of flux. Use at your own risk.
 
 ## Authorized Roles
 
