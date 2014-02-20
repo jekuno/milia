@@ -1121,6 +1121,26 @@ of a background job (DelayedJob#perform) or at start of rails console, or a rake
 ```
 
 
+## running tests
+
+You must cd into the milia/test directory.
+Then run test:units, test:functionals seperately. 
+For some reason, rake test won't work and yields errors.
+
+```ruby
+  $ cd test
+  $ rake db:create
+  $ rake db:migrate
+  $ rake db:test:prepare
+  $ rake test:units
+  $ rake test:functionals
+```
+
+### test coverage
+* All models, including milia-added methods, are tested.
+* Functional testing currently covers all milia-added controller methods.
+* TBD: milia overrides of devise registration, confirmation controllers
+
 ## Cautions
 
 * Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes and will invalidate multi-tenanting; so *DO NOT USE default_scope*
@@ -1134,6 +1154,7 @@ of a background job (DelayedJob#perform) or at start of rails console, or a rake
 
 
 ## Further documentation
+
 * Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
 at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
 * See the Milia tutorial at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails_3982.html

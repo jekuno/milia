@@ -1,4 +1,4 @@
-# Milia unit testing
+# Milia unit & functional testing
 
 This documents the unit testing for Milia: structure of models, things
 being tested, and work-arounds used. The reason for this document is
@@ -67,4 +67,17 @@ Tenanted
     has_many :members, :through => :posts, :source => 'member'
 ```
 
+## running tests
+
+You must cd into the milia/test directory.
+Then run test:units, test:functionals seperately. 
+
+```ruby
+  $ cd test
+  $ rake db:create
+  $ rake db:migrate
+  $ rake db:test:prepare
+  $ rake test:units
+  $ rake test:functionals
+```
 
