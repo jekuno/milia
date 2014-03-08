@@ -149,7 +149,7 @@ Kibali is primarily oriented for functioning as a before_action role authenticat
 * necessary migrations: user, tenant, tenants_users (join table)
 
 You must understand which of your apps models will be tenanted ( <i>acts_as_tenant</i> ) 
-and which will be universal ( <i>cts_as_universal</i>). Universal data NEVER has critical user/company
+and which will be universal ( <i>acts_as_universal</i>). Universal data NEVER has critical user/company
 information in the table. It is usually only for system-wide constants. For example, if you've put
 too much user information in the users table, you'll need to seperate it out. by definition, the devise 
 user table MUST be universal and should only contain email, encrypted password, and devise-required data.
