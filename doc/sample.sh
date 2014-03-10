@@ -225,5 +225,52 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # stop/restart foreman
 # ^c stops foreman; foreman start  restarts it; F5 refreshes the browser page
 # 
+# *********************************************************************
+# STEP 5 - DEPLOYING SAMPLE-MILIA-APP TO HEROKU
+# *********************************************************************
 
+#  Make sure that you've installed the heroku toolbelt, as shown in STEP 0.
+#  Make sure that you've setup git repository for you app, as shown in STEP 1.
+#  Open a terminal window and make sure you've cd to your project within the projectspace.
+#  Make sure that you've setup your heroku credentials on your machine using
+  $ heroku login
+
+#  Create your project (we'll call it "sample-milia" in the examples here).
+  $ heroku create sample-milia
+
+#  Now setup the various add-ons we'll need:
+  $ heroku addons:add sendgrid
+
+#  Now setup any needed configurations variables
+  $ heroku config:add BUNDLE_WITHOUT="development:test:linux:mac"
+  $ heroku config:add RECAPTCHA_PUBLIC_KEY='<your public key>'
+  $ heroku config:add RECAPTCHA_PRIVATE_KEY='<your private key>'
+
+# edit config/initializers/secret_token.rb
+# duplicate the secret_key_base line and rename it to secret_token
+
+# edit config/environments/production.rb  line 4
+# put in the correct path for the hostname, and remove the https protocol if not needed
+
+# edit Gemfile and replace the sqlite3 line with the following:
+  # Use sqlite3 as the dev/test database for Active Record
+  gem 'sqlite3', :group => [:development, :test]
+
+  # Use pg as the production database for heroku
+  gem 'pg', :group => :production
+
+# then run bundle install, and commit to the repository
+  $ bundle install
+  $ git commit -am 'ready for heroku deploy'; git push origin master
+
+# now deploy to heroku
+  $ git push heroku master
+
+# now migrate the database
+  $ heroku run rake db:migrate
+  $ heroku restart
+
+# go to browser and put in the correct address for your app on heroku:
+
+  http://sample-milia.herokuapp.com
 

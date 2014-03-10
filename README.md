@@ -59,8 +59,15 @@ it is essentially obsolete. Go with v1.0.x
 
 There were numerous requests for me to provide a complete sample web application
 which uses milia and devise. I have done this. This README will have a brief section
-on creating and installing the sample application. Further details about this process
-can be found via the sources listed below:
+on creating and installing the sample application. 
+
+This sample app is now running on heroku and you may test it out here:
+http://sample-milia.herokuapp.com
+Instructions for deploying to heroku can be found in doc/sample.sh STEP 6 
+within the milia gem.
+
+
+Further details about this process can be found via the sources listed below:
 
 * see doc/sample.sh for easy generator usage for setting up and creating a working app.
   Although all the same information is here in this README, it's perhaps clearer, and
