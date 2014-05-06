@@ -3,7 +3,7 @@
 # *********************************************************************
 # This is how to get a working app using rails/milia/devise
 # together with a simple but attractive web-app-theme.
-# I havve added generators which automate all of the steps listed in
+# I have added generators which automate all of the steps listed in
 # manual_sample.sh (if you want to see the details).
 # It is based on my dev environment which is Ubuntu 13.10 on a PC. YMMV.
 #
@@ -61,10 +61,10 @@
 # STEP 0 - PREREQUISITES & EXPECTED BACKGROUND PREPARATION
 # *********************************************************************
 
-# this background is what I've done on my Ubuntu dev workstation
-# so if you want to follow exactly, you'll need similar.
-# none of this is required for milia; only to exactly bring up
-# this sample-milia-app.
+# This background is what I've done on my Ubuntu dev workstation
+# so if you want to follow exactly, you'll need a similar setup.
+# None of this is required for milia, only to bring up this
+# sample-milia-app.
 
 # make sure you have your ssh keys gen'd
   $ ssh-keygen
