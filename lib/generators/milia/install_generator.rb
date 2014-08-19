@@ -36,6 +36,7 @@ module Milia
       def setup_initial_stuff
 
         template 'initializer.rb', 'config/initializers/milia.rb'
+        template 'secret_token.rb', 'config/initializers/secret_token.rb'
 
          unless options.skip_recaptcha
            gem 'recaptcha', :require => "recaptcha/rails"
