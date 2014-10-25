@@ -78,14 +78,14 @@
   $ \curl -L https://get.rvm.io | bash -s stable
 # do any adjustments to your .bashrc, etc files as needed
 
-# make sure to install ruby 2.0.0
-  $ rvm install 2.0.0
+# make sure to install ruby 2.1.3
+  $ rvm install 2.1.3
 
 # I have all my projects in a directory called "projectspace'
   $ mkdir projectspace
   $ rvm gemset create projectspace
   $ echo "projectspace" > projectspace/.ruby-gemset
-  $ echo "2.0.0" > projectspace/.ruby-version
+  $ echo "2.1.3" > projectspace/.ruby-version
   $ cd projectspace
 
 # install rails (latest version)
@@ -118,7 +118,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   $ rails new sample-milia-app --skip-bundle
   $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
-  $ echo "2.0.0" > sample-milia-app/.ruby-version
+  $ echo "2.1.3" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
   $ rvm gemset create sample-milia-app
   $ cd sample-milia-app
@@ -149,7 +149,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
 # finally, ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
 
-  ruby "2.0.0"   # heroku likes this at the head, as line 2
+  ruby "2.1.3"   # heroku likes this at the head, as line 2
 
   # =========================================================
   # sample-milia-app specific stuff

@@ -1,4 +1,4 @@
-  ruby "2.0.0"   # heroku likes this at the head, as line 2
+  ruby "2.1.3"   # heroku likes this at the head, as line 2
 
   # =========================================================
   # sample-milia-app specific stuff
@@ -15,8 +15,8 @@
   gem 'rails_12factor'
 
   gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
-  gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-7'
+  gem 'devise', '~>3.4.0'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'newdev'
 
   # airbrake is optional and configured by config.use_airbrake in milia initializer
   # default is false; if you change it to true, uncomment out the line below

@@ -5,12 +5,12 @@
 #  NOTE: this is now an archivial copy of instructions for creating an
 #  app with rails/milia/devise. After v1.0.0-beta-3, all of this is now
 #  implemented using generators. But this is a reference for how to 
-#  do everything manually, as ov v1.0.0-beta-2.
+#  do everything manually, as of v1.1.0
 # 
 # *********************************************************************
 # This is a capture of everything I did to create a sample app for milia.
 # There's enough brief comments for anyone to follow step-by-step.
-# It is based on my dev environment which is Ubuntu 13.10 on a PC. YMMV.
+# It is based on my dev environment which is Ubuntu 14.04 on a PC. YMMV.
 #
 # The "app" itself is merely a simple barebones structure to display
 # an index page, require sign-in to do anything else, has a sign-up
@@ -95,14 +95,14 @@
   $ \curl -L https://get.rvm.io | bash -s stable
 # do any adjustments to your .bashrc, etc files as needed
 
-# make sure to install ruby 2.0.0
-  $ rvm install 2.0.0
+# make sure to install ruby 2.1.3
+  $ rvm install 2.1.3
 
 # I have all my projects in a directory called "projectspace'
   $ mkdir projectspace
   $ rvm gemset create projectspace
   $ echo "projectspace" > projectspace/.ruby-gemset
-  $ echo "2.0.0" > projectspace/.ruby-version
+  $ echo "2.1.3" > projectspace/.ruby-version
   $ cd projectspace
 
 # install rails (latest version)
@@ -135,7 +135,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
   $ rails new sample-milia-app  --skip-bundle
   $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
-  $ echo "2.0.0" > sample-milia-app/.ruby-version
+  $ echo "2.1.3" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p $PORT -e $RACK_ENV" > sample-milia-app/Procfile
   $ rvm gemset create sample-milia-app
   $ cd sample-milia-app
@@ -165,7 +165,7 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 
 # finally, ADD the following lines to Gemfile >>>>>>>>>>>>>>>>>>>>>>
 
-  ruby "2.0.0"   # heroku likes this at the head, as line 2
+  ruby "2.1.3"   # heroku likes this at the head, as line 2
 
   # =========================================================
   # sample-milia-app specific stuff
@@ -185,8 +185,8 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
   # gem 'airbrake'   # uncomment this if you will use airbrake for exception notifications
 
   gem 'web-app-theme', :git => 'git://github.com/dsaronin/web-app-theme.git'
-  gem 'devise', '~>3.2'
-  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.0.0-beta-7'
+  gem 'devise', '~>3.4.0'
+  gem 'milia', :git => 'git://github.com/dsaronin/milia.git', :branch => 'v1.1.0'
 
   # recaptcha is optional and configured by config.use_recaptcha in milia initializer
   # default is true; if you change it to false, comment out the line below
