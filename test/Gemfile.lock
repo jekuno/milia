@@ -11,8 +11,8 @@ PATH
   remote: ../../milia
   specs:
     milia (1.1.0)
-      devise (~> 3.4)
-      rails (~> 4.1)
+      devise (~> 3.4.0)
+      rails (~> 4.1.6)
 
 GEM
   remote: https://rubygems.org/

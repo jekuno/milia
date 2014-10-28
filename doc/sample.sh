@@ -204,6 +204,17 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 # test by starting server:
   $ foreman start
 
+
+  # CHANGES NEEDED FOR RAILS 4.1 CONVERSION
+
+add to config/initializers/assets.rb
+Rails.application.config.assets.precompile += %w( web_app_theme.css )
+
+
+
+
+
+
 # *********************************************************************
 # STEP 4 - TEST SIGN UP, ACTIVATION, SIGN IN, SIGN OUT
 # *********************************************************************
