@@ -1,6 +1,6 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 4.0.x applications which use
+Milia is a multi-tenanting gem for hosted Rails 4.1.x applications which use
 the devise gem for user authentication and registrations. Milia comes with 
 tailoring for common use cases needing multi-tenanting with user authentication.
 
@@ -37,12 +37,14 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0 is the release version for Rails 4.0.x and is now available for usage.
+milia v1.1.0 is the release version for Rails 4.1.x and is now available for usage.
+I will soon start working on the Rails 4.2 release ... on the newdev branch.
 
-The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
-it is essentially obsolete. Go with v1.0.x
+## v1.1.x - What's changed?
+* Rails 4.1.x adapted 
+* Devise 3.4.x adapted
 
-## What's changed?
+## v1.0.x - What's changed?
 
 * Rails 4.0.x adapted (changes to terms, strong_parameters, default_scope, etc)
 * Devise 3.2.x adapted
@@ -54,6 +56,9 @@ it is essentially obsolete. Go with v1.0.x
 * debug & info logging and trace for troubleshooting
 * improved invite_member support
 * revised README instructions
+
+The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
+it is essentially obsolete. Go with v1.0.x
 
 ## Sample app and documentation
 
@@ -105,10 +110,13 @@ and devise 3.2 install.
 
 ## Dependency requirements
 
-* Rails 4.0.x
-* Devise 3.2.x
+* Ruby 2.1.3
+* Rails 4.1.x
+* Devise 3.4.x
 
-## this readme is for v1.0.0  (fka v1.0.0-beta-7)
+## this readme is for v1.1.0 
+* changes in v1.1.0: just gem dependency; web-app-theme generator had a change
+
 * changes in beta-7: model & controller testing is almost complete; 
   minor bug fixed;  mixed-in controller methods are now public, not
   private.
@@ -243,7 +251,7 @@ model and so this is where all the information for a member should be kept.
 
   $ rails new sample-milia-app --skip-bundle
   $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
-  $ echo "2.0.0" > sample-milia-app/.ruby-version
+  $ echo "2.1.3" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p \$PORT -e \$RACK_ENV" > sample-milia-app/Procfile
   $ rvm gemset create sample-milia-app
 ```
@@ -267,11 +275,15 @@ but you can copy mine from sample-milia-app on github.
 
 This sample web application depends on my updates to the web-app-theme, as
 well as several other gems for the application, which need to be added 
-to the Gemfile, before running the installer.  
+to the Gemfile, before running the installer. 
 You can directly import these into your Gemfile
 by getting them from <i>doc/gemfile_addition.txt.</i>
 After adding this addition to the Gemfile, please make sure the correct
 milia branch is being designated (it sometimes points to edge branch).
+
+Note: web-app-theme is no longer
+listed as a milia dependency in the gemspec, but the above gemfile_addition
+references it and will place it in your Gemfile.
 
 ```
    $ vim Gemfile
