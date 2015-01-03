@@ -37,12 +37,13 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.1.0 is the release version for Rails 4.1.x and is now available for usage.
+milia v1.1.1 is the release version for Rails 4.1.x and is now available for usage.
 I will soon start working on the Rails 4.2 release ... on the newdev branch.
 
 ## v1.1.x - What's changed?
 * Rails 4.1.x adapted 
 * Devise 3.4.x adapted
+* fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
 
 ## v1.0.x - What's changed?
 
