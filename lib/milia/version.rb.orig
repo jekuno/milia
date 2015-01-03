@@ -1,0 +1,7 @@
+module Milia
+<<<<<<< HEAD
+  VERSION = "1.2.0"
+=======
+  VERSION = "1.0.1"
+>>>>>>> 786b99a... v1.0.1 - correcting redirect loop issue
+end
