@@ -37,13 +37,14 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.0.0 is the release version for Rails 4.0.x and is now available for usage.
+milia v1.0.1 is the release version for Rails 4.0.x and is now available for usage.
 
 The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
 it is essentially obsolete. Go with v1.0.x
 
 ## What's changed?
 
+* fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
 * Rails 4.0.x adapted (changes to terms, strong_parameters, default_scope, etc)
 * Devise 3.2.x adapted
 * All the changes which version 0.3.x advised to be inserted in applications_controller.rb are now automatically loaded into ActionController by milia.

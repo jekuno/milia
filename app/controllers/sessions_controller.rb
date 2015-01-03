@@ -6,14 +6,5 @@ module Milia
        # clear tenanting
     before_action :__milia_reset_tenant!, :only => [:create, :destroy]
 
-#     def create
-#       Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
-#       super
-#     end
-
-#     def destroy
-#       super
-#     end
-
   end  # class
 end # module
