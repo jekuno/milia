@@ -25,7 +25,7 @@ class UserTest < ActiveSupport::TestCase
     should_not allow_value("wild blue").for(:email)
     
     should have_db_column(:tenant_id)
-    should have_db_column(:skip_confirm_change_password).with_options(default: false)
+    should have_db_column(:skip_confirm_change_password).with_options(default: 'f')
 
     should have_db_index(:email)
     should have_db_index(:confirmation_token)

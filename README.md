@@ -1,6 +1,6 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 4.1.x applications which use
+Milia is a multi-tenanting gem for hosted Rails 4.2.x applications which use
 the devise gem for user authentication and registrations. Milia comes with 
 tailoring for common use cases needing multi-tenanting with user authentication.
 
@@ -37,8 +37,12 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.1.0 is the release version for Rails 4.1.x and is now available for usage.
-I will soon start working on the Rails 4.2 release ... on the newdev branch.
+milia v1.2.0 is the release version for Rails 4.2.x and is now available for usage.
+
+
+## v1.2.0 - What's changed?
+* Rails 4.2.x adapted 
+* fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
 
 ## v1.1.x - What's changed?
 * Rails 4.1.x adapted 
