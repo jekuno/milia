@@ -319,12 +319,12 @@ Running the generator below will completely install milia, devise, and a sample 
 need to run the "milia:install" given above. You'll need to do the following:
 
 ```
-  $ rails g milia:install --org_email='<your smtp email for dev work>'
+  $ rails g milia:install --org_email='<your smtp email for dev work>' --secret_key='<your secret key for devise>'
   $ rails g web_app_theme:milia
 ```
-
-NOTE: The above generator has an option to specify an email address to 
+NOTE: The above generator has an option to specify an email address to
 be used for sending emails for confirmation and account activation.
+It also has the option to specify the secret key for devise
 
 The generator set up basic information for
 being able to send the confirmation & activation emails.
@@ -384,12 +384,11 @@ If you'll be working with any beta or leading edge version, specify as follows:
 Then,
 ```
   $ bundle install
-  $ rails g milia:install --org_email='<your smtp email for dev work>'
+  $ rails g milia:install --org_email='<your smtp email for dev work>' --secret_key='<your secret key for devise>'
 ```
-
-Note: The milia generator has an option to specify an email address to be used for sending emails for 
+Note: The milia generator has an option to specify an email address to be used for sending emails for
 confirmation and account activation. Also note that the milia generator runs two
-devise generators.
+devise generators, and that you have the option to specify the secret key that will be used.
 
 Make any changes required to the generated migrations, then:
 ```

@@ -3,18 +3,19 @@ require 'rails/generators/base'
 module Milia
   module Generators
 # *************************************************************
-    
+
     class InstallGenerator < Rails::Generators::Base
       desc "Full installation of milia with devise"
 
       source_root File.expand_path("../templates", __FILE__)
-  
+
       class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
       class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
       class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
       class_option :org_email, :type => :string, :default => "my-email@my-domain.com", :desc => 'define the organizational email from address'
-       
+      class_option :secret_key, :type => :string, :default => "7a711e3389f793d5fc5264bee405cadb34d410b0eef17f29fef8c4b979999020efac3cf74d0155fbd75249c84f88b4c04c8da6fdb417ba3331dc8996abfc84d3", :desc => 'define the devise secret key configuration option'
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def check_requirements()
@@ -53,6 +54,7 @@ module Milia
 # -------------------------------------------------------------
       def setup_devise
         generate "devise:install"
+        gsub_file 'config/initializers/devise.rb', /# config.secret_key = '.+'/, "config.secret_key = '#{options.secret_key}'"
         generate "devise", "user"
         gsub_file "app/models/user.rb", /,\s*$/, ", :confirmable,"
 
