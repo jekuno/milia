@@ -93,7 +93,7 @@ Further details about this process can be found via the sources listed below:
   this sample on github, however, will always be for the latest release or latest beta (whichever is most recent).
 * find it at: https://github.com/dsaronin/sample-milia-app
 
-### Available docmentation resources for milia
+### Available documentation resources for milia
 
 * doc/sample.sh -- this document will ALWAYS be the most recent
     (for example in the edge branch: "newdev")
