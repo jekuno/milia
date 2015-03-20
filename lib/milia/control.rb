@@ -99,7 +99,7 @@ module Milia
 # -- sets current tenant
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
-    unless authenticate_user!
+    unless authenticate_user!(force: true)
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
       logger.info("MILIA >>>>> [failed auth user] ") unless logger.nil?
