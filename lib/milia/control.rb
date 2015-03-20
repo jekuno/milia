@@ -103,7 +103,6 @@ module Milia
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
       logger.info("MILIA >>>>> [failed auth user] ") unless logger.nil?
-      return false  # abort the before_filter chain
     end
 
     trace_tenanting( "authenticate_tenant!" )
