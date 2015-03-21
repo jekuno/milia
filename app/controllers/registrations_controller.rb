@@ -72,12 +72,6 @@ end   # def create
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) + ::Milia.whitelist_user_params
-  end
- 
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
   def sign_up_params_tenant()
     params.require(:tenant).permit( ::Milia.whitelist_tenant_params )
   end
@@ -85,7 +79,7 @@ end   # def create
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
   def sign_up_params_user()
-    params.require(:user).permit( ::Milia.whitelist_user_params )
+    devise_parameter_sanitizer.sanitize(:sign_up)
   end
 
 # ------------------------------------------------------------------------------
