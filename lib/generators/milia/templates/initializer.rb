@@ -30,12 +30,6 @@ Milia.setup do |config|
 # ASSUMES User model
   config.use_invite_member = <%= !@skip_invite_member %>
 
-  # whitelist user params list
-  # allows an app to expand the permitted attribute list
-  # specify each attribute as a symbol
-  # example: [:name]
-  # config.whitelist_user_params = []
-
   # whitelist tenant params list
   # allows an app to expand the permitted attribute list
   # specify each attribute as a symbol
