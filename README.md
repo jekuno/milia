@@ -949,16 +949,9 @@ additions to an activation message, or a unique name for the tenant itself.
 
 Milia has a mechanism to add additional parameters to be whitelisted. 
 In <i>config/initializers/milia.rb</i> you can add a list of symbols for
-the additional parameters to each of a config setting for any of the
-three (tenant, user, or coupon). The example below shows how.
+the additional parameters of tenant or coupon. The example below shows how.
 
 ```ruby
-  # whitelist user params list
-  # allows an app to expand the permitted attribute list
-  # specify each attribute as a symbol
-  # example: [:name]
-  config.whitelist_user_params = [:eula_id, :message]
-
   # whitelist tenant params list
   # allows an app to expand the permitted attribute list
   # specify each attribute as a symbol
@@ -972,6 +965,11 @@ three (tenant, user, or coupon). The example below shows how.
   config.whitelist_coupon_params = [:vendor]
 
 ```
+
+In order to whitelist additional user params for devise sign_up or
+account_update you can use the default devise_parameter_sanitizer.
+The milia install generator creates a file called devise_permitted_parameters.rb.
+In this file you can add additional params for whitelisting.
 
 ## inviting additional user/members
 
