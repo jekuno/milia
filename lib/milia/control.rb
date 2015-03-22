@@ -5,7 +5,7 @@ module Milia
     class InvalidTenantAccess < SecurityError; end
     class MaxTenantExceeded < ArgumentError; end
 # #############################################################################
-    
+
     def self.included(base)
       base.extend ClassMethods
     end
@@ -13,11 +13,11 @@ module Milia
 # #############################################################################
 # #############################################################################
     module ClassMethods
-      
+
     end  # module ClassMethods
 # #############################################################################
 # #############################################################################
-    
+
   public
 
 # ------------------------------------------------------------------------------
@@ -43,8 +43,8 @@ module Milia
     if ::Milia.trace_on
       tid = ( session[:tenant_id].nil? ? "%/#{Thread.current[:tenant_id]}" : session[:tenant_id].to_s )
       uid = ( current_user.nil?  ?  "%/#{session[:user_id]}"  : "#{current_user.id}")
-      logger.debug( 
-         "MILIA >>>>> [#{fm_msg}] stid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}" 
+      logger.debug(
+         "MILIA >>>>> [#{fm_msg}] stid: #{tid}\tuid: #{uid}\tus-in: #{user_signed_in?}"
       ) unless logger.nil?
     end # trace check
   end
@@ -58,11 +58,11 @@ module Milia
     def set_current_tenant( tenant_id = nil )
 
       if user_signed_in?
-        
+
         @_my_tenants ||= current_user.tenants  # gets all possible tenants for user
-        
+
         tenant_id ||= session[:tenant_id]   # use session tenant_id ?
-        
+
         if tenant_id.nil?  # no arg; find automatically based on user
           tenant_id = @_my_tenants.first.id  # just pick the first one
         else   # validate the specified tenant_id before setup
@@ -73,12 +73,12 @@ module Milia
         tenant_id = nil   # an impossible tenant_id
       end
 
-      __milia_change_tenant!( tenant_id )        
+      __milia_change_tenant!( tenant_id )
       trace_tenanting( "set_current_tenant" )
 
       true    # before filter ok to proceed
     end
-    
+
 # ------------------------------------------------------------------------------
 # initiate_tenant -- initiates first-time tenant; establishes thread
 # assumes not in a session yet (since here only upon new account sign-up)
@@ -87,9 +87,9 @@ module Milia
 #   tenant -- tenant obj of the new tenant
 # ------------------------------------------------------------------------------
   def initiate_tenant( tenant )
-      __milia_change_tenant!( tenant.id )        
+      __milia_change_tenant!( tenant.id )
   end
-  
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ module Milia
 # -- sets current tenant
 # ------------------------------------------------------------------------------
   def authenticate_tenant!()
-    unless authenticate_user!(force: true)
+    unless current_user.present? || authenticate_user!(force: true)
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
       logger.info("MILIA >>>>> [failed auth user] ") unless logger.nil?
@@ -129,14 +129,14 @@ module Milia
     ) unless logger.nil?
 
     flash[:error] = "Sorry: new accounts not permitted at this time"
-      
+
       # if using Airbrake & airbrake gem
     if ::Milia.use_airbrake
       notify_airbrake( $! )  # have airbrake report this -- requires airbrake gem
     end
     redirect_back
   end
-  
+
 # ------------------------------------------------------------------------------
 # invalid_tenant -- using wrong or bad data
 # ------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ module Milia
     flash[:error] = "wrong tenant access; sign out & try again"
     redirect_back
   end
- 
+
 # ------------------------------------------------------------------------------
 # redirect_back -- bounce client back to referring page
 # ------------------------------------------------------------------------------
@@ -166,15 +166,15 @@ module Milia
     return option_obj if option_obj.instance_of?(klass)
     option_obj ||= {}  # if nil, makes it empty hash
     return klass.send( :new, option_obj )
-  end  
+  end
 
 # ------------------------------------------------------------------------------
   # prep_signup_view -- prepares for the signup view
   # args:
   #   tenant: either existing tenant obj or params for tenant
   #   user:   either existing user obj or params for user
-  # My signup form has fields for user's email, 
-  # organization's name (tenant model), coupon code, 
+  # My signup form has fields for user's email,
+  # organization's name (tenant model), coupon code,
 # ------------------------------------------------------------------------------
   def prep_signup_view(tenant=nil, user=nil, coupon={coupon:''})
     @user   = klass_option_obj( User, user )
