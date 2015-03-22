@@ -1154,9 +1154,8 @@ For some reason, rake test won't work and yields errors.
 
 ```ruby
   $ cd test
-  $ rake db:create
-  $ rake db:migrate
-  $ rake db:test:prepare
+  $ bundle install
+  $ rake db:create db:migrate db:test:prepare
   $ rake test:units
   $ rake test:functionals
 ```
