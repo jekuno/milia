@@ -19,7 +19,7 @@ def create
   tenant_params = sign_up_params_tenant
   user_params   = sign_up_params_user
   coupon_params = sign_up_params_coupon
-  
+
   sign_out_session!
      # next two lines prep signup view parameters
   prep_signup_view( tenant_params, user_params, coupon_params )
@@ -27,10 +27,10 @@ def create
      # validate recaptcha first unless not enabled
   if !::Milia.use_recaptcha  ||  verify_recaptcha
 
-    Tenant.transaction  do 
+    Tenant.transaction  do
       @tenant = Tenant.create_new_tenant( tenant_params, user_params, coupon_params)
       if @tenant.errors.empty?   # tenant created
-        
+
         initiate_tenant( @tenant )    # first time stuff for new tenant
 
         devise_create( user_params )   # devise resource(user) creation; sets resource
@@ -43,7 +43,7 @@ def create
 
         else  # user creation failed; force tenant rollback
           log_action( "signup user create failed", resource )
-          raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back  
+          raise ActiveRecord::Rollback   # force the tenant transaction to be rolled back
         end  # if..then..else for valid user creation
 
       else
@@ -53,7 +53,7 @@ def create
       end # if .. then .. else no tenant errors
 
     end  #  wrap tenant/user creation in a transaction
-        
+
   else
     flash[:error] = "Recaptcha codes didn't match; please try again"
        # all validation errors are passed when the sign_up form is re-rendered
@@ -75,7 +75,7 @@ end   # def create
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) + ::Milia.whitelist_user_params
   end
- 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
   def sign_up_params_tenant()
@@ -92,7 +92,7 @@ end   # def create
 # sign_up_params_coupon -- permit coupon parameter if used; else params
 # ------------------------------------------------------------------------------
   def sign_up_params_coupon()
-    ( ::Milia.use_coupon ? 
+    ( ::Milia.use_coupon ?
       params.require(:coupon).permit( ::Milia.whitelist_coupon_params )  :
       params
     )
@@ -112,13 +112,13 @@ end   # def create
   def devise_create( user_params )
 
     build_resource(user_params)
-   
+
       # if we're using milia's invite_member helpers
     if ::Milia.use_invite_member
         # then flag for our confirmable that we won't need to set up a password
       resource.skip_confirm_change_password  = true
     end
- 
+
     if resource.save
       yield resource if block_given?
       log_action( "devise: signup user success", resource )
@@ -134,7 +134,7 @@ end   # def create
     else
       clean_up_passwords resource
       log_action( "devise: signup user failure", resource )
-      prep_signup_view(  @tenant, resource, params[:coupon] )   
+      prep_signup_view(  @tenant, resource, params[:coupon] )
       respond_with resource
     end
   end
@@ -161,10 +161,10 @@ end   # def create
       "MILIA >>>>> [register user/org] #{action} - #{err_msg}"
     ) unless logger.nil?
   end
- 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
- 
+
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
