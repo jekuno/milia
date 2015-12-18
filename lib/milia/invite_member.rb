@@ -3,7 +3,7 @@ module Milia
   module InviteMember
 
 # #############################################################################
-    
+
     def self.included(base)
       base.extend ClassMethods
     end
@@ -11,13 +11,13 @@ module Milia
 # #############################################################################
 # #############################################################################
     module ClassMethods
-      
+
     end  # module ClassMethods
 # #############################################################################
 # #############################################################################
 
 # ------------------------------------------------------------------------
-# new function to set the password without knowing the current password 
+# new function to set the password without knowing the current password
 # ------------------------------------------------------------------------
   def attempt_set_password(params)
     p = {}
@@ -32,7 +32,7 @@ module Milia
   def has_no_password?
     self.encrypted_password.blank?
   end
-  
+
 # ------------------------------------------------------------------------
   # new function to provide access to protected method unless_confirmed
 # ------------------------------------------------------------------------
@@ -43,18 +43,18 @@ module Milia
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------  
+# ------------------------------------------------------------------------
 # save_and_invite_member -- saves the new user record thus inviting member
     # via devise
     # if password missing; gens a password
     # ensures email exists and that email is unique and not already in system
-# ------------------------------------------------------------------------  
+# ------------------------------------------------------------------------
     def save_and_invite_member(  )
-      if (
-          self.email.blank?  ||
-          User.where([ "lower(email) = ?", self.email.downcase ]).first
-        )
-        self.errors.add(:email,"must be present and unique")
+      if ( User.where([ "lower(email) = ?", self.email.downcase ]).first )
+        self.errors.add(:email, :taken)
+        status = nil
+      elsif ( self.email.blank?)
+        self.errors.add(:email, :blank)
         status = nil
       else
         check_or_set_password()
@@ -64,14 +64,14 @@ module Milia
       return status
     end
 
-# ------------------------------------------------------------------------  
+# ------------------------------------------------------------------------
 # check_or_set_password -- if password missing, generates a password
 # ASSUMES: Milia.use_invite_member
-# ------------------------------------------------------------------------  
+# ------------------------------------------------------------------------
   def check_or_set_password( )
 
     if self.password.blank?
-      self.password = 
+      self.password =
         ::Milia::Password.generate(
           8, Password::ONE_DIGIT | Password::ONE_CASE
         )
