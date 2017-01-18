@@ -1,6 +1,9 @@
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 4.2.x applications which use
+You are viewing the documentation of the milia branch for Rails 5 applications.
+Milia also supports Rails 4.2.x. Please switch to the according branch.
+
+Milia is a multi-tenanting gem for hosted Ruby on Rails applications which use
 the devise gem for user authentication and registrations. Milia comes with
 tailoring for common use cases needing multi-tenanting with user authentication.
 
@@ -37,8 +40,10 @@ by invitation. New tenants are not created for every new user.
 
 ## Version
 
-milia v1.2.0 is the release version for Rails 4.2.x and is now available for usage.
+milia v1.3.0 is compatible with Rails 5.x and is now available for usage.
 
+## v1.3.0 - What changed?
+* Rails 5.x adapted
 
 ## v1.2.0 - What's changed?
 * Rails 4.2.x adapted
@@ -62,7 +67,7 @@ milia v1.2.0 is the release version for Rails 4.2.x and is now available for usa
 * revised README instructions
 
 The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
-it is essentially obsolete. Go with v1.0.x
+it is essentially obsolete. Go with the more recent relases.
 
 ## Sample app and documentation
 
@@ -122,7 +127,7 @@ and devise 3.2 install.
 ## Dependency requirements
 
 * Ruby 2.1.3
-* Rails 4.1.x
+* Rails 5.x
 * Devise 3.4.x
 
 ## this readme is for v1.1.0
@@ -372,7 +377,7 @@ Add to your Gemfile:
 
 ```ruby
   gem 'devise', '~>3.2'
-  gem 'milia', '~>1.0'
+  gem 'milia', '~>1.3'
 ```
 
 If you'll be working with any beta or leading edge version, specify as follows:
