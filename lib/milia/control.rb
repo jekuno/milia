@@ -32,7 +32,7 @@ module Milia
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-  def __milia_reset_tenant!( )
+  def __milia_reset_tenant!
     __milia_change_tenant!( nil )
     logger.debug("MILIA >>>>> [reset tenant] ") unless logger.nil?
   end
@@ -98,7 +98,7 @@ module Milia
 # -- authenticates user
 # -- sets current tenant
 # ------------------------------------------------------------------------------
-  def authenticate_tenant!()
+  def authenticate_tenant!
     unless current_user.present? || authenticate_user!(force: true)
       email = ( params.nil? || params[:user].nil?  ?  "<email missing>"  : params[:user][:email] )
       flash[:error] = "cannot sign in as #{email}; check email/password"
@@ -123,9 +123,9 @@ module Milia
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-  def max_tenants()
+  def max_tenants
     logger.info(
-      "MILIA >>>>> [max tenant signups] #{Time.now.to_s(:db)} - User: #{params[:user][:email]}, org: #{params[:tenant][:name]}"
+      "MILIA >>>>> [max tenant signups] #{Time.now.to_s(:db)} - User: '#{params[:user].try(:email)}', Tenant: '#{params[:tenant].try(:name)}'"
     ) unless logger.nil?
 
     flash[:error] = "Sorry: new accounts not permitted at this time"
@@ -149,7 +149,7 @@ module Milia
 # redirect_back -- bounce client back to referring page
 # ------------------------------------------------------------------------------
   def redirect_back
-    redirect_to :back rescue redirect_to root_path
+    super(fallback_location: root_path)
   end
 
 # ------------------------------------------------------------------------------

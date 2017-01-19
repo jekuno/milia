@@ -5,7 +5,7 @@ module Milia
 
   class ConfirmationsController < Devise::ConfirmationsController
 
-    skip_before_action :authenticate_tenant!, raise: false
+    skip_before_action :authenticate_tenant!
     before_action      :set_confirmable, :only => [ :update, :show ]
 
 
@@ -24,7 +24,7 @@ module Milia
         set_flash_message(:notice, :confirmed) if is_flashing_format?
           # sign in automatically
         sign_in_tenanted_and_redirect(resource)
-        
+
       else
         log_action( "invitee confirmation failed" )
         respond_with_navigational(resource.errors, :status => :unprocessable_entity){ render :new }
@@ -41,11 +41,11 @@ module Milia
   # entered on new sign-ups and invite-members
   def show
     if @confirmable.new_record?  ||
-       !::Milia.use_invite_member || 
+       !::Milia.use_invite_member ||
        @confirmable.skip_confirm_change_password
 
       log_action( "devise pass-thru" )
-      super  # this will redirect 
+      super  # this will redirect
       if @confirmable.skip_confirm_change_password
         sign_in_tenanted(resource)
       end
@@ -56,7 +56,7 @@ module Milia
     # else fall thru to show template which is form to set a password
     # upon SUBMIT, processing will continue from update
   end
-  
+
   protected
 
   def set_confirmable()
@@ -80,7 +80,7 @@ module Milia
       "MILIA >>>>> [confirm user] #{action} - #{@confirmable.email}"
     ) unless logger.nil?
   end
-  
+
   # MILIA: adaptation of Devise method for multitenanting
       # Sign in a user
       def sign_in_tenanted(resource)
@@ -89,7 +89,7 @@ module Milia
         set_current_tenant
       end
 
-      # Sign in a user and tries to redirect 
+      # Sign in a user and tries to redirect
       def sign_in_tenanted_and_redirect(resource)
         sign_in_tenanted(resource)
         redirect_to after_sign_in_path_for(resource)

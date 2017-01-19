@@ -18,10 +18,9 @@ class RegistrationsControllerTest < ActionController::TestCase
     end  # should do
 
     should 'not get edit without login' do
-      assert_raise(ArgumentError, 'uncaught throw :warden'){
-        get :edit
-      }
-      assert_response :success
+      get :edit
+      # redirects to sign in page
+      assert_redirected_to new_user_session_path
     end  # should do
 
   end  # context

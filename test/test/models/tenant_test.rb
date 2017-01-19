@@ -1,10 +1,10 @@
 require 'test_helper'
- 
+
 # #############################################################################
 # Note: this tests not only the methods in models/tenant.rb but
 # also all of the milia-injected methods from base.rb
 # #############################################################################
- 
+
 class TenantTest < ActiveSupport::TestCase
 
 
@@ -35,6 +35,7 @@ class TenantTest < ActiveSupport::TestCase
 # ------------------------------------------------------------------------
     should 'have a new_signups_not_permitted' do
       assert Tenant.respond_to? :new_signups_not_permitted?
+      # further signups are allowed by default
       assert !Tenant.new_signups_not_permitted?( {} )
     end  # should do
 
@@ -42,24 +43,24 @@ class TenantTest < ActiveSupport::TestCase
 
       assert_difference( 'Tenant.count' ) do
           # setup new world
-        tenant = Tenant.create_new_tenant( 
-              {name:   "Mangoland"}, 
-              {email:  "billybob@bob.com"}, 
+        tenant = Tenant.create_new_tenant(
+              {name:   "Mangoland"},
+              {email:  "billybob@bob.com"},
               {coupon: "FreeTrial"}
         )
         assert_not_nil   tenant
         assert_kind_of   Tenant,tenant
         assert tenant.errors.empty?
         assert_equal  "Mangoland", tenant.name
-      end 
+      end
 
     end  # should do
-        
-    should 'tenant signup callback' do 
+
+    should 'tenant signup callback' do
         # setup new world
-      tenant = Tenant.create_new_tenant( 
-            {name:   "Mangoland"}, 
-            {email:  "billybob@bob.com"}, 
+      tenant = Tenant.create_new_tenant(
+            {name:   "Mangoland"},
+            {email:  "billybob@bob.com"},
             {coupon: "FreeTrial"}
       )
       assert tenant.errors.empty?
@@ -69,11 +70,11 @@ class TenantTest < ActiveSupport::TestCase
       user = User.new(email: "limesublime@example.com")
       assert user.save_and_invite_member
       assert user.errors.empty?
-        
+
         # setup new member
       member = nil
       assert_difference( 'Member.count' ) do
-        assert_nothing_raised  { 
+        assert_nothing_raised  {
           member = Tenant.tenant_signup(user, tenant)
           assert  member.errors.empty?
         }
@@ -83,59 +84,59 @@ class TenantTest < ActiveSupport::TestCase
       assert_equal  Member::DEFAULT_ADMIN[:last_name],member.last_name
       assert_equal  tenant.id, member.tenant_id
       assert_equal  user.member,member
-       
+
     end  # should do
-        
+
 # #############################################################################
 # ####  acts_as_universal_and_determines_tenant injected methods  #############
 # #############################################################################
-        
+
     should 'current_tenant_id - non nil' do
       tid = Tenant.current_tenant_id
       assert_kind_of  Integer,tid
       assert_equal  tenants( :tenant_1 ).id,tid
     end  # should do
-        
+
     should 'current_tenant - nil' do
          # force the current_tenant to be nil
       Thread.current[:tenant_id] = nil
-         
+
       tenant = Tenant.current_tenant
       assert_nil  tenant
-      
+
     end  # should do
-        
+
     should 'current_tenant - valid tid' do
       tenant = Tenant.current_tenant
       assert_kind_of  Tenant,tenant
       assert_equal  tenants( :tenant_1 ),tenant
     end  # should do
-        
+
     should 'current_tenant - invalid tid' do
          # force the current_tenant to be nil
       Thread.current[:tenant_id] = 500
 
-      assert_nothing_raised  { 
+      assert_nothing_raised  {
         assert_nil  Tenant.current_tenant
       }
 
     end  # should do
-         
+
     should 'set current tenant - tenant obj' do
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
       Tenant.set_current_tenant( tenants( :tenant_3 ) )
       assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
     end  # should do
-         
+
     should 'set current tenant - tenant id' do
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
       Tenant.set_current_tenant( tenants( :tenant_3 ).id )
       assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
     end  # should do
-         
+
     should 'NOT set current tenant - invalid arg' do
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
-      assert_raise(ArgumentError) { 
+      assert_raise(ArgumentError) {
         Tenant.set_current_tenant( '2' )
       }
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
@@ -154,23 +155,23 @@ RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
 
       assert_difference( "Tenant.count", -1 ) do
         target.destroy
-      end 
+      end
 
       quentin.reload
       assert_equal 1,quentin.tenants.count
- 
+
     end  # should do
-        
-        
+
+
 # #############################################################################
 # ####  acts_as_tenant injected methods  #############
 # #############################################################################
-        
+
     should "raise exception if tenant is different" do
       target = members(:quentin_1)
          # now force tenant to invalid
       Tenant.set_current_tenant( 0 )
-      
+
       assert_raise(::Milia::Control::InvalidTenantAccess,
          "InvalidTenantAccess if tenants dont match"){
          target.update_attributes( :first_name => "duck walk" )
@@ -186,22 +187,22 @@ RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
         }
       end  # no diff do
     end  # should do
-        
+
 # #############################################################################
 # ####  acts_as_universal injected methods  #############
 # #############################################################################
-    should 'always force universal tenant id to nil' do 
+    should 'always force universal tenant id to nil' do
         # setup new world
-      tenant = Tenant.create_new_tenant( 
-            {name:   "Mangoland", tenant_id: 1}, 
-            {email:  "billybob@bob.com"}, 
+      tenant = Tenant.create_new_tenant(
+            {name:   "Mangoland", tenant_id: 1},
+            {email:  "billybob@bob.com"},
             {coupon: "FreeTrial"}
       )
       assert tenant.errors.empty?
       assert_nil  tenant.tenant_id
     end  # should do
- 
- 
+
+
     should 'raise exception if tid not nil - save' do
       tenant = tenants(:tenant_1)
       assert_raise(::Milia::Control::InvalidTenantAccess) {
@@ -209,7 +210,7 @@ RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
       }
 
     end  # should do
- 
+
     should 'raise exception if tid not nil - destroy' do
       tenant = tenants(:tenant_1)
       assert_no_difference('Tenant.count') do
@@ -219,10 +220,10 @@ RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
         }
       end  # no diff do
     end  # should do
- 
+
 # #############################################################################
 
   end  # context
- 
+
 # #############################################################################
 end  # class test
