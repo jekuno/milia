@@ -130,29 +130,6 @@ and devise 3.2 install.
 * Rails 5.x
 * Devise 3.4.x
 
-## this readme is for v1.1.0
-* changes in v1.1.0: just gem dependency; web-app-theme generator had a change
-
-* changes in beta-7: model & controller testing is almost complete;
-  minor bug fixed;  mixed-in controller methods are now public, not
-  private.
-
-* changes in beta-6: user_params added to Tenant.create_new_tenant;
-  ability to add additional whitelist parameters during config
-
-* changes in beta-5: logging, callback, bug fixes
-
-* changes in beta-4:
-  corrections to README for Gemfile requirements
-  generator tests for requirements
-
-* changes in beta-3: improved generators getting a new app started
-
-* changes in beta-2: invite_member capability
-
-### edge branch: "newdev"
-
-If I'm actively developing, this can be in a state of flux. Use at your own risk.
 
 ## Authorized Roles
 
@@ -267,7 +244,7 @@ model and so this is where all the information for a member should be kept.
 
   $ rails new sample-milia-app --skip-bundle
   $ echo "sample-milia-app" > sample-milia-app/.ruby-gemset
-  $ echo "2.1.3" > sample-milia-app/.ruby-version
+  $ echo "2.3.1" > sample-milia-app/.ruby-version
   $ echo "web: bundle exec thin start -R config.ru -p \$PORT -e \$RACK_ENV" > sample-milia-app/Procfile
   $ rvm gemset create sample-milia-app
 ```
@@ -376,7 +353,6 @@ export RECAPTCHA_PRIVATE_KEY=6LeBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgQBv
 Add to your Gemfile:
 
 ```ruby
-  gem 'devise', '~>3.2'
   gem 'milia', '~>1.3'
 ```
 
@@ -412,7 +388,7 @@ if you followed the automatic installation of the sample application.
 
 #### information and expectations
 
-**The above generator did everthing that's required. This section
+**The above generator did everything that's required. This section
 will explain why the generator did what it did. You won't need
 to do any of these steps unless you decide to customize or adapt.**
 
@@ -1167,8 +1143,7 @@ For some reason, rake test won't work and yields errors.
   $ cd test
   $ bundle install
   $ rake db:create db:migrate db:test:prepare
-  $ rake test:units
-  $ rake test:functionals
+  $ rails test
 ```
 
 ### test coverage
