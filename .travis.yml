@@ -1,6 +1,4 @@
 language: ruby
 gemfile: test/Gemfile
 before_install: cd test
-script:
- - bundle exec rake db:test:prepare
- - bundle exec rake
+script: RAILS_ENV=test bundle exec rake db:setup test
