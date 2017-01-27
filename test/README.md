@@ -1,22 +1,29 @@
 # Milia unit & functional testing
 
-This documents the unit testing for Milia: structure of models, things
-being tested, and work-arounds used. The reason for this document is
-to aid future upgrade efforts.
+## Intro
+Milia is tested using `minitest`.
+Tests run in context of a multi-tenanted example application
+(which resides in the `milia/test` directory).
 
-## fixture vs factories?
+## Running tests
 
-Milia v0.3 used factory_girl to generate test fixtures, but there
-were difficulties dealing with both the dynamic nature of creating
-objects which had to have an existing current_tenant established. In
-between v0.3 and v1.0, factory_girl upgraded significantly and meant
-all the test code would have to be reworked.
+The `test_helper.rb` takes care of maintaining the database
+and loading the fixtures.
 
-Rather than relearning FactoryGirl and the extensive changes to
-make it work, I've decided to just use static fixtures as being
-the easiest way to have the test data fixtures.
+Run the tests as follows:
 
-## Model structure
+```
+cd test
+bundle install
+RAILS_ENV=test bundle exec rake test
+```  
+
+## Fixtures vs Factories
+
+For simplicity Milia uses static fixtures (instead of e.g. FactoryGirl)
+as being the easiest way to have the test data fixtures.
+
+## Structure of models under test
 
 ### Required by Milia/Devise
 
@@ -33,10 +40,10 @@ Universal (non-tenanted)
   tenants_users HABTM join table
 ```
 
-### models added for typical app complexity
+### Tenanted test models (added for typical app complexity)
 
-Tenanted
-<i>Means they all have an implicit: belongs_to: tenant</i>
+The following models are <i>tenanted</i> which means
+they all have an implicit `belongs_to: tenant`.
 
 ```
   Member
@@ -65,19 +72,5 @@ Tenanted
     belongs_to  :team
     has_many    :posts
     has_many :members, :through => :posts, :source => 'member'
-```
-
-## running tests
-
-You must cd into the milia/test directory.
-Then run test:units, test:functionals seperately. 
-
-```ruby
-  $ cd test
-  $ rake db:create
-  $ rake db:migrate
-  $ rake db:test:prepare
-  $ rake test:units
-  $ rake test:functionals
 ```
 
