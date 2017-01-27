@@ -122,9 +122,9 @@ GEM
       ansi
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    warden (1.2.6)
+    warden (1.2.7)
       rack (>= 1.0)
-    websocket-driver (0.6.4)
+    websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
 
