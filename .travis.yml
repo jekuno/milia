@@ -1,4 +1,6 @@
 language: ruby
 gemfile: test/Gemfile
 before_install: cd test
-script: RAILS_ENV=test bundle exec rake db:setup test
+script:
+ - bin/rails db:environment:set RAILS_ENV=test
+ - bundle exec rake db:setup test
