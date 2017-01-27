@@ -1,7 +1,5 @@
-Build status (branch 'master'):  
+# milia 
 [![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=master)](https://travis-ci.org/jekuno/milia)
-
-# milia
 
 Milia is a multi-tenanting gem for Ruby on Rails applications.
 
@@ -10,28 +8,31 @@ Milia is a multi-tenanting gem for Ruby on Rails applications.
 * Milia uses the devise gem for user authentication and registration.
 
 You are viewing the documentation of the milia branch for **Rails 4.2.x** applications.
-Milia also supports **Rails 5.x**. Please consider the according [Readme](../rails5-support/README.md) of the [Rails5 branch](../../tree/rails5-support/).
+Milia also supports **Rails 5.x**. Please consider the according [README](../rails5-support/README.md) of the [Rails5 branch](../../tree/rails5-support/).
 
 ## Basic concepts for the milia multi-tenanting gem
 
-### multi-tenanting highlights
+### Milia highlights
 
-* should be transparent to the main application code
-* should be symbiotic with user authentication
-* should raise exceptions upon attempted illegal access
-* should force tenanting (not allow sloppy access to all tenant records)
-* should allow application flexibility upon new tenant sign-up, 
-  usage of eula information, etc
-* should be as non-invasive (as possible) to Rails code
-* row-based tenanting is used
-* default_scope is used to enforce tenanting
+* Transparent to the main application code
+* Symbiotic with user authentication
+* Raises exceptions upon attempted illegal access
+* Enforces tenanting (not allow sloppy access to all tenant records)
+* Allows application flexibility upon new tenant sign-up, usage of eula information, etc
+* As non-invasive (as possible) to Rails code
+* Uses row-based tenanting
+* Uses default_scope to enforce tenanting
 
-The author used schema-based tenanting in the past but found it deficient for
-the following reasons: most DBMS are optimized to handle enormous number of
-rows but not an enormous number of schema (tables). Schema-based tenancy took a
-performance hit, was seriously time-consuming to backup and restore, was invasive
-into the Rails code structure (monkey patching), was complex to implement, and
-couldn't use Rails migration tools as-is.
+### Row based vs. schema based tenanting
+* Milia uses row based tenanting.
+* The author used schema-based tenanting in the past but found it deficient for the following reasons. Schema-based tenancy
+  * is not what DBMS are optimized for (most DBMS are optimized to handle enormous number of rows but not an enormous number of schema (tables)),
+  * took a performance hit,
+  * was seriously time-consuming to backup and restore,
+  * was invasive into the Rails code structure (monkey patching),
+  * was complex to implement, and
+  * couldn't use Rails migration tools as-is.
+* Heroku also [strongly recommends against](https://devcenter.heroku.com/articles/heroku-postgresql#multiple-schemas) using schema based tenanting.
 
 ### tenants/users vs organizations/members
 
