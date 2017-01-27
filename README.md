@@ -98,7 +98,7 @@ Further details about this process can be found via the sources listed below:
   this sample on github, however, will always be for the latest release or latest beta (whichever is most recent).
 * find it at: https://github.com/dsaronin/sample-milia-app
 
-### Available docmentation resources for milia
+### Available documentation resources for milia
 
 * doc/sample.sh -- this document will ALWAYS be the most recent
     (for example in the edge branch: "newdev")
@@ -806,13 +806,13 @@ tenanted areas even if no records are returned. This is a potential security
 breach. Further details can be found in various discussions about the
 behavior of databases such as POSTGRES.
 
-The milia workaround is to add an additional .where( where_restrict_tenants(klass1, klass2,...))
+The milia workaround is to add an additional .where( where_restrict_tenant(klass1, klass2,...))
 for each of the subordinate models in the join.
 
-### usage of where_restrict_tenants
+### usage of where_restrict_tenant
 
 ```ruby
-    Comment.joins(stuff).where( where_restrict_tenants(Post, Author) ).all
+    Comment.joins(stuff).where( where_restrict_tenant(Post, Author) ).all
 ```
 
 ## no tenant authorization required controller actions: root_path
