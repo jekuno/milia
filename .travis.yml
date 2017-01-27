@@ -1,2 +1,4 @@
 language: ruby
-script: cd test && rake
+gemfile: test/Gemfile
+before_install: cd test
+script: bundle exec rake

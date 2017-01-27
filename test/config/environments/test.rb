@@ -1,6 +1,6 @@
 Miliatest::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-   
+
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => "www.example.com" }
 
@@ -17,7 +17,7 @@ Miliatest::Application.configure do
   config.eager_load = false
 
   # Configure static asset server for tests with Cache-Control for performance.
-  config.serve_static_assets  = true
+  config.serve_static_files  = true
   config.static_cache_control = "public, max-age=3600"
 
   # Show full error reports and disable caching.
@@ -34,7 +34,7 @@ Miliatest::Application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
-  
+
   config.active_record.logger = nil
 
   # Print deprecation notices to the stderr.

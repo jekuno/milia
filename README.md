@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=travisci-testing)](https://travis-ci.org/jekuno/milia)
+
 # milia
 
 You are viewing the documentation of the milia branch for Rails 5 applications.
