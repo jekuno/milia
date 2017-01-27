@@ -18,6 +18,11 @@ bundle install
 RAILS_ENV=test bundle exec rake test
 ```  
 
+## Test coverage
+* All models, including milia-added methods, are tested.
+* Functional testing currently covers all milia-added controller methods.
+* TBD: milia overrides of devise registration, confirmation controllers
+
 ## Fixtures vs Factories
 
 For simplicity Milia uses static fixtures (instead of e.g. FactoryGirl)
