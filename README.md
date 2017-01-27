@@ -3,9 +3,14 @@ Build status (branch 'master'):
 
 # milia
 
-Milia is a multi-tenanting gem for hosted Rails 4.2.x applications which use
-the devise gem for user authentication and registrations. Milia comes with 
-tailoring for common use cases needing multi-tenanting with user authentication.
+Milia is a multi-tenanting gem for Ruby on Rails applications.
+
+* Milia is a solid choice for (SaaS) applications which are used by more than one tenant (i.e. companies or organizations) and is tailored for common use cases of multi-tenanted applications.
+* Milia allows to save the data of all tenants in the same database and enforces row based separation of the tenant data.
+* Milia uses the devise gem for user authentication and registration.
+
+You are viewing the documentation of the milia branch for **Rails 4.2.x** applications.
+Milia also supports **Rails 5.x**. Please consider the according [Readme](../rails5-support/README.md) of the [Rails5 branch](../rails5-support/).
 
 ## Basic concepts for the milia multi-tenanting gem
 
