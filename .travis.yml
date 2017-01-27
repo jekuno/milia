@@ -1,0 +1,4 @@
+language: ruby
+gemfile: test/Gemfile
+before_install: cd test
+script: bundle exec rake
