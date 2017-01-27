@@ -3,4 +3,4 @@ gemfile: test/Gemfile
 before_install: cd test
 script:
  - bin/rails db:environment:set RAILS_ENV=test
- - bundle exec rake db:setup test
+ - bundle exec rake db:reset test
