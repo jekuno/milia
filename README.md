@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=travisci-testing)](https://travis-ci.org/jekuno/milia)
+Build status (branch 'rails5-support'):  
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=rails5-support)](https://travis-ci.org/jekuno/milia)
 
 # milia
 
