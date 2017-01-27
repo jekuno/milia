@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -13,80 +12,73 @@
 
 ActiveRecord::Schema.define(version: 20111013050837) do
 
-  create_table "members", force: true do |t|
+  create_table "members", force: :cascade do |t|
     t.integer  "tenant_id"
     t.integer  "user_id"
     t.string   "first_name"
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["tenant_id"], name: "index_members_on_tenant_id"
+    t.index ["user_id"], name: "index_members_on_user_id"
   end
 
-  add_index "members", ["tenant_id"], name: "index_members_on_tenant_id"
-  add_index "members", ["user_id"], name: "index_members_on_user_id"
-
-  create_table "posts", force: true do |t|
+  create_table "posts", force: :cascade do |t|
     t.integer  "tenant_id"
     t.integer  "member_id"
     t.integer  "zine_id"
     t.string   "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["member_id"], name: "index_posts_on_member_id"
+    t.index ["tenant_id"], name: "index_posts_on_tenant_id"
+    t.index ["zine_id"], name: "index_posts_on_zine_id"
   end
 
-  add_index "posts", ["member_id"], name: "index_posts_on_member_id"
-  add_index "posts", ["tenant_id"], name: "index_posts_on_tenant_id"
-  add_index "posts", ["zine_id"], name: "index_posts_on_zine_id"
-
-  create_table "sessions", force: true do |t|
+  create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true
-  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at"
-
-  create_table "team_assets", force: true do |t|
+  create_table "team_assets", force: :cascade do |t|
     t.integer  "tenant_id"
     t.integer  "member_id"
     t.integer  "team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["member_id"], name: "index_team_assets_on_member_id"
+    t.index ["team_id"], name: "index_team_assets_on_team_id"
+    t.index ["tenant_id"], name: "index_team_assets_on_tenant_id"
   end
 
-  add_index "team_assets", ["member_id"], name: "index_team_assets_on_member_id"
-  add_index "team_assets", ["team_id"], name: "index_team_assets_on_team_id"
-  add_index "team_assets", ["tenant_id"], name: "index_team_assets_on_tenant_id"
-
-  create_table "teams", force: true do |t|
+  create_table "teams", force: :cascade do |t|
     t.integer  "tenant_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["tenant_id"], name: "index_teams_on_tenant_id"
   end
 
-  add_index "teams", ["tenant_id"], name: "index_teams_on_tenant_id"
-
-  create_table "tenants", force: true do |t|
+  create_table "tenants", force: :cascade do |t|
     t.integer  "tenant_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["name"], name: "index_tenants_on_name"
+    t.index ["tenant_id"], name: "index_tenants_on_tenant_id"
   end
 
-  add_index "tenants", ["name"], name: "index_tenants_on_name"
-  add_index "tenants", ["tenant_id"], name: "index_tenants_on_tenant_id"
-
-  create_table "tenants_users", id: false, force: true do |t|
+  create_table "tenants_users", id: false, force: :cascade do |t|
     t.integer "tenant_id", null: false
     t.integer "user_id",   null: false
+    t.index ["tenant_id", "user_id"], name: "index_tenants_users_on_tenant_id_and_user_id"
   end
 
-  add_index "tenants_users", ["tenant_id", "user_id"], name: "index_tenants_users_on_tenant_id_and_user_id"
-
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",                        default: "",    null: false
     t.string   "encrypted_password",           default: "",    null: false
     t.string   "reset_password_token"
@@ -106,21 +98,19 @@ ActiveRecord::Schema.define(version: 20111013050837) do
     t.string   "authentication_token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true
-  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-
-  create_table "zines", force: true do |t|
+  create_table "zines", force: :cascade do |t|
     t.integer  "tenant_id"
     t.integer  "team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["team_id"], name: "index_zines_on_team_id"
+    t.index ["tenant_id"], name: "index_zines_on_tenant_id"
   end
-
-  add_index "zines", ["team_id"], name: "index_zines_on_team_id"
-  add_index "zines", ["tenant_id"], name: "index_zines_on_tenant_id"
 
 end
