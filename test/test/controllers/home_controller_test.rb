@@ -1,7 +1,7 @@
 require 'ctlr_test_helper'
 
 class HomeControllerTest < ActionController::TestCase
-    
+
   context 'home ctlr' do
     setup do
       Tenant.set_current_tenant( tenants( :tenant_1 ).id )
@@ -20,11 +20,10 @@ class HomeControllerTest < ActionController::TestCase
   end  # should do
 
   should 'not get show without login' do
-    assert_raise(ArgumentError, 'uncaught throw :warden'){
-      get :show
-    }
-    assert_response :success
-  end  # should do
+    get :show
+    # redirects to sign in page
+    assert_redirected_to new_user_session_path
+  end # should do
 
   should 'reset tenant' do
     assert Tenant.current_tenant_id
@@ -70,9 +69,9 @@ class HomeControllerTest < ActionController::TestCase
 
   should 'prep signup view' do
     assert_nil  @controller.instance_eval( "@tenant" )
-    @controller.prep_signup_view( 
-        { name: 'Mangoland' }, 
-        {email: 'billybob@bob.com', password: 'monkeymocha', password_confirmation: 'monkeymocha'} 
+    @controller.prep_signup_view(
+        { name: 'Mangoland' },
+        {email: 'billybob@bob.com', password: 'monkeymocha', password_confirmation: 'monkeymocha'}
     )
     assert_equal 'Mangoland', @controller.instance_eval( "@tenant" ).name
   end  # should do
