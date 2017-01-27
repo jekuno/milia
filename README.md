@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=travisci-testing)](https://travis-ci.org/jekuno/milia)
+
 # milia
 
 Milia is a multi-tenanting gem for hosted Rails 4.2.x applications which use
