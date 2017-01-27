@@ -2,5 +2,6 @@ language: ruby
 gemfile: test/Gemfile
 before_install: cd test
 script:
- - bin/rails db:environment:set RAILS_ENV=test
- - bundle exec rake db:reset test
+ - RAILS_ENV=test bundle exec rake db:reset
+ - RAILS_ENV=test bundle exec rake db:migrate:status
+ - RAILS_ENV=test bundle exec rake test
