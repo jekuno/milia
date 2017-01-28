@@ -14,36 +14,29 @@ module Milia
 # Forces all references to be limited to current_tenant rows
 # ------------------------------------------------------------------------
       def acts_as_tenant()
-        belongs_to  :tenant
+        belongs_to :tenant
         validates_presence_of :tenant_id
 
-        default_scope lambda { where( "#{table_name}.tenant_id = ?", Thread.current[:tenant_id] ) }
+        default_scope lambda { where("#{table_name}.tenant_id = ?", Thread.current[:tenant_id]) }
 
-      # ..........................callback enforcers............................
-        before_validation(:on => :create) do |obj|   # force tenant_id to be correct for current_user
-          obj.tenant_id = Thread.current[:tenant_id]
-          true  #  ok to proceed
+        # ..........................callback enforcers............................
+        after_initialize do |obj|
+          # Whenever we initialize a new object it needs to have the correct tenant_id of the current_user.
+          # Ensures that destroy can be called on tenanted records which haven't been persisted yet.
+          obj.tenant_id ||= Thread.current[:tenant_id]
         end
 
-      # ..........................callback enforcers............................
-        before_save do |obj|   # force tenant_id to be correct for current_user
+        # ..........................callback enforcers............................
+        before_save do |obj| # force tenant_id to be correct for current_user
           # raise exception if updates attempted on wrong data
           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
-          true  #  ok to proceed
         end
 
-      # ..........................callback enforcers............................
-        # no longer needed because before_save invoked prior to before_update
-        #
-#         before_update do |obj|   # force tenant_id to be correct for current_user
-#           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
-#           true  #  ok to proceed
-#         end
-
-      # ..........................callback enforcers............................
-        before_destroy do |obj|   # force tenant_id to be correct for current_user
-          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id == Thread.current[:tenant_id]
-          true  #  ok to proceed
+        # ..........................callback enforcers............................
+        before_destroy do |obj| # force tenant_id to be correct for current_user
+          if (obj.tenant_id != Thread.current[:tenant_id])
+            raise ::Milia::Control::InvalidTenantAccess
+          end
         end
 
       end
@@ -53,32 +46,24 @@ module Milia
 # Forces all reference to the universal tenant (nil)
 # ------------------------------------------------------------------------
       def acts_as_universal()
-        belongs_to  :tenant
+        belongs_to :tenant
 
-        default_scope { where( "#{table_name}.tenant_id IS NULL" ) }
+        default_scope { where("#{table_name}.tenant_id IS NULL") }
 
-      # ..........................callback enforcers............................
-        before_save do |obj|   # force tenant_id to be universal
-          raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
-          true  #  ok to proceed
+        # ..........................callback enforcers............................
+        before_save do |obj| # force tenant_id to be universal
+          if obj.tenant_id.present?
+            raise ::Milia::Control::InvalidTenantAccess
+          end
         end
 
-      # ..........................callback enforcers............................
-#         before_update do |obj|   # force tenant_id to be universal
-        # no longer needed because before_save invoked prior to before_update
-        #
-#           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
-#           true  #  ok to proceed
-#         end
-
-      # ..........................callback enforcers............................
-        before_destroy do |obj|   # force tenant_id to be universal
+        # ..........................callback enforcers............................
+        before_destroy do |obj| # force tenant_id to be universal
           raise ::Milia::Control::InvalidTenantAccess unless obj.tenant_id.nil?
-          true  #  ok to proceed
         end
 
       end
-      
+
 # ------------------------------------------------------------------------
 # acts_as_universal_and_determines_tenant_reference
 # All the characteristics of acts_as_universal AND also does the magic
@@ -90,96 +75,96 @@ module Milia
 
         acts_as_universal()
 
-           # validate that a tenant exists prior to a user creation
+        # validate that a tenant exists prior to a user creation
         before_create do |new_user|
           if Thread.current[:tenant_id].blank? ||
-             !Thread.current[:tenant_id].kind_of?(Integer) ||
-             Thread.current[:tenant_id].zero?
+              !Thread.current[:tenant_id].kind_of?(Integer) ||
+              Thread.current[:tenant_id].zero?
 
-            raise ::Milia::Control::InvalidTenantAccess,"no existing valid current tenant" 
+            raise ::Milia::Control::InvalidTenantAccess, "no existing valid current tenant"
 
           end
-        end  # before create callback do
-        
-          # before create, tie user with current tenant
-          # return true if ok to proceed; false if break callback chain
+        end # before create callback do
+
+        # before create, tie user with current tenant
         after_create do |new_user|
-          tenant = Tenant.find( Thread.current[:tenant_id] )
+          tenant = Tenant.find(Thread.current[:tenant_id])
           unless tenant.users.include?(new_user)
-            tenant.users << new_user  # add user to this tenant if not already there
+            tenant.users << new_user # add user to this tenant if not already there
           end
-
         end # before_create do
-        
+
         before_destroy do |old_user|
-          old_user.tenants.clear    # remove all tenants for this user
+          old_user.tenants.clear # remove all tenants for this user
+        end # before_destroy do
+
+      end
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+      def acts_as_universal_and_determines_tenant()
+        has_and_belongs_to_many :users
+
+        acts_as_universal()
+
+        before_destroy do |old_tenant|
+          old_tenant.users.clear # remove all users from this tenant
           true
         end # before_destroy do
-        
-      end  # acts_as
-
-# ------------------------------------------------------------------------
-# ------------------------------------------------------------------------
-  def acts_as_universal_and_determines_tenant()
-    has_and_belongs_to_many :users
-
-    acts_as_universal()
-    
-    before_destroy do |old_tenant|
-      old_tenant.users.clear  # remove all users from this tenant
-      true
-    end # before_destroy do
-  end
+      end
 
 # ------------------------------------------------------------------------
 # current_tenant -- returns tenant obj for current tenant
-  # return nil if no current tenant defined
+# return nil if no current tenant defined
 # ------------------------------------------------------------------------
-  def current_tenant()
-    begin
-      tenant = (
-        Thread.current[:tenant_id].blank?  ?
-        nil  :
-        Tenant.find( Thread.current[:tenant_id] )
-      )
+      def current_tenant()
+        begin
+          tenant = (
+          Thread.current[:tenant_id].blank? ?
+              nil :
+              Tenant.find(Thread.current[:tenant_id])
+          )
 
-      return tenant
+          return tenant
 
-    rescue ActiveRecord::RecordNotFound
-      return nil
-    end   
-  end
-    
+        rescue ActiveRecord::RecordNotFound
+          return nil
+        end
+      end
+
 # ------------------------------------------------------------------------
 # current_tenant_id -- returns tenant_id for current tenant
 # ------------------------------------------------------------------------
-  def current_tenant_id()
-    return Thread.current[:tenant_id]
-  end
-  
+      def current_tenant_id()
+        return Thread.current[:tenant_id]
+      end
+
 # ------------------------------------------------------------------------
 # set_current_tenant -- model-level ability to set the current tenant
 # NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
 # the models ... it's only useful and safe WHEN performed at the start
 # of a background job (DelayedJob#perform)
 # ------------------------------------------------------------------------
-  def set_current_tenant( tenant )
-      # able to handle tenant obj or tenant_id
-    case tenant
-      when Tenant then tenant_id = tenant.id
-      when Integer then tenant_id = tenant
-      else
-        raise ArgumentError, "invalid tenant object or id"
-    end  # case
-    
-    old_id = ( Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id] )
-    Thread.current[:tenant_id] = tenant_id
-    logger.debug("MILIA >>>>> [Tenant#change_tenant] new: #{tenant_id}\told:#{old_id}") unless logger.nil?
+      def set_current_tenant(tenant)
+        # able to handle tenant obj or tenant_id
+        case tenant
+          when Tenant then
+            tenant_id = tenant.id
+          when Integer then
+            tenant_id = tenant
+          else
+            raise ArgumentError, "invalid tenant object or id"
+        end # case
 
-  end
+        old_id                     = (Thread.current[:tenant_id].nil? ? '%' : Thread.current[:tenant_id])
+        Thread.current[:tenant_id] = tenant_id
+        logger.debug("MILIA >>>>> [Tenant#change_tenant] new: #{tenant_id}\told:#{old_id}") unless logger.nil?
+
+      end
+
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
- 
+
 # ------------------------------------------------------------------------
 # where_restrict_tenant -- gens tenant restrictive where clause for each klass
 # NOTE: subordinate join tables will not get the default scope by Rails
@@ -188,22 +173,16 @@ module Milia
 # right. adding an additional .where( where_restrict_tenants(klass1, klass2,...))
 # for each of the subordinate models in the join seems like a nice safety issue.
 # ------------------------------------------------------------------------
-  def where_restrict_tenant(*args)
-    args.map{|klass| "#{klass.table_name}.tenant_id = #{Thread.current[:tenant_id]}"}.join(" AND ")
-  end
-  
-# ------------------------------------------------------------------------
-# ------------------------------------------------------------------------
+      def where_restrict_tenant(*args)
+        args.map { |klass| "#{klass.table_name}.tenant_id = #{Thread.current[:tenant_id]}" }.join(" AND ")
+      end
 
 # ------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------
-# ------------------------------------------------------------------------
-
-    end  # module ClassMethods
+    end # module ClassMethods
 # #############################################################################
 # #############################################################################
-    
-  end  # module Base
-end  # module Milia
+
+  end # module Base
+end # module Milia

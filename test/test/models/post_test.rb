@@ -2,9 +2,9 @@ require 'test_helper'
 
 class PostTest < ActiveSupport::TestCase
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
   context "a post" do
-    
+
     setup do
       Tenant.set_current_tenant( tenants( :tenant_1 ).id )
       @zine = Zine.first
@@ -22,17 +22,21 @@ class PostTest < ActiveSupport::TestCase
     should have_one(:team).through(:zine)
 
 # model-specific tests
+   should "be destroyable even if new" do
+     Post.new.destroy # may not raise Milia::Control::InvalidTenantAccess
+  end
+
    should "get all posts within tenant" do
      assert_equal 7, Post.count
    end
-  
+
    should "get only member posts in tenant" do
      Tenant.set_current_tenant( tenants( :tenant_2 ).id )
 
      x = members(:quentin_2)
      assert_equal 2, x.posts.size
    end
-  
+
     should "see jermaine in two tenants with dif posts" do
       jermaine = users( :jermaine )
      Tenant.set_current_tenant( tenants( :tenant_2 ).id )
@@ -53,14 +57,14 @@ class PostTest < ActiveSupport::TestCase
      Tenant.set_current_tenant( tenants( :tenant_2 ).id )
       assert_equal  posts(:post_plum_2_1_b).team, teams(:team_2_b)
     end  # should do
-    
+
     should 'match a posts zine with tenant' do
       Tenant.set_current_tenant( tenants( :tenant_2 ).id )
       assert_equal  2,posts(:post_plum_2_1_b).zine.tenant_id
     end  # should do
-    
+
   end   # context post
 
-# _____________________________________________________________________________    
+# _____________________________________________________________________________
 
 end  # class test
