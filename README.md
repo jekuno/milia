@@ -1135,28 +1135,9 @@ of a background job (DelayedJob#perform) or at start of rails console, or a rake
     raise ArgumentError, "invalid tenant object or id"
 ```
 
-
-## running tests
-
-You must cd into the milia/test directory.
-Then run test:units, test:functionals seperately.
-For some reason, rake test won't work and yields errors.
-
-```ruby
-  $ cd test
-  $ bundle install
-  $ rake db:create db:migrate db:test:prepare
-  $ rails test
-```
-
-### test coverage
-* All models, including milia-added methods, are tested.
-* Functional testing currently covers all milia-added controller methods.
-* TBD: milia overrides of devise registration, confirmation controllers
-
 ## Cautions
 
-* Milia designates a default_scope for all models (both universal and tenanted). From Rails 3.2 onwards, the last designated default scope overrides any prior scopes and will invalidate multi-tenanting; so *DO NOT USE default_scope*
+* Milia designates a default_scope for all models (both universal and tenanted). Rails merges default_scopes if you use multiple default_scope declarations in your model, see [ActiveRecord Docs](http://api.rubyonrails.org/classes/ActiveRecord/Scoping/Default/ClassMethods.html#method-i-default_scope). However by unscoping via [unscoped](http://apidock.com/rails/ActiveRecord/Scoping/Default/ClassMethods/unscoped) you can accidentally remove tenant scoping from records. Therefore we strongly recommend to **NOT USE default_scope** at all.
 * Milia uses Thread.current[:tenant_id] to hold the current tenant for the existing Action request in the application.
 * SQL statements executed outside the context of ActiveRecord pose a potential danger; the current milia implementation does not extend to the DB connection level and so cannot enforce tenanting at this point.
 * The tenant_id of a universal model will always be forced to nil.
@@ -1164,6 +1145,7 @@ For some reason, rake test won't work and yields errors.
 * HABTM (has_and_belongs_to_many) associations don't have models; they shouldn't have id fields
   (setup as below) nor any field other than the joined references; they don't have a tenant_id field;
   rails will invoke the default_scope of the appropriate joined table which does have a tenant_id field.
+* **You use milia solely at your own risk!**  When working with multi-tenanted applications you handle lots of data of several organizations/companies which means a special responsibility for protecting the data as well. Do in-depth security tests prior to publishing your application.
 
 
 ## Further documentation
@@ -1171,8 +1153,8 @@ For some reason, rake test won't work and yields errors.
 * Check out the three-part blog discussion of _Multi-tenanting Ruby on Rails Applications on Heroku_
 at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
 * See the Milia tutorial at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails_3982.html
-* see code & setup sample in test/railsapp, which is also used to run the tests.
-* see milia wiki on github for a CHANGE HISTORY page.
+* See code & setup sample in test/railsapp, which is also used to run the tests.
+* See milia wiki on github for a CHANGE HISTORY page.
 
 
 ## Contributing to milia
@@ -1182,10 +1164,11 @@ at: http://myrailscraft.blogspot.com/2013/05/multi-tenanting-ruby-on-rails.html
 * Fork the project
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Make sure to add tests for it. This is important so we don't break the feature in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so we can cherry-pick around it.
 
-## Copyright
+### Testing
+For instructions on how to run and write tests for milia please consider the [README for testing](./test/README.md)
 
-Copyright (c) 2014 Daudi Amani. See LICENSE.txt for further details.
-
+## License
+See LICENSE.txt for further details.
