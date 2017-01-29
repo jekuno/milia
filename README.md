@@ -101,15 +101,61 @@ Pure join tables (has_and_belongs_to_many HABTM associations) are neither Univer
 
 
 ## Sample app
-Check out the milia+devise sample app at https://github.com/dsaronin/sample-milia-app
-which is also live on **Heroku**: http://sample-milia.herokuapp.com
-
-If you want to get a sample app up and running on Heroku yourself using an easy geneator
-follow the steps described in [doc/sample.sh](doc/sample.sh).
-The sample app uses recaptcha for new account sign-ups and devise with the invite_member capability.
+You can get a sample app up and running on Heroku yourself using an easy RailsApp generator with a Milia generator.
+The sample app uses devise with the invite_member capability (and optionally recaptcha for new account sign-ups).
 It creates skeleton user, tenant and member models.
 
-If you prefer to set up everything manually follow the step-by-step instructions at [doc/manual_sample.sh](doc/manual_sample.sh).
+Simply follow the following steps:
+
+```
+mkdir milia-sample-app
+cd milia-sample-app
+rvm use ruby-2.3.1@milia-sample-app --ruby-version --create
+gem install rails
+rails new . -m https://raw.github.com/RailsApps/rails-composer/master/composer.rb
+```
+
+An interactive setup starts which asks you some questions.
+* Choose "Build a RailsApps example application"
+* Choose "rails-devise" as the example template
+* Choose Template engine "HAML"
+* Choose "Devise with default modules"
+* Choose the other options depending on your needs
+
+After the setup finished add to your `Gemfile`:  
+`gem 'milia', github: 'jekuno/milia', branch: 'generator-rails5'`
+
+Install milia:
+`bundle install`
+
+In `app/controllers/application_controller.rb` add the following line immediately after `protect_from_forgery`:  
+`  before_action :authenticate_tenant!`
+
+Run the following commands:
+```
+spring stop
+rails g milia:install --org_email='mail@your-provider.de' --skip_devise_generators=true
+```
+
+* Remove lower line "before_action :authenticate_tenant!" which has been added to `app/controllers/application_controller.rb` by the milia generator.  
+* Remove the lines `@extend .text-xs-center;` (if any) from the file `1st_load_framework.css.scss`.
+* Remove the file `app/views/devise/registrations/new.html.erb`
+
+Setup the databas:
+`rake db:drop db:create db:migrate`
+
+Start the server:
+`rails server`
+
+Open http://127.0.0.1:3000/users/sign_up in your browser.
+You're ready to go!
+
+### Outdated
+An outdated milia+devise sample app can be found at https://github.com/dsaronin/sample-milia-app
+and is live on Heroku: http://sample-milia.herokuapp.com
+The according instructions on how to use the generator can be found at [doc/sample.sh](doc/sample.sh).
+
+There are also outdated step-by-step instructions for setting everything up manually at [doc/manual_sample.sh](doc/manual_sample.sh).
   - Step 1: Sample with simple devise only
   - Step 2: Add milia for complete tenanting
   - Step 3: Add invite_member capability
@@ -118,7 +164,7 @@ If you prefer to set up everything manually follow the step-by-step instructions
 ## Installation
 ### Adding milia to a new application
 The quickest way:
-Follow the instructions of the chapter [Sample App](Sample App) to have an app base with devise+milia.
+Follow the simple instructions of the chapter [Sample App](Sample App) to generate a new app which uses devise+milia.
 
 
 ### Add milia to an existing application
