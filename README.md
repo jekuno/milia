@@ -1127,19 +1127,24 @@ authorize_tenant! so you never should at the beginning of a session.
 If you need to gain access to tenant object itself (say to get the name of the tenant),
 then use these accessor methods.
 
-### From background, rake, or console-level (CAUTION):
+### From background job, migration, rake task or console
 
-From background jobs (only at the start of the task); 
-tenant can either be a tenant object or an integer tenant_id; anything else will raise
-exception.  set_current_tenant -- is model-level ability to set the current tenant
-NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
-the models ... it is only useful and safe WHEN performed at the start
-of a background job (DelayedJob#perform) or at start of rails console, or a rake task.
+From background job, rake or console you can use `Tenant.set_current_tenant(tenant)`.
+`tenant` can either be a tenant object or an integer tenant_id; anything else will raise
+an exception.
 
+NOTE: *USE WITH CAUTION* Normally this should *NEVER* be done from
+the models. It is only useful and safe WHEN performed at the start
+of a background job (DelayedJob#perform), rake task, migration or rails console.
+
+To iterate over all instances of a certain model for all tenants do the following:  
 ```ruby
-  Tenant.set_current_tenant( tenant )
-    raise ArgumentError, "invalid tenant object or id"
+Tenant.find_each do |tenant|
+  Tenant.set_current_tenant(tenant)
+  Animal.update_all alive: true
+end
 ```
+
 
 ## Cautions
 
