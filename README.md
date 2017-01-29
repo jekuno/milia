@@ -3,33 +3,38 @@ Build status (branch 'rails5-support'):
 
 # milia
 
+Milia is a multi-tenanting gem for Ruby on Rails applications.
+
+* Milia is a solid choice for (SaaS) applications which are used by more than one tenant (i.e. companies or organizations) and is tailored for common use cases of multi-tenanted applications.
+* Milia allows to save the data of all tenants in the same database and enforces row based separation of the tenant data.
+* Milia uses the devise gem for user authentication and registration.
+
 You are viewing the documentation of the milia branch for Rails 5 applications.
 Milia also supports Rails 4.2.x. Please switch to the according branch.
 
-Milia is a multi-tenanting gem for hosted Ruby on Rails applications which use
-the devise gem for user authentication and registrations. Milia comes with
-tailoring for common use cases needing multi-tenanting with user authentication.
-
 ## Basic concepts for the milia multi-tenanting gem
 
-### multi-tenanting highlights
+### Milia highlights
 
-* should be transparent to the main application code
-* should be symbiotic with user authentication
-* should raise exceptions upon attempted illegal access
-* should force tenanting (not allow sloppy access to all tenant records)
-* should allow application flexibility upon new tenant sign-up,
-  usage of eula information, etc
-* should be as non-invasive (as possible) to Rails code
-* row-based tenanting is used
-* default_scope is used to enforce tenanting
+* Transparent to the main application code
+* Symbiotic with user authentication
+* Raises exceptions upon attempted illegal access
+* Enforces tenanting (not allow sloppy access to all tenant records)
+* Allows application flexibility upon new tenant sign-up, usage of eula information, etc
+* As non-invasive (as possible) to Rails code
+* Uses row-based tenanting
+* Uses default_scope to enforce tenanting
 
-The author used schema-based tenanting in the past but found it deficient for
-the following reasons: most DBMS are optimized to handle enormous number of
-rows but not an enormous number of schema (tables). Schema-based tenancy took a
-performance hit, was seriously time-consuming to backup and restore, was invasive
-into the Rails code structure (monkey patching), was complex to implement, and
-couldn't use Rails migration tools as-is.
+### Row based vs. schema based tenanting
+* Milia uses row based tenanting.
+* The author used schema-based tenanting in the past but found it deficient for the following reasons. Schema-based tenancy
+  * is not what DBMS are optimized for (most DBMS are optimized to handle enormous number of rows but not an enormous number of schema (tables)),
+  * took a performance hit,
+  * was seriously time-consuming to backup and restore,
+  * was invasive into the Rails code structure (monkey patching),
+  * was complex to implement, and
+  * couldn't use Rails migration tools as-is.
+* Heroku also [strongly recommends against](https://devcenter.heroku.com/articles/heroku-postgresql#multiple-schemas) using schema based tenanting.
 
 ### tenants/users vs organizations/members
 
@@ -340,7 +345,7 @@ And that's all you have to do!
 
 This is the mininum necessary for using milia with a Rails application. If you're new to Rails
 (or Devise and Milia), then I'd recommend you skip this section and instead follow the instructions
-(previous section above) for Creating and Installing a Rails/Milia/Devise Sample Application.
+(previous section above) for Creating and Installing a Rails/Milia/Devise Sample Application. 
 
 <strong>In any case, do NOT do both installations.</strong>
 
@@ -579,7 +584,7 @@ Only designate one model in this manner.
 ### Designate which model determines tenant
 
 Add the following acts_as_... to designate which model will be used as the
-tenant model. It is this id field which designates the tenant for an entire
+tenant model. It is this id field which designates the tenant for an entire 
 group of users which exist within a single tenanted domain.
 Only designate one model in this manner.
 
@@ -587,15 +592,15 @@ Only designate one model in this manner.
 
 ```ruby
   class Tenant < ActiveRecord::Base
-
+    
     acts_as_universal_and_determines_tenant
-
+    
   end  # class Tenant
 ```
 
 ### Clean up any generated belongs_to tenant references in all models
 
-which the generator might have generated
+which the generator might have generated 
 ( both <i>acts_as_tenant</i> and <i>acts_as_universal</i> will specify these ).
 
 ### Designate universal models
@@ -610,14 +615,14 @@ Add the following acts_as_universal to *ALL* models which are to be universal.
 
 Add the following acts_as_tenant to *ALL* models which are to be tenanted.
 Example for a ficticous Post model:
-
+  
 <i>app/models/post.rb</i>
 
 ```ruby
   class Post < ActiveRecord::Base
-
+    
     acts_as_tenant
-
+  
   end  # class Post
 ```
 
@@ -631,7 +636,7 @@ Example for a ficticous Post model:
 ### post authenticate_tenant! callback [optional]
 
 In some applications, you will want to set up commonly used
-variables used throughout your application, after a user and a
+variables used throughout your application, after a user and a 
 tenant have been established. This is optional and if the
 callback is missing, nothing will happen.
 
@@ -652,7 +657,7 @@ callback is missing, nothing will happen.
 ```ruby
   Tenant.create_new_tenant(tenant_params, coupon_params)   # see sample code below
 ```
-
+  
 where the sign-up params are passed, the new tenant must be validated, created,
 and then returned. Any other kinds of prepatory processing are permitted here,
 but should be minimal, and should not involve any tenanted models. At this point
@@ -668,9 +673,9 @@ immediately after the new tenant has been created).
 
     if new_signups_not_permitted?(coupon_params)
 
-      raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time"
+      raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
 
-    else
+    else 
       tenant.save    # create the tenant
     end
     return tenant
@@ -691,7 +696,7 @@ immediately after the new tenant has been created).
 ```ruby
   Tenant.tenant_signup(user,tenant,other)   # see sample code below
 ```
-
+  
 The purpose here is to do any tenant initialization AFTER devise
 has validated and created a user. Objects for the user and tenant
 are passed.  It is recommended that only minimal processing be done
@@ -736,7 +741,7 @@ taken from sample-milia-app.
   .content
     %span.description
       %i
-        If you're a member of an existing group in our system,
+        If you're a member of an existing group in our system, 
         click the activate link in the invitation email from your organization's admin.
         You should not sign up for a new organizational account.
         %br
@@ -762,7 +767,7 @@ taken from sample-milia-app.
 
       .group
         = fields_for( :tenant ) do |w|
-          = w.label( :name, 'Organization', :class => "label" )
+          = w.label( :name, 'Organization', :class => "label" ) 
           = w.text_field( :name, :class => "text_field")
           %span.description unique name for your group or organization for the new account
 
@@ -778,7 +783,7 @@ taken from sample-milia-app.
       .group.navform.wat-cf
         %button.button{ :type => "submit" }
           = image_tag "web-app-theme/icons/tick.png"
-          Sign up
+          Sign up 
     = render :partial => "devise/shared/links"
 
 ```
@@ -791,7 +796,7 @@ to provide some type of mechanism to allow the user to choose which account
 to put:
 
 <i>app/controllers/any_controller.rb</i>
-
+  
 ```ruby
   set_current_tenant( new_tenant_id )
 ```
@@ -801,10 +806,10 @@ to put:
 Subordinate join tables will not get the Rails default scope.
 Theoretically, the default scope on the master table alone should be sufficient
 in restricting answers to the current_tenant alone .. HOWEVER, it doesn't feel
-right.
+right. 
 
 If the master table for the join is a universal table, however, you really *MUST*
-use the following workaround, otherwise the database will access data in other
+use the following workaround, otherwise the database will access data in other 
 tenanted areas even if no records are returned. This is a potential security
 breach. Further details can be found in various discussions about the
 behavior of databases such as POSTGRES.
@@ -835,10 +840,10 @@ or a generic icalendar feed for all of an organization's events. The tokens are 
 a general replacement for user sign-in for all actions, but merely to enable a simple
 restful API for certain specific actions. This section will explain how to incorporate
 token authentication together with milia/devise. Please note that the application
-assigns to each user an authentication token for this use, as well as creates a
+assigns to each user an authentication token for this use, as well as creates a 
 generic "guest" for the organization itself for accessing the organization-wide action.
 
-The general scheme is to have a prepend_before_action authenticate_by_token! specified
+The general scheme is to have a prepend_before_action authenticate_by_token! specified 
 only for those actions allowed. This action determines the "user" required to proceed
 with the action, signs in that user via devise, then falls through to the normal
 before_action authenticate_tenant! action which establishes the current_tenant.
@@ -852,23 +857,23 @@ Below are some examples of this (typically the token is passed as the id paramet
 # so that this will occur BEFORE authenticate_tenant!
 # ------------------------------------------------------------------------------
 # Notice we are passing store false, so the user is not
-# actually stored in the session and a token is needed for every request.
+# actually stored in the session and a token is needed for every request. 
 # ------------------------------------------------------------------------------
   def authenticate_by_token!
       # special case for designated actions only
-    if ( controller_name == "feeder" &&
+    if ( controller_name == "feeder" && 
          ( user = User.find_user_by_user_feed( params ) )
        )  ||
-       ( controller_name == "questions" && ['signup_form', 'finish_signup'].include?(action_name) &&
+       ( controller_name == "questions" && ['signup_form', 'finish_signup'].include?(action_name) && 
          ( user = User.find_user_by_user_feed( params ) )
-       )
-
+       ) 
+       
         # create a special session after authorizing a user
       reset_session
       sign_in(user, store: false)  # devise's way to signin the user
       # now continue with tenant authorization & set up
       true  # ok to continue  processing
-
+       
     else
       act_path = controller_name.to_s + '/' + action_name.to_s
       logger.info("SECURITY - access denied #{Time.now.to_s(:db)} - auth: #{params[:userfeed] }\tuid:#{(user.nil? ? 'n/f' : user.id.to_s)}\tRequest: " + act_path)
@@ -895,7 +900,7 @@ Below are some examples of this (typically the token is passed as the id paramet
     return nil if key.blank?  # neither key present; invalid
     return User.where( :authentication_token => key ).first  # find by the key; nil if invalid
   end
-
+  
     def make_authentication_token
       self.authentication_token = generate_unique_authentication_token
     end
@@ -911,11 +916,11 @@ Below are some examples of this (typically the token is passed as the id paramet
 
 ## console
 
-Note that even when running the console, ($ rails console) it will be run in
+Note that even when running the console, ($ rails console) it will be run in 
 multi-tenanting mode. You will need to establish a current_user and
 setup the current_tenant, otherwise most Model DB accesses will fail.
 
-For the author's own application, I have set up a small ruby file which I
+For the author's own application, I have set up a small ruby file which I 
 load when I start the console. This does the following:
 
 ```ruby
@@ -937,9 +942,10 @@ other parameters than the ones expected by milia. Sometimes the application
 might need to add some parameters of its own, such a EULA version number,
 additions to an activation message, or a unique name for the tenant itself.
 
-Milia has a mechanism to add additional parameters to be whitelisted.
+Milia has a mechanism to add additional parameters to be whitelisted. 
 In <i>config/initializers/milia.rb</i> you can add a list of symbols for
-the additional parameters of tenant or coupon. The example below shows how.
+the additional parameters to each of a config setting for any of the
+three (tenant, user, or coupon). The example below shows how.
 
 ```ruby
   # whitelist tenant params list
@@ -1123,7 +1129,7 @@ then use these accessor methods.
 
 ### From background, rake, or console-level (CAUTION):
 
-From background jobs (only at the start of the task);
+From background jobs (only at the start of the task); 
 tenant can either be a tenant object or an integer tenant_id; anything else will raise
 exception.  set_current_tenant -- is model-level ability to set the current tenant
 NOTE: *USE WITH CAUTION* normally this should *NEVER* be done from
