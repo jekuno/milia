@@ -264,7 +264,7 @@ into your <i>app/models/tenant.rb</i> file one line per tenanted model
 such as the following (replacing <model> with your model's name):
 
 ```
-  has_many  :<model>s, :dependency => destroy
+  has_many  :<model>s, dependent: :destroy
 ```
 
 The reason for this is that if you wish to have a master destroy tenant action,
@@ -272,7 +272,7 @@ it will also remove all related tenanted tables and records automatically.
 
 Do NOT add a reference to the user model such as
 ```
-  has_many  :users, :dependency => destroy
+  has_many  :users, dependent: :destroy
 ```
 because it produces errors.
 
