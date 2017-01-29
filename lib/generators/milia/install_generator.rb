@@ -139,6 +139,7 @@ module Milia
          end
 
          directory File.expand_path('../../../../app/views/members', __FILE__), "app/views/members"
+         directory File.expand_path('../../../../app/views/devise/registrations', __FILE__), "app/views/devise/registrations"
 
 
        end  # skip any member expansion
