@@ -141,7 +141,7 @@ rails g milia:install --org_email='mail@your-provider.de' --skip_devise_generato
 * Remove the lines `@extend .text-xs-center;` (if any) from the file `1st_load_framework.css.scss`.
 * Remove the file `app/views/devise/registrations/new.html.erb`
 
-Setup the databas:
+Setup the database:
 `rake db:drop db:create db:migrate`
 
 Start the server:
