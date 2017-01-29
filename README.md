@@ -314,9 +314,8 @@ From background job, migration, rake task or console you can use `Tenant.set_cur
 `tenant` can either be a tenant object or an integer tenant_id; anything else will raise
 an exception.
 
-NOTE: *USE WITH CAUTION* Normally this should *NEVER* be done from
-the models. It is only useful and safe WHEN performed at the start
-of a background job (DelayedJob#perform), rake task, migration or rails console.
+**Use with caution!** Normally tenants should never be changed from within models.
+It is only useful and safe when performed at the start of a background job (DelayedJob#perform), rake task, migration or start of rails console.
 
 #### Iterate over tenants
 To iterate over all instances of a certain model for all tenants do the following:  
