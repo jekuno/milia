@@ -14,6 +14,7 @@ module Milia
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
       class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
       class_option :org_email, :type => :string, :default => "my-email@my-domain.com", :desc => 'define the organizational email from address'
+      class_option :skip_devise_generators, :type => :boolean, :default => false, :desc => 'skip execution of devise generators (if this has already been done previously)'
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -52,8 +53,10 @@ module Milia
 # -------------------------------------------------------------
 # -------------------------------------------------------------
       def setup_devise
-        generate "devise:install"
-        generate "devise", "user"
+        unless options.skip_devise_generators
+          generate "devise:install"
+          generate "devise", "user"
+        end
         gsub_file "app/models/user.rb", /,\s*$/, ", :confirmable,"
 
         migrate_user_file = find_or_fail("db/migrate/[0-9]*_devise_create_users.rb")
