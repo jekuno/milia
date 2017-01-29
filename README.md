@@ -123,7 +123,7 @@ An interactive setup starts which asks you some questions.
 * Choose the other options depending on your needs
 
 After the setup finished add to your `Gemfile`:  
-`gem 'milia', github: 'jekuno/milia', branch: 'generator-rails5'`
+`gem 'milia', github: 'jekuno/milia'`
 
 Install milia:
 `bundle install`
