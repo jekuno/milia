@@ -1,6 +1,6 @@
 module Milia
 
-  class RegistrationsController < Devise::RegistrationsController
+  class RegistrationsController < ::Devise::RegistrationsController
 
   skip_before_action :authenticate_tenant!, :only => [:new, :create, :cancel]
 

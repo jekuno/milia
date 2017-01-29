@@ -3,18 +3,19 @@ require 'rails/generators/base'
 module Milia
   module Generators
 # *************************************************************
-    
+
     class InstallGenerator < Rails::Generators::Base
       desc "Full installation of milia with devise"
 
       source_root File.expand_path("../templates", __FILE__)
-  
+
       class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
-      class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
+      class_option :skip_recaptcha, :type => :boolean, :default => true, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
       class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
       class_option :org_email, :type => :string, :default => "my-email@my-domain.com", :desc => 'define the organizational email from address'
-       
+      class_option :skip_devise_generators, :type => :boolean, :default => false, :desc => 'skip execution of devise generators (if this has already been done previously)'
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def check_requirements()
@@ -45,15 +46,17 @@ module Milia
          end
 
          gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-         
+
          run_bundle
       end
 
 # -------------------------------------------------------------
 # -------------------------------------------------------------
       def setup_devise
-        generate "devise:install"
-        generate "devise", "user"
+        unless options.skip_devise_generators
+          generate "devise:install"
+          generate "devise", "user"
+        end
         gsub_file "app/models/user.rb", /,\s*$/, ", :confirmable,"
 
         migrate_user_file = find_or_fail("db/migrate/[0-9]*_devise_create_users.rb")
@@ -71,7 +74,11 @@ module Milia
 # -------------------------------------------------------------
      def setup_milia
 
-       unless false    # future skip block?? 
+       unless false    # future skip block??
+         inject_into_file "app/controllers/application_controller.rb",
+                          after: "protect_from_forgery with: :exception\n" do
+           snippet_app_ctlr_header
+         end
 
          route  snippet_routes_root_path
 
@@ -80,30 +87,25 @@ module Milia
          generate "model", "tenant tenant:references name:string:index"
          generate "migration", "CreateTenantsUsersJoinTable tenants users"
 
-         inject_into_file "app/controllers/application_controller.rb",
-           after: "protect_from_forgery with: :exception\n" do 
-           snippet_app_ctlr_header
-         end
-
-         inject_into_class "app/controllers/home_controller.rb", HomeController do 
+         inject_into_class "app/controllers/home_controller.rb", HomeController do
             snippet_home_ctlr_header
          end
 
          join_file = find_or_fail("db/migrate/[0-9]*_create_tenants_users_join_table.rb")
-         uncomment_lines join_file, ":tenant_id, :user_id" 
+         uncomment_lines join_file, ":tenant_id, :user_id"
 
-         gsub_file "config/routes.rb", "devise_for :users"  do 
+         gsub_file "config/routes.rb", "devise_for :users"  do
            snippet_routes_devise
          end
 
          inject_into_file "app/models/user.rb",
-           after: ":recoverable, :rememberable, :trackable, :validatable\n" do 
+           after: ":recoverable, :rememberable, :trackable, :validatable\n" do
            snippet_model_user_determines_account
          end
 
          gsub_file "app/models/tenant.rb", /belongs_to \:tenant/, ' '
 
-         inject_into_class "app/models/tenant.rb", Tenant do 
+         inject_into_class "app/models/tenant.rb", Tenant do
             snippet_model_tenant_determines_tenant
          end
 
@@ -117,29 +119,30 @@ module Milia
          generate "resource", "member tenant:references user:references first_name:string last_name:string"
 
          inject_into_file "app/models/tenant.rb",
-           after: "acts_as_universal_and_determines_tenant\n" do 
+           after: "acts_as_universal_and_determines_tenant\n" do
               snippet_add_assoc_to_tenant
          end
 
          uncomment_lines "app/models/tenant.rb", "create_org_admin"
 
          inject_into_file "app/models/user.rb",
-           after: "acts_as_universal_and_determines_account\n" do 
+           after: "acts_as_universal_and_determines_account\n" do
              snippet_add_member_assoc_to_user
          end
 
          gsub_file "app/models/member.rb", /belongs_to \:tenant/, ' '
 
          inject_into_file "app/models/member.rb",
-           after: "belongs_to :user\n" do 
+           after: "belongs_to :user\n" do
             snippet_fill_out_member
          end
 
-         inject_into_class "app/controllers/members_controller.rb", MembersController do 
+         inject_into_class "app/controllers/members_controller.rb", MembersController do
             snippet_fill_member_ctlr
          end
 
          directory File.expand_path('../../../../app/views/members', __FILE__), "app/views/members"
+         directory File.expand_path('../../../../app/views/devise/registrations', __FILE__), "app/views/devise/registrations"
 
 
        end  # skip any member expansion
@@ -150,20 +153,20 @@ module Milia
   def setup_environments
 
     unless options.skip_env_email_setup
-      
-      environment nil, env: :development do 
+
+      environment nil, env: :development do
         snippet_env_dev
       end  # do dev environment
 
-      environment nil, env: :production do 
+      environment nil, env: :production do
         snippet_env_prod
       end  # do production environment
 
-      environment nil, env: :test do 
+      environment nil, env: :test do
         snippet_env_test
       end  # do test environment
 
-      environment  do 
+      environment  do
         snippet_config_application
       end  # do config_application
 
@@ -191,16 +194,16 @@ private
 # -------------------------------------------------------------
   def find_or_fail( filename )
     user_file = Dir.glob(filename).first
-    if user_file.blank? 
+    if user_file.blank?
       say_status("error", "file: '#{filename}' not found", :red)
-      raise Thor::Error, "************  terminating generator due to file error!  *************" 
+      raise Thor::Error, "************  terminating generator due to file error!  *************"
     end
     return user_file
   end
-  
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
-  
+
 # *************************************************************
 # ******  SNIPPET SECTION  ************************************
 # *************************************************************
@@ -501,8 +504,8 @@ protected
       gem_msg = `bundle list #{gem_name}`
       if /Could not find gem/i =~ gem_msg
         say_status(
-            "error", 
-            "gemfile not found: #{gem_name} is required", 
+            "error",
+            "gemfile not found: #{gem_name} is required",
             alert_color
         )
         need_fail = true
@@ -514,28 +517,28 @@ protected
       say("-   add required gems to Gemfile; then run bundle install", alert_color)
       say("-   then retry rails g milia:install", alert_color)
       say("-------------------------------------------------------------------------", alert_color)
-      raise Thor::Error, "************  terminating generator due to missing requirements!  *************" 
+      raise Thor::Error, "************  terminating generator due to missing requirements!  *************"
     end  # need to fail
-    
+
   end
- 
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
   def file_find_or_fail( filename )
     user_file = Dir.glob(filename).first
-    if user_file.blank? 
+    if user_file.blank?
       alert_color = :red
       say("-------------------------------------------------------------------------", alert_color)
       say_status("error", "file: '#{filename}' not found", alert_color)
       say("-   first run  $ rails g milia:install", alert_color)
       say("-   then retry $ rails g web_app_theme:milia", alert_color)
       say("-------------------------------------------------------------------------", alert_color)
- 
-      raise Thor::Error, "************  terminating generator due to file error!  *************" 
+
+      raise Thor::Error, "************  terminating generator due to file error!  *************"
     end
     return user_file
   end
-   
+
 # -------------------------------------------------------------
 # -------------------------------------------------------------
 
