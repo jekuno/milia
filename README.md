@@ -1,12 +1,11 @@
-Build status (branch 'rails5-support'):  
-[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=rails5-support)](https://travis-ci.org/jekuno/milia)
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=master)](https://travis-ci.org/jekuno/milia)
 
 # milia
 
 Milia is a multi-tenanting gem for Ruby on Rails applications.
 
 You are viewing the documentation of the milia branch for **Rails 5.x** applications.
-If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/master).
+If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/rails4-support).
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
