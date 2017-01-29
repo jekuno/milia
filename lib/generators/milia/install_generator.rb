@@ -10,7 +10,7 @@ module Milia
       source_root File.expand_path("../templates", __FILE__)
 
       class_option :use_airbrake, :type => :boolean, :default => false, :desc => 'Use this option to add airbrake exception handling capabilities'
-      class_option :skip_recaptcha, :type => :boolean, :default => false, :desc => 'Use this option to skip adding recaptcha for sign ups'
+      class_option :skip_recaptcha, :type => :boolean, :default => true, :desc => 'Use this option to skip adding recaptcha for sign ups'
       class_option :skip_invite_member, :type => :boolean, :default => false, :desc => 'Use this option to skip adding invite_member capabilities'
       class_option :skip_env_email_setup, :type => :boolean, :default => false, :desc => 'Use this option to skip adding smtp email info to config/environments/*'
       class_option :org_email, :type => :string, :default => "my-email@my-domain.com", :desc => 'define the organizational email from address'
