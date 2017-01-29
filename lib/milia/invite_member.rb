@@ -50,12 +50,12 @@ module Milia
     # ensures email exists and that email is unique and not already in system
 # ------------------------------------------------------------------------  
     def save_and_invite_member(  )
-      if (
-          self.email.blank?  ||
-          User.where([ "lower(email) = ?", self.email.downcase ]).first
-        )
-        self.errors.add(:email,"must be present and unique")
-        status = nil
+      status = nil
+
+      if (self.email.blank?)
+        self.errors.add(:email, :blank)
+      elsif User.where([ "lower(email) = ?", self.email.downcase ]).present?
+        self.errors.add(:email, :taken)
       else
         check_or_set_password()
         status = self.save && self.errors.empty?
