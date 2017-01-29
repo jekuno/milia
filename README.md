@@ -9,8 +9,8 @@ Milia is a multi-tenanting gem for Ruby on Rails applications.
 * Milia allows to save the data of all tenants in the same database and enforces row based separation of the tenant data.
 * Milia uses the devise gem for user authentication and registration.
 
-You are viewing the documentation of the milia branch for Rails 5 applications.
-Milia also supports Rails 4.2.x. Please switch to the according branch.
+You are viewing the documentation of the milia branch for **Rails 5.x** applications.
+If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/master).
 
 ## Basic concepts for the milia multi-tenanting gem
 
@@ -36,46 +36,15 @@ Milia also supports Rails 4.2.x. Please switch to the according branch.
   * couldn't use Rails migration tools as-is.
 * Heroku also [strongly recommends against](https://devcenter.heroku.com/articles/heroku-postgresql#multiple-schemas) using schema based tenanting.
 
-### tenants/users vs organizations/members
+### Tenants == Organizations, Users == Members
 
-A tenant == an organization; users == members of the organization.
-Only organizations sign up for new tenants, not members (users).
-The very first user of an organization, let's call him the Organizer,
-is the one responsible for initiating the organizational signup.
-The Organizer becomes the first member (user) of the organization (tenant).
-Thereafter, other members only obtain entry to the organization (tenant)
-by invitation. New tenants are not created for every new user.
+A tenant is an organization with many members (users).
+Initially a user creates a new organization (tenant) and becomes its first member.
+Then he invites further members who can then login and join the tenant.
 
-## Version
+## Changelog
+See [CHANGELOG.md](CHANGELOG.md)
 
-milia v1.3.0 is compatible with Rails 5.x and is now available for usage.
-
-## v1.3.0 - What changed?
-* Rails 5.x adapted
-
-## v1.2.0 - What's changed?
-* Rails 4.2.x adapted
-* fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
-
-## v1.1.x - What's changed?
-* Rails 4.1.x adapted
-* Devise 3.4.x adapted
-
-## v1.0.x - What's changed?
-
-* Rails 4.0.x adapted (changes to terms, strong_parameters, default_scope, etc)
-* Devise 3.2.x adapted
-* All the changes which version 0.3.x advised to be inserted in applications_controller.rb are now automatically loaded into ActionController by milia.
-* that includes authenticate_tenant!
-* so if you've been using an older version of milia, you'll need to remove that stuff from applications_controller!
-* generators for easy install of basic rails/milia/devise
-* callback after successful authenticate_tenant!
-* debug & info logging and trace for troubleshooting
-* improved invite_member support
-* revised README instructions
-
-The last previous release version for Rails 3.2.x can be found in the git branch 'v0.3', but
-it is essentially obsolete. Go with the more recent relases.
 
 ## Sample app and documentation
 
@@ -109,7 +78,6 @@ Further details about this process can be found via the sources listed below:
 ### Available documentation resources for milia
 
 * doc/sample.sh -- this document will ALWAYS be the most recent
-    (for example in the edge branch: "newdev")
 * doc/manual_sample.sh -- non-generator-based instructions for manually editing files.
     (this may no longer be the most recent since further work will focus on the generators)
 * doc/gemfile_addition.txt -- the additions to Gemfile needed for setting up the sample-milia-app
@@ -131,12 +99,6 @@ It is doable, but you'll need to first understand how milia basically is install
 bringing up the sample-milia-app, getting it working, and then figuring out how to either graft it onto your app.
 Or (recommended), grafting your app onto it. I prefer to work that way because it's based off of a pure Rails 4.0
 and devise 3.2 install.
-
-## Dependency requirements
-
-* Ruby 2.1.3
-* Rails 5.x
-* Devise 3.4.x
 
 
 ## Authorized Roles
@@ -294,7 +256,7 @@ references it and will place it in your Gemfile.
    $ bundle install
 ```
 
-### WARNING: don't go commando and try to change everything at once! Don't be a perfectionist and try to bring up a fully written app at once!
+### WARNING: Don't go commando and try to change everything at once! Don't be a perfectionist and try to bring up a fully written app at once!
 
 Just follow the instructions for creating the sample, exactly, step-by-step.
 Get the basics working. Then change, adapt, and spice to taste.
