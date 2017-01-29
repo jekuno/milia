@@ -10,7 +10,7 @@ GIT
 PATH
   remote: ../../milia
   specs:
-    milia (1.2.0)
+    milia (1.2.1)
       devise (~> 3.4)
       rails (~> 4.2)
 
