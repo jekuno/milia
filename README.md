@@ -1,12 +1,11 @@
-Build status (branch 'rails5-support'):  
-[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=rails5-support)](https://travis-ci.org/jekuno/milia)
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=master)](https://travis-ci.org/jekuno/milia)
 
 # milia
 
 Milia is a multi-tenanting gem for Ruby on Rails applications.
 
-You are viewing the documentation of the milia branch for **Rails 5.x** applications.
-If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/master).
+You are viewing the documentation for using milia with **Rails 5.x** applications.  
+If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/rails4-support).
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -315,9 +314,8 @@ From background job, migration, rake task or console you can use `Tenant.set_cur
 `tenant` can either be a tenant object or an integer tenant_id; anything else will raise
 an exception.
 
-NOTE: *USE WITH CAUTION* Normally this should *NEVER* be done from
-the models. It is only useful and safe WHEN performed at the start
-of a background job (DelayedJob#perform), rake task, migration or rails console.
+**Use with caution!** Normally tenants should never be changed from within models.
+It is only useful and safe when performed at the start of a background job (DelayedJob#perform), rake task, migration or start of rails console.
 
 #### Iterate over tenants
 To iterate over all instances of a certain model for all tenants do the following:  
