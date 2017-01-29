@@ -4,7 +4,7 @@
 
 Milia is a multi-tenanting gem for Ruby on Rails applications.
 
-You are viewing the documentation of the milia branch for **Rails 5.x** applications.
+You are viewing the documentation for using milia with **Rails 5.x** applications.
 If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/rails4-support).
 
 
