@@ -52,16 +52,16 @@ If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branc
 ## Intro
 * Milia is a solid choice for (SaaS) applications which are used by more than one tenant (i.e. companies or organizations) and is tailored for common use cases of multi-tenanted applications.
 * Milia allows to save the data of all tenants in the same database and enforces row based separation of the tenant data.
-* Milia uses the devise gem for user authentication and registration.
+* Milia uses the [devise gem](https://github.com/plataformatec/devise) for user authentication and registration.
 
 ## Milia highlights
 * Transparent to the main application code
-* Symbiotic with user authentication
+* Symbiotic with user authentication (supports [devise](https://github.com/plataformatec/devise) out of the box)
 * Raises exceptions upon attempted illegal access
 * Enforces tenanting (not allow sloppy access to all tenant records)
 * Allows application flexibility upon new tenant sign-up, usage of eula information, etc
 * As non-invasive (as possible) to Rails code
-* Uses row-based tenanting (for good reasons, see [README_DETAILS](README_DETAILS.md))
+* Uses row-based tenanting (for [good reasons](README_DETAILS.md#row-based-vs-schema-based-tenanting))
 * Uses default_scope to enforce tenanting
 * **See Milia in action in the [Sample App](#sample-app)**
 
