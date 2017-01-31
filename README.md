@@ -2,7 +2,7 @@
 
 # milia
 
-Milia is a multi-tenanting gem for Ruby on Rails applications.
+Milia is a multi-tenanting gem for Ruby on Rails applications. Milia supports Devise.
 
 You are viewing the documentation for using milia with **Rails 5.x** applications.  
 If you want to use **Rails 4.2.x** instead please switch to [the Rails 4.x branch](https://github.com/jekuno/milia/tree/rails4-support).
@@ -101,7 +101,7 @@ Pure join tables (has_and_belongs_to_many HABTM associations) are neither Univer
 
 
 ## Sample app
-You can get a sample app up and running on Heroku yourself using an easy RailsApp generator with a Milia generator.
+You can get a sample app up and running yourself using an easy, interactive RailsApp generator and an according Milia generator. If desired the generator can also prepare everything for you to push your app to **Heroku**.
 The sample app uses devise with the invite_member capability (and optionally recaptcha for new account sign-ups).
 It creates skeleton user, tenant and member models.
 
@@ -123,7 +123,7 @@ An interactive setup starts which asks you some questions.
 * Choose the other options depending on your needs
 
 After the setup finished add to your `Gemfile`:  
-`gem 'milia', github: 'jekuno/milia', branch: 'generator-rails5'`
+`gem 'milia', github: 'jekuno/milia'`
 
 Install milia:
 `bundle install`
@@ -141,7 +141,7 @@ rails g milia:install --org_email='mail@your-provider.de' --skip_devise_generato
 * Remove the lines `@extend .text-xs-center;` (if any) from the file `1st_load_framework.css.scss`.
 * Remove the file `app/views/devise/registrations/new.html.erb`
 
-Setup the databas:
+Setup the database:
 `rake db:drop db:create db:migrate`
 
 Start the server:
@@ -150,12 +150,12 @@ Start the server:
 Open http://127.0.0.1:3000/users/sign_up in your browser.
 You're ready to go!
 
-### Outdated
-An outdated milia+devise sample app can be found at https://github.com/dsaronin/sample-milia-app
-and is live on Heroku: http://sample-milia.herokuapp.com
-The according instructions on how to use the generator can be found at [doc/sample.sh](doc/sample.sh).
+### Previous sample app
+For your reference: An outdated milia+devise sample app can be found at https://github.com/dsaronin/sample-milia-app
+and is live on Heroku: http://sample-milia.herokuapp.com  
+The according instructions on how to generate this sample app can be found at [doc/sample.sh](doc/sample.sh).
 
-There are also outdated step-by-step instructions for setting everything up manually at [doc/manual_sample.sh](doc/manual_sample.sh).
+There are also outdated step-by-step instructions for setting this sample app up manually at [doc/manual_sample.sh](doc/manual_sample.sh).
   - Step 1: Sample with simple devise only
   - Step 2: Add milia for complete tenanting
   - Step 3: Add invite_member capability
@@ -264,7 +264,7 @@ into your <i>app/models/tenant.rb</i> file one line per tenanted model
 such as the following (replacing <model> with your model's name):
 
 ```
-  has_many  :<model>s, :dependency => destroy
+  has_many  :<model>s, dependent: :destroy
 ```
 
 The reason for this is that if you wish to have a master destroy tenant action,
@@ -272,7 +272,7 @@ it will also remove all related tenanted tables and records automatically.
 
 Do NOT add a reference to the user model such as
 ```
-  has_many  :users, :dependency => destroy
+  has_many  :users, dependent: :destroy
 ```
 because it produces errors.
 
