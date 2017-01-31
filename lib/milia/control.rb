@@ -141,7 +141,7 @@ module Milia
 # invalid_tenant -- using wrong or bad data
 # ------------------------------------------------------------------------------
   def invalid_tenant
-    flash[:error] = "wrong tenant access; sign out & try again"
+    flash[:error] = "Wrong tenant access"
     redirect_back
   end
 
