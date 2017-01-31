@@ -1,17 +1,17 @@
 ## Changelog
 
-## v1.3.0 - What changed?
+## v1.3.x
 * Rails 5.x adapted - fully compatible
 
-## v1.2.0 - What's changed?
+## v1.2.0
 * Rails 4.2.x adapted
 * fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
 
-## v1.1.x - What's changed?
+## v1.1.x
 * Rails 4.1.x adapted
 * Devise 3.4.x adapted
 
-## v1.0.x - What's changed?
+## v1.0.x
 
 * Rails 4.0.x adapted (changes to terms, strong_parameters, default_scope, etc)
 * Devise 3.2.x adapted
