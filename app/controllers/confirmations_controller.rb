@@ -21,7 +21,7 @@ module Milia
 
       if resource.errors.empty?
         log_action( "invitee confirmed" )
-        set_flash_message(:notice, :confirmed) if is_flashing_format?
+        set_flash_message(:notice, :confirmed)
           # sign in automatically
         sign_in_tenanted_and_redirect(resource)
 

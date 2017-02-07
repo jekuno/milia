@@ -62,7 +62,8 @@ end
   gem "rack-timeout"
   gem 'rails_12factor'
 
-  gem 'devise'  #  , '~>3.2'
+  gem 'devise' #,  :path => "./devise-4.2.0"
+  gem 'devise_invitable', "~> 1.7"
 
   # airbrake is optional and configured by config.use_airbrake in milia initializer
   # default is false; if you change it to true, uncomment out the line below
@@ -76,9 +77,10 @@ gem "recaptcha", require: "recaptcha/rails"
 gem "activerecord-session_store", github: "rails/activerecord-session_store"
 
 group :test do
-  gem "shoulda"   #   , "3.5.0"
-  gem "shoulda-matchers"   #   , "~>2.1.0"
-  gem "shoulda-context"   #   , "~>1.1.2"
+  gem "shoulda"
+  gem "shoulda-matchers"
+  gem "shoulda-context"
 end
 
+# Test the current milia version (which is part of this repo)
 gem 'milia', :path => "../../milia"

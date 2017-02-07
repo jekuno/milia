@@ -90,6 +90,7 @@ module Milia
         after_create do |new_user|
           tenant = Tenant.find(Thread.current[:tenant_id])
           unless tenant.users.include?(new_user)
+						new_user.skip_reconfirmation! # For details why this is needed see milia issue #68
             tenant.users << new_user # add user to this tenant if not already there
           end
         end # before_create do

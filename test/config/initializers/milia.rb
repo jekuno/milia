@@ -5,12 +5,12 @@ Milia.setup do |config|
 
 # true if you wish to use a coupon-based option in your sign-up form
 # false to otherwise not expect a coupon attribute in the parameters
-  config.use_coupon = true
+  config.use_coupon = false
 
-# true if you use recaptcha on your sign-up form; 
+# true if you use recaptcha on your sign-up form;
   # be sure to include the gem 'recaptcha' in your Gemfile
 # false if you do not
-  config.use_recaptcha = true
+  config.use_recaptcha = false
 
 # true if action after signing out is to return to the home (root) page
 # false to return to the sign-in form (devise default)
@@ -20,7 +20,7 @@ Milia.setup do |config|
   # be sure to include the gem 'airbrake' in your Gemfile
 # false if you do not
 # In certain situations, milia will notify airbrake of a situation which
-  # is not necessarily an exception: such as if someone attempts to 
+  # is not necessarily an exception: such as if someone attempts to
   # sign up but you're limited new sign ups (such as when in beta mode)
   # then you'll get notified via airbrake of the email of the person
   # attempting the signup (in case you wish to contact them)

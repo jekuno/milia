@@ -98,6 +98,9 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    devise_invitable (1.7.0)
+      actionmailer (>= 4.0.0)
+      devise (>= 4.0.0)
     erubis (2.7.0)
     execjs (2.7.0)
     globalid (0.3.7)
@@ -213,6 +216,7 @@ DEPENDENCIES
   activerecord-session_store!
   coffee-rails
   devise
+  devise_invitable (~> 1.7)
   haml-rails
   html2haml
   jbuilder
