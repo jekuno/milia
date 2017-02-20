@@ -5,6 +5,21 @@ Milia is tested using `minitest`.
 Tests run in context of a multi-tenanted example application
 (which resides in the `milia/test` directory).
 
+## Exploring test application manually
+Tests run in context of a multi-tenanted example application.
+To execute it manually do:
+
+```
+cd test
+bundle install
+RAILS_ENV=test rake db:setup
+RAILS_ENV=test rails server
+```
+
+* Open [http://127.0.0.1:3000/users/sign_up](http://127.0.0.1:3000/users/sign_up) in your browser
+in order to add a new tenant.
+* Open [http://127.0.0.1:3000/users/invitation/new](http://127.0.0.1:3000/users/invitation/new) to invite new users.
+
 ## Running tests
 
 The `test_helper.rb` takes care of maintaining the database

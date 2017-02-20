@@ -6,7 +6,7 @@ class Member < ActiveRecord::Base
   has_many :teams, :through => :team_assets, :source => 'team'
   has_many :posts
   has_many :zines, :through => :posts, :source => 'zine'
-    
+
 
   DEFAULT_ADMIN = {
     first_name: "Admin",
@@ -25,7 +25,7 @@ class Member < ActiveRecord::Base
     end
 
     return new_member
-      
+
   end
 
 

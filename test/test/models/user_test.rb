@@ -50,6 +50,15 @@ class UserTest < ActiveSupport::TestCase
       )
     end   # should do
 
+
+    should 'save email address' do
+      email = "billybob@bob.com"
+      user = User.new(email: email, password: 'secretpassword')
+      user.save
+      user.reload
+      assert_equal user.email, email
+    end
+
     should 'check or set password - missing' do
       user = User.new(email: "billybob@bob.com")
       assert user.has_no_password?

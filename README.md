@@ -151,7 +151,7 @@ Open http://127.0.0.1:3000/users/sign_up in your browser.
 You're ready to go!
 
 ### Previous sample app
-For your reference: An outdated milia+devise sample app can be found at https://github.com/dsaronin/sample-milia-app
+For your reference: An outdated milia+devise sample app can be found at [https://github.com/dsaronin/sample-milia-app](https://github.com/dsaronin/sample-milia-app)
 and is live on Heroku: http://sample-milia.herokuapp.com  
 The according instructions on how to generate this sample app can be found at [doc/sample.sh](doc/sample.sh).
 
