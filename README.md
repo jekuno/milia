@@ -123,7 +123,7 @@ An interactive setup starts which asks you some questions.
 * Choose the other options depending on your needs
 
 After the setup finished add to your `Gemfile`:  
-`gem 'milia', github: 'jekuno/milia'`
+`gem 'milia'`
 
 Install milia:
 `bundle install`
@@ -313,7 +313,7 @@ Only designate one model in this manner.
 
 ##### Clean up tenant references
 
-Cleanu up any generated belongs_to tenant references in all models which the generator might have generated 
+Clean up any generated belongs_to tenant references in all models which the generator might have generated 
 (both <i>acts_as_tenant</i> and <i>acts_as_universal</i>).
 
 #### Setup your custom models
