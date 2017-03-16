@@ -424,7 +424,7 @@ This is optional and if the callback is missing, nothing will happen.
 For instructions on how to run and write tests for milia please consider the [README for testing](./test/README.md)
 
 ## Changelog
-See [CHANGELOG.md](CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md) for changes and upgrade instructions.
 
 
 ## License
