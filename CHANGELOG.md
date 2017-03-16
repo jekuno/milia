@@ -2,7 +2,15 @@
 
 ## v1.3.x
 * Rails 5.x adapted - fully compatible
-
+* Upgrading from v1.2.0
+   * Upgrade rails, devise and milia by updating your `Gemfile` to:
+     ```
+     gem 'rails',  '~> 5.0'
+     gem 'devise', '~> 4.2'
+     gem 'milia',  '~> 1.3'   
+     ```
+   * Follow the official upgrade instructions for Rails and Devise.
+   
 ## v1.2.0
 * Rails 4.2.x adapted
 * fixes Issue #42: Redirect loop (sign up & activate with email1; trying to sign up again with email1 fails but immediately signing in with email1 caused a redirect loop).
