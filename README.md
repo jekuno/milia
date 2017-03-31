@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=master)](https://travis-ci.org/jekuno/milia)
+[![Build Status](https://travis-ci.org/jekuno/milia.svg?branch=master)](https://travis-ci.org/jekuno/milia) [![Dependency Status](https://www.versioneye.com/user/projects/589071e96a0b7c003d32536e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/589071e96a0b7c003d32536e)
 
 # milia
 
