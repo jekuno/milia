@@ -109,6 +109,12 @@ module Milia
             snippet_model_tenant_determines_tenant
          end
 
+         inject_into_file "config/initializers/assets.rb",
+           after: "# Precompile additional assets.\n" do
+            snippet_precompile_web_app_theme
+         end
+
+
        end  # skip block?
      end
 
@@ -462,6 +468,11 @@ RUBY23
  end
 
 
+  def snippet_precompile_web_app_theme
+<<-'RUBY24'
+    Rails.application.config.assets.precompile += %w( web_app_theme.css )
+RUBY24
+  end
 
 
 # *************************************************************
