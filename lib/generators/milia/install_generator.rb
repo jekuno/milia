@@ -37,6 +37,7 @@ module Milia
       def setup_initial_stuff
         copy_file 'devise_permitted_parameters.rb', 'config/initializers/devise_permitted_parameters.rb'
         template 'initializer.rb', 'config/initializers/milia.rb'
+        template 'secret_token.rb', 'config/initializers/secret_token.rb'
 
          unless options.skip_recaptcha
            gem 'recaptcha', :require => "recaptcha/rails"
