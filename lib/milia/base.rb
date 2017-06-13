@@ -175,7 +175,9 @@ module Milia
 # for each of the subordinate models in the join seems like a nice safety issue.
 # ------------------------------------------------------------------------
       def where_restrict_tenant(*args)
-        args.map { |klass| "#{klass.table_name}.tenant_id = #{Thread.current[:tenant_id]}" }.join(" AND ")
+        tenant_id = Thread.current[:tenant_id]
+        clause = args.map { |klass| "#{klass.table_name}.tenant_id = ?" }.join(" AND ")
+        clause.gsub('?', (tenant_id.kind_of?(String) ? "'#{tenant_id}'" : tenant_id.to_s))
       end
 
 # ------------------------------------------------------------------------

@@ -39,8 +39,6 @@ class MemberTest < ActiveSupport::TestCase
 
         # setup new user
       user = User.new(email: "limesublime@example.com")
-      puts '-x-x-x-x-x-x-x-x-x-x-x-x-x-'
-      puts Tenant.current_tenant.inspect
       assert user.save_and_invite_member
       assert user.errors.empty?
         
