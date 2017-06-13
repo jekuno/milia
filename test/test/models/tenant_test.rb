@@ -134,10 +134,16 @@ class TenantTest < ActiveSupport::TestCase
       assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
     end  # should do
 
+    should 'set current tenant - tenant id as string' do
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+      Tenant.set_current_tenant( tenants( :tenant_4 ).id )
+      assert_equal  tenants( :tenant_4 ).id, Tenant.current_tenant_id
+    end  # should do
+
     should 'NOT set current tenant - invalid arg' do
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
       assert_raise(ArgumentError) {
-        Tenant.set_current_tenant( '2' )
+        Tenant.set_current_tenant( 2.2 )
       }
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
     end  # should do

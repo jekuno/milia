@@ -102,7 +102,7 @@ class UserTest < ActiveSupport::TestCase
 
     should 'NOT create new user when invalid current tenant - string' do
               # force the current_tenant to be unexpected object
-      Thread.current[:tenant_id] = 'peanut clusters'
+      Thread.current[:tenant_id] = 2.2
 
       assert_no_difference("User.count") do
         assert_raise(::Milia::Control::InvalidTenantAccess,
