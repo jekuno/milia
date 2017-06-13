@@ -53,7 +53,7 @@ module Milia
         # ..........................callback enforcers............................
         before_save do |obj| # force tenant_id to be universal
           if obj.tenant_id.present?
-            raise ::Milia::Control::InvalidTenantAccess, 'fuxk of'
+            raise ::Milia::Control::InvalidTenantAccess
           end
         end
 
