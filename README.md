@@ -164,7 +164,7 @@ There are also outdated step-by-step instructions for setting this sample app up
 ## Installation
 ### Adding milia to a new application
 The quickest way:
-Follow the simple instructions of the chapter [Sample App](Sample App) to generate a new app which uses devise+milia.
+Follow the simple instructions of the chapter [Sample App](#sample-app) to generate a new app which uses devise+milia.
 
 
 ### Add milia to an existing application
