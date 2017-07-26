@@ -14,7 +14,7 @@ module Milia
 # Forces all references to be limited to current_tenant rows
 # ------------------------------------------------------------------------
       def acts_as_tenant()
-        belongs_to :tenant
+        belongs_to :tenant, optional: false
         validates_presence_of :tenant_id
 
         default_scope lambda { where("#{table_name}.tenant_id = ?", Thread.current[:tenant_id]) }
@@ -46,7 +46,7 @@ module Milia
 # Forces all reference to the universal tenant (nil)
 # ------------------------------------------------------------------------
       def acts_as_universal()
-        belongs_to :tenant
+        belongs_to :tenant, optional: true
 
         default_scope { where("#{table_name}.tenant_id IS NULL") }
 
