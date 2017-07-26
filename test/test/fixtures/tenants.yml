@@ -10,3 +10,7 @@ tenant_3:
   id: 3
   name: tenant_3
 
+tenant_4:
+  id: 'AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA'
+  name: tenant_4
+

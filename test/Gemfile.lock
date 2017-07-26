@@ -71,7 +71,7 @@ GIT
       thor (>= 0.18.1, < 2.0)
 
 PATH
-  remote: ../../milia
+  remote: ..
   specs:
     milia (1.3.1)
       devise (~> 4.2)
@@ -240,4 +240,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.7
+   1.15.1

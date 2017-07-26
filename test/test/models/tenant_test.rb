@@ -134,17 +134,30 @@ class TenantTest < ActiveSupport::TestCase
       assert_equal  tenants( :tenant_3 ).id, Tenant.current_tenant_id
     end  # should do
 
+    should 'set current tenant - tenant id as string' do
+      assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
+      Tenant.set_current_tenant( 'AA-AA-AA-AA' )
+      assert_equal  'AA-AA-AA-AA', Tenant.current_tenant_id
+    end  # should do
+
     should 'NOT set current tenant - invalid arg' do
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
       assert_raise(ArgumentError) {
-        Tenant.set_current_tenant( '2' )
+        Tenant.set_current_tenant( 2.2 )
       }
       assert_equal  tenants( :tenant_1 ).id, Tenant.current_tenant_id
     end  # should do
 
 RESTRICT_SNIPPET = 'posts.tenant_id = 1 AND zines.tenant_id = 1'
     should 'prepare a restrict tenant snippet' do
+      Tenant.set_current_tenant( tenants( :tenant_1 ).id )
       assert_equal RESTRICT_SNIPPET, Tenant.where_restrict_tenant( Post, Zine )
+    end  # should do
+
+RESTRICT_STRING_SNIPPET = "posts.tenant_id = 'AA-AA-AA-AA' AND zines.tenant_id = 'AA-AA-AA-AA'"
+    should 'prepare a restrict tenant snippet with strings' do
+      Tenant.set_current_tenant( 'AA-AA-AA-AA' )
+      assert_equal RESTRICT_STRING_SNIPPET, Tenant.where_restrict_tenant( Post, Zine )
     end  # should do
 
     should 'clear tenant.users when tenant destroyed' do

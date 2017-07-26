@@ -77,9 +77,7 @@ module Milia
 
         # validate that a tenant exists prior to a user creation
         before_create do |new_user|
-          if Thread.current[:tenant_id].blank? ||
-              !Thread.current[:tenant_id].kind_of?(Integer) ||
-              Thread.current[:tenant_id].zero?
+          unless Milia::Support::valid_tenant_id?(Thread.current[:tenant_id])
 
             raise ::Milia::Control::InvalidTenantAccess, "no existing valid current tenant"
 
@@ -90,7 +88,7 @@ module Milia
         after_create do |new_user|
           tenant = Tenant.find(Thread.current[:tenant_id])
           unless tenant.users.include?(new_user)
-						new_user.skip_reconfirmation! # For details why this is needed see milia issue #68
+            new_user.skip_reconfirmation! # For details why this is needed see milia issue #68
             tenant.users << new_user # add user to this tenant if not already there
           end
         end # before_create do
@@ -153,6 +151,8 @@ module Milia
             tenant_id = tenant.id
           when Integer then
             tenant_id = tenant
+          when String then
+            tenant_id = tenant
           else
             raise ArgumentError, "invalid tenant object or id"
         end # case
@@ -175,7 +175,9 @@ module Milia
 # for each of the subordinate models in the join seems like a nice safety issue.
 # ------------------------------------------------------------------------
       def where_restrict_tenant(*args)
-        args.map { |klass| "#{klass.table_name}.tenant_id = #{Thread.current[:tenant_id]}" }.join(" AND ")
+        tenant_id = Thread.current[:tenant_id]
+        clause = args.map { |klass| "#{klass.table_name}.tenant_id = ?" }.join(" AND ")
+        clause.gsub('?', (tenant_id.kind_of?(String) ? "'#{tenant_id}'" : tenant_id.to_s))
       end
 
 # ------------------------------------------------------------------------

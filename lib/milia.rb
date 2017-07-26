@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/milia/base'
 require File.dirname(__FILE__) + '/milia/control'
 require File.dirname(__FILE__) + '/milia/password_generator'
 require File.dirname(__FILE__) + '/milia/invite_member'
+require File.dirname(__FILE__) + '/milia/support'
 
 require File.dirname(__FILE__) + '/milia/railtie' if defined?(Rails::Railtie)
 
